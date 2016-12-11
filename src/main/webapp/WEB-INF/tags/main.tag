@@ -83,43 +83,6 @@
                         </li>
                     </ul>
                 </li>
-
-
-                <%--<li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">
-                            <i class="glyphicon glyphicon-globe"></i>
-                            <fmt:message bundle="${loc}" key="locale.lang"/>
-                            <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <c:url var="localeUrl" value="/locale"/>
-                            <c:set var="currentUrl"
-                                   value="${requestScope['javax.servlet.forward.request_uri']}?${pageContext.request.queryString}"/>
-                            <li>
-                                <form class="navbar-form" action="${localeUrl}" method="post">
-                                    <input type="hidden" name="redirect_to" value="${currentUrl}"/>
-                                    <input type="hidden" name="locale" value="en">
-                                    <fmt:message var="enTitle" bundle="${loc}" key="locale.select.lang.en"/>
-                                    <button class="btn btn-sm btn-link"
-                                            &lt;%&ndash;role="link" &ndash;%&gt;type="submit" title="${enTitle}">
-                                        <i class="flag-icon flag-icon-us"></i> ${enTitle}
-                                    </button>
-                                </form>
-                            </li>
-
-                            <li>
-                                <form class="navbar-form" action="${localeUrl}" method="post">
-                                    <input type="hidden" name="locale" value="ru">
-                                    <input type="hidden" name="redirect_to" value="${currentUrl}">
-                                    <fmt:message var="ruTitle" bundle="${loc}" key="locale.select.lang.ru"/>
-                                    <button class="btn btn-sm btn-link"
-                                            &lt;%&ndash;role="link" &ndash;%&gt;type="submit" title="${ruTitle}">
-                                        <i class="flag-icon flag-icon-ru"></i> ${ruTitle}
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                </li>--%>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

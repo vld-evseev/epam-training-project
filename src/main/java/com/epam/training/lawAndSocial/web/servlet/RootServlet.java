@@ -1,4 +1,4 @@
-package com.epam.training.lawAndSocial.servlet;
+package com.epam.training.lawAndSocial.web.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
