@@ -4,8 +4,8 @@ import com.epam.training.lawAndSocial.utils.ServletUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import static com.epam.training.lawAndSocial.utils.ServletParams.LOCALE_PARAM;
 import static com.epam.training.lawAndSocial.utils.ServletParams.REDIRECT_TO_PARAM;
 
-@WebServlet("/locale")
+@Singleton
 public class LocaleServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LocaleServlet.class);
