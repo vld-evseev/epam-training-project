@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.web.listener;
 
 import com.epam.training.lawAndSocial.web.servlet.LocaleServlet;
+import com.epam.training.lawAndSocial.web.servlet.ProfileServlet;
 import com.epam.training.lawAndSocial.web.servlet.RootServlet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -25,6 +26,7 @@ public class GuiceConfig extends GuiceServletContextListener {
         protected void configureServlets() {
             serve("/").with(RootServlet.class);
             serve("/locale").with(LocaleServlet.class);
+            serve("/profile").with(ProfileServlet.class);
         }
     }
 
