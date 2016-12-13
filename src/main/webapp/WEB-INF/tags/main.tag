@@ -7,6 +7,7 @@
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <%--<fmt:setBundle basename="i18n.menu" var="menu"/>--%>
 
+<!DOCTYPE html>
 <html>
 <head>
     <c:url var="bootstrapMain" value="/webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
@@ -22,46 +23,9 @@
     <c:url var="jqueryJs" value="/webjars/jquery/1.12.4/jquery.min.js"/>
     <script src="${jqueryJs}"></script>
 
-    <%--momentJS--%>
-    <%--<c:url var="momentJs" value="/webjars/momentjs/2.16.0/min/moment-with-locales.min.js"/>
-    <script src="${momentJs}"></script>--%>
-
     <%--Bootstrap--%>
     <c:url var="bootstrapJs" value="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"/>
     <script src="${bootstrapJs}"></script>
-
-    <%--datetimepicker--%>
-    <c:url var="bsDatepicker" value="/webjars/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"/>
-    <script src="${bsDatepicker}"></script>
-
-    <c:url var="bsDatepickerRu" value="/webjars/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.ru.min.js"/>
-    <script src="${bsDatepickerRu}"></script>
-
-    <c:url var="bsDatepickerCss" value="/webjars/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css"/>
-    <link rel="stylesheet" type="text/css" href="${bsDatepickerCss}"/>
-
-    <c:set var="localeCode" value="${pageContext.response.locale}"/>
-    <c:choose>
-        <c:when test="${localeCode eq 'ru_RU'}">
-            <c:set var="currentLocale" value="ru"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="currentLocale" value="en"/>
-        </c:otherwise>
-    </c:choose>
-
-    <script>
-        $(document).ready(function () {
-            var date_input = $('input[name="date"]'); //our date input has the name "date"
-            var options = {
-                format: 'dd/mm/yyyy',
-                todayHighlight: true,
-                autoclose: true,
-                language: '${currentLocale}',
-            };
-            date_input.datepicker(options);
-        })
-    </script>
 
     <title>${title}</title>
 </head>
