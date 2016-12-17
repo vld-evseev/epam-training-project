@@ -1,6 +1,5 @@
 package com.epam.training.lawAndSocial.web.servlet;
 
-import com.epam.training.lawAndSocial.utils.ServletUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class LocaleServlet extends HttpServlet {
 
         LOGGER.debug("redirectAttr: {}", redirectParam);
 
-        if (ServletUtils.paramExists(redirectParam)) {
+        if (redirectParam != null && !redirectParam.isEmpty()) {
             LOGGER.debug("redirecting to: {}", redirectParam);
             resp.sendRedirect(redirectParam);
         } else {

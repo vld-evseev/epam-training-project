@@ -1,6 +1,5 @@
 package com.epam.training.lawAndSocial.web.servlet;
 
-import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,15 +17,15 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendRedirect(req.getContextPath());
+        LOGGER.debug("Successfully authorised");
+        req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp")
+                .forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp")
+                .forward(req, resp);
     }
 
-    static FormValidation validate() {
-        return null;
-    }
 }

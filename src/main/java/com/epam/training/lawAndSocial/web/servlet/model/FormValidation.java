@@ -1,7 +1,6 @@
 package com.epam.training.lawAndSocial.web.servlet.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FormValidation {
 
@@ -18,5 +17,21 @@ public class FormValidation {
 
     public boolean isValid() {
         return fields.isEmpty() && errors.isEmpty();
+    }
+
+    public List<String> messages() {
+        final ArrayList<String> messages = new ArrayList<>();
+
+        final Set<Map.Entry<String, FieldValidation>> fieldEntries = fields.entrySet();
+        for (Map.Entry<String, FieldValidation> fieldEntry : fieldEntries) {
+            messages.add(fieldEntry.getKey() + " : " + fieldEntry.getValue().toString());
+        }
+
+        final Set<Map.Entry<String, Boolean>> errorsEntries = errors.entrySet();
+        for (Map.Entry<String, Boolean> errorsEntry : errorsEntries) {
+            messages.add(errorsEntry.getKey() + " : " + errorsEntry.getValue());
+        }
+
+        return messages;
     }
 }

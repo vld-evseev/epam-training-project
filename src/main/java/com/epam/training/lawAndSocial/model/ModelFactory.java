@@ -1,7 +1,16 @@
 package com.epam.training.lawAndSocial.model;
 
-/**
- * Created by Vlad on 13.12.2016.
- */
-public class ModelFactory {
+import java.util.Map;
+
+public final class ModelFactory {
+
+    private ModelFactory() {
+    }
+
+    public static User buildUser(Map<String, String> params) {
+        return null;
+
+    }
+
+
 }

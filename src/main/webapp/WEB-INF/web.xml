@@ -5,21 +5,6 @@
          version="3.1">
 
     <filter>
-        <filter-name>charsetFilter</filter-name>
-        <filter-class>com.epam.training.lawAndSocial.filter.CharsetFilter</filter-class>
-
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>charsetFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
         <filter-name>guice</filter-name>
         <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
     </filter>

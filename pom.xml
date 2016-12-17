@@ -172,6 +172,21 @@
             <artifactId>logback-core</artifactId>
             <version>1.1.7</version>
         </dependency>
+
+        <!--Mockito-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.2.26</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--SCrypt-->
+        <dependency>
+            <groupId>com.lambdaworks</groupId>
+            <artifactId>scrypt</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
 
     <build>

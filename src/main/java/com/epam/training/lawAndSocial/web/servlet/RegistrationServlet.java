@@ -3,7 +3,9 @@ package com.epam.training.lawAndSocial.web.servlet;
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
+import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
+import com.epam.training.lawAndSocial.web.servlet.model.FieldValidation;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,74 +16,186 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 
 @Singleton
 public class RegistrationServlet extends HttpServlet {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationServlet.class);
+    private static final String REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
 
     private final ValidationService validationService;
     private final SecurityService securityService;
+    private final UserService userService;
 
     @Inject
-    public RegistrationServlet(ValidationService validationService, SecurityService securityService) {
+    public RegistrationServlet(ValidationService validationService,
+                               SecurityService securityService,
+                               UserService userService) {
         this.validationService = validationService;
         this.securityService = securityService;
+        this.userService = userService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/jsp/registration.jsp").forward(req, resp);
+        req.setAttribute(CREDENTIALS_ATTR, Credentials.builder().build());
+        req.setAttribute(USER_ATTR, User.builder().build());
+        req.getRequestDispatcher(REGISTRATION_JSP).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final Map<String, String> params = collectParams(req);
 
+        final FormValidation validation = validationService.verify(params);
+
         final Credentials credentials = Credentials.builder()
                 .username(params.get(USERNAME_PARAM))
                 .password(params.get(PASSWORD_PARAM))
                 .build();
 
+        LOGGER.debug("credentials: {}", credentials.toString());
+
         final User user = User.builder()
                 .email(params.get(EMAIL_PARAM))
                 .userName(params.get(USERNAME_PARAM))
-                .firstName(params.get(EMAIL_PARAM))
+                .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
-                .date(parseDate(params.get(DATE_PARAM)))
+                .date(parseDate(params.get(DATE_PARAM), validation))
                 .passwordHash(securityService.encrypt(credentials.getPassword()))
                 .build();
 
-        final FormValidation validation = validationService.verify(params);
-        if (!validation.isValid()) {
-            req.setAttribute("validation", validation);
+        if (validation.isValid()) {
+            if (passwordConfirmed(params, validation)
+                    && !userExists(user.getUserName(), validation)) {
+                addUser(user, validation);
+            }
         }
 
+        if (!validation.isValid()) {
+            LOGGER.debug("registration form validation failed");
+            for (String message : validation.messages()) {
+                LOGGER.debug(message);
+            }
 
-        doGet(req, resp);
+            req.setAttribute(USER_ATTR, user);
+            req.setAttribute(CREDENTIALS_ATTR, credentials);
+            req.setAttribute(VALIDATION_ATTR, validation);
+            req.getRequestDispatcher(REGISTRATION_JSP)
+                    .forward(req, resp);
+            return;
+        }
+
+        LOGGER.debug("Form validation succeed");
+        LOGGER.debug("user was created: {}", user.toString());
+
+        final HttpSession session = req.getSession(true);
+        session.setAttribute(USER_ATTR, user);
+
+        resp.sendRedirect(req.getContextPath() + "/profile");
     }
 
-    private Map<String, String> collectParams(HttpServletRequest req) {
+    static boolean passwordConfirmed(Map<String, String> params, FormValidation validation) {
+        final String pwd = params.get(PASSWORD_PARAM);
+        final String confirmedPwd = params.get(CONFIRM_PASSWORD_PARAM);
+        final boolean isConfirmed = pwd.equals(confirmedPwd);
+
+        if (!isConfirmed) {
+            LOGGER.debug("password doesn't match");
+            validation.getFields().put(
+                    CONFIRM_PASSWORD_PARAM,
+                    FieldValidation.builder().isIncorrect(true).build()
+            );
+        }
+
+        return isConfirmed;
+    }
+
+
+    boolean userExists(String username, FormValidation validation) {
+        final Optional<User> userOptional = userService.getByUsername(username);
+        if (userOptional.isPresent()) {
+            validation.getErrors().put(
+                    "USERNAME_EXISTS",
+                    true
+            );
+            return true;
+        }
+        return false;
+    }
+
+    void addUser(User user, FormValidation validation) {
+        final long id = userService.add(user);
+        if (id < 0) {
+            validation.getErrors().put(
+                    "INTERNAL_ERROR",
+                    true
+            );
+        }
+    }
+
+    static Map<String, String> collectParams(HttpServletRequest req) {
         final Map<String, String> params = new HashMap<>();
-        params.put(req.getParameter(EMAIL_PARAM), EMAIL_PARAM);
-        params.put(req.getParameter(USERNAME_PARAM), USERNAME_PARAM);
-        params.put(req.getParameter(FIRSTNAME_PARAM), FIRSTNAME_PARAM);
-        params.put(req.getParameter(LASTNAME_PARAM), LASTNAME_PARAM);
-        params.put(req.getParameter(DATE_PARAM), DATE_PARAM);
-        params.put(req.getParameter(PASSWORD_PARAM), PASSWORD_PARAM);
-        params.put(req.getParameter(CONFIRM_PASSWORD_PARAM), CONFIRM_PASSWORD_PARAM);
+        params.put(EMAIL_PARAM, req.getParameter(EMAIL_PARAM));
+        params.put(USERNAME_PARAM, req.getParameter(USERNAME_PARAM));
+        params.put(FIRSTNAME_PARAM, req.getParameter(FIRSTNAME_PARAM));
+        params.put(LASTNAME_PARAM, req.getParameter(LASTNAME_PARAM));
+        params.put(DATE_PARAM, req.getParameter(DATE_PARAM));
+        params.put(PASSWORD_PARAM, req.getParameter(PASSWORD_PARAM));
+        params.put(CONFIRM_PASSWORD_PARAM, req.getParameter(CONFIRM_PASSWORD_PARAM));
         return params;
     }
 
-    private LocalDate parseDate(String date) {
-        final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.mm.yyyy");
-        return LocalDate.parse(date, pattern);
+    static String parseDate(String date, FormValidation validation) {
+        if (validation == null) {
+            validation = new FormValidation();
+        }
+        final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String defaultDate = LocalDate.now().format(pattern);
+
+        if (date == null || date.isEmpty()) {
+            LOGGER.debug("Attempting to set null or empty date");
+            validation.getFields().put(
+                    DATE_PARAM,
+                    FieldValidation.builder().isIncorrect(true).build()
+            );
+            return defaultDate;
+        }
+
+        try {
+            final LocalDate localDate = LocalDate.parse(date, pattern);
+            if (!dateRangeIsValid(localDate)) {
+                LOGGER.debug("Attempting to set an out-of-range date: {}", date);
+                validation.getFields().put(
+                        DATE_PARAM,
+                        FieldValidation.builder().isIncorrect(true).build()
+                );
+                return defaultDate;
+            }
+            return localDate.format(pattern);
+        } catch (DateTimeException e) {
+            LOGGER.error("Error while parsing date: {}\n{}", date, e.getMessage());
+            validation.getFields().put(
+                    DATE_PARAM,
+                    FieldValidation.builder().isIncorrect(true).build()
+            );
+            return defaultDate;
+        }
     }
+
+    static boolean dateRangeIsValid(LocalDate date) {
+        return date.isAfter(LocalDate.of(1900, 1, 1))
+                && date.isBefore(LocalDate.now().plusDays(1));
+    }
+
 }

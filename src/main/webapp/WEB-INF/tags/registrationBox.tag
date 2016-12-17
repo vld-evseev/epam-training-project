@@ -4,6 +4,10 @@
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
+<fmt:setBundle basename="i18n.error" var="error"/>
+<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
+<jsp:useBean id="credentials" type="com.epam.training.lawAndSocial.model.Credentials" scope="request"/>
+<jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation" scope="request"/>
 
 <div id="signupbox" style="/*display:none; */margin-top:50px"
      class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -20,113 +24,218 @@
             <c:url var="registrationUrl" value="/registration"/>
             <form id="signupform" data-toggle="validator" role="form" action="${registrationUrl}" method="post">
 
-                <div id="signupalert" style="display:none" class="alert alert-danger">
-                    <p>Error:</p>
-                    <span></span>
-                </div>
+                <c:choose>
+                    <c:when test="${validation.fields.email.incorrect
+                            || validation.fields.username.incorrect
+                            || validation.fields.firstname.incorrect
+                            || validation.fields.lastname.incorrect}">
+                        <fmt:message var="showRule" bundle="${profile}" key="profile.fields.rule"/>
+                        <tags:alert value="${showRule}"/>
+                    </c:when>
+                    <c:when test="${validation.errors.INTERNAL_ERROR}">
+                        <fmt:message var="showInternalErrorMessage" bundle="${error}" key="error.internal"/>
+                        <tags:alert value="${showInternalErrorMessage}"/>
+                    </c:when>
+                </c:choose>
 
-                <div class="form-group has-feedback">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-envelope fa-fw" aria-hidden="true"></i></span>
-                        <fmt:message var="email_address" bundle="${profile}" key="profile.email.address"/>
-                        <fmt:message var="email_required" bundle="${profile}" key="profile.email.required"/>
-                        <input type="text" class="form-control" name="email" placeholder="${email_address}"
-                               data-error="${email_required}" required>
+                <div
+                        <tags:fieldValidation value="${validation.fields.email}"/>
+                >
+                    <div class="form-group has-feedback">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-envelope fa-fw"
+                                                               aria-hidden="true"></i></span>
+                            <fmt:message var="email_address" bundle="${profile}" key="profile.email.address"/>
+                            <fmt:message var="email_required" bundle="${profile}" key="profile.email.required"/>
+                            <input type="text" class="form-control" name="email" placeholder="${email_address}"
+                                   value="${user.email}"
+                                   data-error="${email_required}" required>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                        <c:if test="${validation.fields.email.emptyField}">
+                            <span class="help-block">
+                                <fmt:message bundle="${profile}" key="profile.email.required"/>
+                            </span>
+                        </c:if>
                     </div>
-                    <div class="help-block with-errors"></div>
                 </div>
 
-                <div class="form-group has-feedback">
-                    <div class="input-group">
+
+                <div
+                        <tags:fieldValidation value="${validation.fields.username}"/>
+                >
+                    <div class="form-group has-feedback">
+                        <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-users fa-fw"
                                                                    aria-hidden="true"></i></span>
-                        <fmt:message var="username" bundle="${profile}" key="profile.username"/>
-                        <fmt:message var="username_required" bundle="${profile}" key="profile.username.required"/>
-                        <input type="text" class="form-control" name="username" placeholder="${username}"
-                               data-error="${username_required}" required>
+                            <fmt:message var="username" bundle="${profile}" key="profile.username"/>
+                            <fmt:message var="username_required" bundle="${profile}" key="profile.username.required"/>
+                            <input type="text" class="form-control" name="username" placeholder="${username}"
+                                   value="${user.userName}"
+                                   data-error="${username_required}" required>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                        <c:if test="${validation.fields.username.emptyField}">
+                            <span class="help-block">
+                                <fmt:message bundle="${profile}" key="profile.username.required"/>
+                            </span>
+                        </c:if>
                     </div>
-                    <div class="help-block with-errors"></div>
                 </div>
+
 
                 <div class="row">
-                    <div class="form-group has-feedback col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa-fw" aria-hidden="true"></i></span>
-                            <fmt:message var="first_name" bundle="${profile}" key="profile.first.name"/>
-                            <fmt:message var="first_name_required" bundle="${profile}"
-                                         key="profile.first.name.required"/>
-                            <input type="text" class="form-control" name="firstname" placeholder="${first_name}"
-                                   data-error="${first_name_required}" required>
+                    <div
+                            <tags:fieldValidation value="${validation.fields.firstname}"/>
+                    >
+                        <div class="form-group has-feedback col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-user fa-fw"
+                                                                   aria-hidden="true"></i></span>
+                                <fmt:message var="first_name" bundle="${profile}" key="profile.first.name"/>
+                                <fmt:message var="first_name_required" bundle="${profile}"
+                                             key="profile.first.name.required"/>
+                                <input type="text" class="form-control" name="firstname" placeholder="${first_name}"
+                                       value="${user.firstName}"
+                                       data-error="${first_name_required}" required>
+                            </div>
+                            <div class="help-block with-errors"></div>
+                            <c:if test="${validation.fields.firstname.emptyField}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${profile}" key="profile.first.name.required"/>
+                                </span>
+                            </c:if>
                         </div>
-                        <div class="help-block with-errors"></div>
+
+
                     </div>
 
-                    <div class="form-group has-feedback col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa-fw" aria-hidden="true"></i></span>
-                            <fmt:message var="last_name" bundle="${profile}" key="profile.last.name"/>
-                            <fmt:message var="last_name_required" bundle="${profile}" key="profile.last.name.required"/>
-                            <input type="text" class="form-control" name="lastname" placeholder="${last_name}"
-                                   data-error="${last_name_required}" required/>
-                        </div>
-                        <div class="help-block with-errors"></div>
-                    </div>
 
+                    <div
+                            <tags:fieldValidation value="${validation.fields.lastname}"/>
+                    >
+                        <div class="form-group has-feedback col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-user fa-fw"
+                                                                   aria-hidden="true"></i></span>
+                                <fmt:message var="last_name" bundle="${profile}" key="profile.last.name"/>
+                                <fmt:message var="last_name_required" bundle="${profile}"
+                                             key="profile.last.name.required"/>
+                                <input type="text" class="form-control" name="lastname" placeholder="${last_name}"
+                                       value="${user.lastName}"
+                                       data-error="${last_name_required}" required/>
+                            </div>
+                            <div class="help-block with-errors"></div>
+                            <c:if test="${validation.fields.lastname.emptyField}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${profile}" key="profile.last.name.required"/>
+                                </span>
+                            </c:if>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group has-feedback"> <!-- Date input -->
-                    <div class="input-group">
+                <div
+                        <tags:fieldValidation value="${validation.fields.date}"/>
+                >
+                    <div class="form-group has-feedback"> <!-- Date input -->
+                        <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-id-card-o fa-fw"
                                                                    aria-hidden="true"></i></span>
-                        <fmt:message var="birth_date" bundle="${profile}" key="profile.birth.date"/>
-                        <fmt:message var="birth_date_required" bundle="${profile}" key="profile.birth.date.required"/>
-                        <input class="form-control" id="date" name="date" placeholder="${birth_date}" type="text"
-                               data-error="${birth_date_required}" required/>
+                            <fmt:message var="birth_date" bundle="${profile}" key="profile.birth.date"/>
+                            <fmt:message var="birth_date_required" bundle="${profile}"
+                                         key="profile.birth.date.required"/>
+                            <input class="form-control" id="date" name="date" placeholder="${birth_date}" type="text"
+                                   value="${user.date}"
+                                   data-error="${birth_date_required}" required/>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                        <c:if test="${validation.fields.date.emptyField
+                            || validation.fields.date.incorrect}">
+                            <span class="help-block">
+                                <fmt:message bundle="${profile}" key="profile.birth.date.required"/>
+                            </span>
+                        </c:if>
                     </div>
-                    <div class="help-block with-errors"></div>
                 </div>
 
                 <div class="row">
-                    <div class="form-group has-feedback col-sm-6">
-                        <div class="input-group">
+                    <div
+                            <tags:fieldValidation value="${validation.fields.password}"/>
+                    >
+                        <div class="form-group has-feedback col-sm-6">
+                            <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock fa-fw"
                                                                aria-hidden="true"></i></span>
-                            <fmt:message var="password" bundle="${profile}"
-                                         key="profile.password"/>
-                            <input type="password"
-                                   id="inputPassword"
-                                   class="form-control"
-                                   name="password"
-                                   placeholder="${password}"
-                                   data-minlength="6"
-                                   required>
-                        </div>
-                        <div class="help-block">
-                            <fmt:message bundle="${profile}" key="profile.chars.limitation"/>
+                                <fmt:message var="password" bundle="${profile}"
+                                             key="profile.password"/>
+                                <input type="password"
+                                       id="inputPassword"
+                                       class="form-control"
+                                       name="password"
+                                       placeholder="${password}"
+                                       data-minlength="6"
+                                       value="${credentials.password}"
+                                       required>
+                            </div>
+                            <div class="help-block with-errors">
+                                <fmt:message bundle="${profile}" key="profile.chars.limitation"/>
+                            </div>
+
+                            <%--<c:if test="${validation.fields.password.emptyField}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${profile}" key="profile.password.required"/>
+                                </span>
+                            </c:if>--%>
                         </div>
                     </div>
 
+
                     <div class="form-group has-feedback col-sm-6 pull-right">
-                        <div class="input-group">
+                        <div
+                                <tags:fieldValidation value="${validation.fields.confirm_password}"/>
+                        >
+                            <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock fa-fw"
                                                                aria-hidden="true"></i></span>
-                            <fmt:message var="confirm_password" bundle="${profile}" key="profile.confirm.password"/>
-                            <fmt:message var="password_doesnt_match" bundle="${profile}"
-                                         key="profile.password.doesnt.match"/>
-                            <fmt:message var="password_confirm_required" bundle="${profile}"
-                                         key="profile.password.confirm.requlred"/>
-                            <input type="password"
-                                   id="inputPasswordConfirm"
-                                   class="form-control"
-                                   name="confirm_password"
-                                   placeholder="${confirm_password}"
-                                   data-error="${password_confirm_required}"
-                                   data-match="#inputPassword"
-                                   data-match-error="${password_doesnt_match}"
-                                   required
-                            >
+                                <fmt:message var="confirm_password" bundle="${profile}" key="profile.confirm.password"/>
+                                <fmt:message var="password_doesnt_match" bundle="${profile}"
+                                             key="profile.password.doesnt.match"/>
+                                <fmt:message var="password_confirm_required" bundle="${profile}"
+                                             key="profile.password.confirm.requlred"/>
+                                <input type="password"
+                                       id="inputPasswordConfirm"
+                                       class="form-control"
+                                       name="confirm_password"
+                                       placeholder="${confirm_password}"
+                                       data-error="${password_confirm_required}"
+                                       data-match="#inputPassword"
+                                       data-match-error="${password_doesnt_match}"
+                                       required
+                                >
+                            </div>
+                            <div class="help-block with-errors"></div>
+                            <c:choose>
+                                <c:when test="${validation.fields.confirm_password.emptyField}">
+                                    <span class="help-block">
+                                        <fmt:message bundle="${profile}" key="profile.password.confirm.requlred"/>
+                                    </span>
+                                </c:when>
+                                <c:when test="${validation.fields.confirm_password.incorrect}">
+                                    <span class="help-block">
+                                        <fmt:message bundle="${profile}" key="profile.password.doesnt.match"/>
+                                    </span>
+                                </c:when>
+                            </c:choose>
+
+                            <%--<c:if test="${validation.fields.confirm_password.emptyField}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${profile}" key="profile.password.confirm.requlred"/>
+                                </span>
+                            </c:if>--%>
                         </div>
-                        <div class="help-block with-errors"></div>
+
+
                     </div>
                 </div>
 
