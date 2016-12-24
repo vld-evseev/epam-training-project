@@ -6,6 +6,7 @@ import com.epam.training.lawAndSocial.service.SecurityService;
 import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.impl.ValidationServiceImpl;
+import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.junit.Test;
 
@@ -43,7 +44,6 @@ public class RegistrationServletTest {
         final ValidationService validationService = mock(ValidationServiceImpl.class);
 
         final User user = User.builder()
-                .email(params.get(EMAIL_PARAM))
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
@@ -55,9 +55,11 @@ public class RegistrationServletTest {
                 Optional.of(user)
         );
 
+        final ContactsService contactsService = mock(ContactsService.class);
+
         final RegistrationServlet registrationServlet = new RegistrationServlet(
-                validationService, securityService, userService
-        );
+                validationService, securityService, userService,
+                contactsService);
 
 
         final HttpServletRequest req = mock(HttpServletRequest.class);

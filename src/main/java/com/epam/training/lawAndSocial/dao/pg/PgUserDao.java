@@ -29,17 +29,16 @@ public class PgUserDao implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
             final PreparedStatement query = connection.prepareStatement(
-                    "INSERT INTO lawAndSocialDb.user(id, username, firstName, lastName, email, birthdate, passwordHash)" +
+                    "INSERT INTO lawAndSocialDb.user(id, username, firstName, lastName, birthdate, passwordHash)" +
                             " VALUES (nextval('lawAndSocialDb.user_seq')," +
-                            " ?, ?, ?, ?, ?, ?);",
+                            " ?, ?, ?, ?, ?);",
                     returnColumns
             );
             query.setString(1, user.getUserName());
             query.setString(2, user.getFirstName());
             query.setString(3, user.getLastName());
-            query.setString(4, user.getEmail());
-            query.setString(5, user.getDate());
-            query.setString(6, user.getPasswordHash());
+            query.setString(4, user.getDate());
+            query.setString(5, user.getPasswordHash());
             query.executeUpdate();
             final ResultSet generatedKeys = query.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -59,21 +58,22 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, username, firstName, lastName, email, birthdate, passwordHash" +
+                    "SELECT id, username, firstName, lastName, birthdate, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE username = ?;"
             );
             query.setString(1, username);
             final ResultSet resultSet = query.executeQuery();
             if (resultSet.next()) {
-                result = Optional.of(User.builder()
-                        .id(resultSet.getLong("id"))
-                        .userName(resultSet.getString("username"))
-                        .firstName(resultSet.getString("firstName"))
-                        .lastName(resultSet.getString("lastName"))
-                        .email(resultSet.getString("email"))
-                        .date(resultSet.getString("birthdate"))
-                        .passwordHash(resultSet.getString("passwordHash"))
-                        .build());
+                result = Optional.of(
+                        User.builder()
+                                .id(resultSet.getLong("id"))
+                                .userName(resultSet.getString("username"))
+                                .firstName(resultSet.getString("firstName"))
+                                .lastName(resultSet.getString("lastName"))
+                                .date(resultSet.getString("birthdate"))
+                                .passwordHash(resultSet.getString("passwordHash"))
+                                .build()
+                );
             }
         } catch (SQLException e) {
             LOGGER.error("Getting user by userName caused an exception: {}", e.getMessage());

@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         LOGGER.debug("show login page");
         req.getSession(true);
         req.setAttribute(CREDENTIALS_ATTR, Credentials.builder().build());
-        req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+        req.getRequestDispatcher(LOGIN_PAGE)
                 .forward(req, resp);
     }
 
@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
             req.setAttribute(VALIDATION_ATTR, validation);
             req.setAttribute(CREDENTIALS_ATTR, credentials);
             /*req.getSession().setAttribute(IS_AUTHORISED_ATTR, false);*/
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+            req.getRequestDispatcher(LOGIN_PAGE)
                     .forward(req, resp);
             return;
         }
@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
         /*req.getSession().setAttribute(IS_AUTHORISED_ATTR, true);*/
         req.getSession().setAttribute(USER_ATTR, userOptional.get());
 
-        resp.sendRedirect(req.getContextPath() + "/profile");
+        resp.sendRedirect(req.getContextPath());
     }
 
     private Optional<User> findUser(FormValidation validation, Credentials credentials) {

@@ -5,7 +5,8 @@
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:setBundle basename="i18n.error" var="error"/>
-<jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation" scope="request"/>
+<jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
+             scope="request"/>
 <jsp:useBean id="credentials" type="com.epam.training.lawAndSocial.model.Credentials" scope="request"/>
 
 <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -17,7 +18,6 @@
         </div>
 
         <div style="padding-top:30px; padding-left:40px; padding-right:40px" class="panel-body">
-
             <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 
             <c:url var="loginUrl" value="/login"/>
@@ -27,15 +27,13 @@
                 <div
                         <c:choose>
                             <c:when test="${not empty validation.fields.username}">
-                                class="<%--input-group --%>has-error"
+                                class="has-error"
                             </c:when>
                             <c:otherwise>
-                                <%--class="input-group"--%>
                                 style="margin-bottom: 25px"
                             </c:otherwise>
                         </c:choose>
                 >
-
                     <div class="form-group">
                         <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-user fa-fw"
@@ -50,24 +48,8 @@
                         </div>
                         <div class="help-block with-errors"></div>
                     </div>
-
-                    <%--<c:if test="${validation.fields.username.emptyField}">
-                        <span class="help-block">
-                            <fmt:message bundle="${profile}" key="profile.username.required"/>
-                        </span>
-                    </c:if>--%>
                 </div>
 
-                <%--<div
-                        <c:choose>
-                            <c:when test="${not empty validation.fields.password}">
-                                class="has-error"
-                            </c:when>
-                            <c:otherwise>
-                                style="margin-bottom: 25px"
-                            </c:otherwise>
-                        </c:choose>
-                >--%>
                 <div class="form-group">
                     <div class="input-group">
 
@@ -84,13 +66,6 @@
                         <fmt:message bundle="${profile}" key="profile.chars.limitation"/>
                     </div>
                 </div>
-                <%--<c:if test="${validation.fields.password.emptyField}">
-                        <span class="help-block">
-                            <fmt:message bundle="${profile}" key="profile.password.required"/>
-                        </span>
-                </c:if>--%>
-                <%--</div>--%>
-
 
                 <div style="margin-top:10px" class="form-group">
                     <!-- Button -->

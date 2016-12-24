@@ -15,6 +15,13 @@ public final class ServletParams {
     public static final String CONFIRM_PASSWORD_PARAM = "confirm_password";
     public static final String LASTNAME_PARAM = "lastname";
     public static final String USER_ATTR = "user";
+    public static final String USER_PAGE = "/WEB-INF/jsp/user.jsp";
+    public static final String INDEX_PAGE = "/WEB-INF/index.jsp";
+    public static final String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
+    public static final String NEW_USER_ATTR = "newUser";
+    public static final String PROFILE_EDIT_PAGE = "/WEB-INF/jsp/profileEdit.jsp";
+    public static final String PROFILE_EDIT_JSP = "/WEB-INF/jsp/profileEdit.jsp";
+    public static final String CONTACTS_ATTR = "contacts";
 
     private ServletParams() {
     }

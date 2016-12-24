@@ -11,7 +11,6 @@ public class User {
     String userName;
     String firstName;
     String lastName;
-    String email;
     String date;
     String passwordHash;
 

@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getByUsername(String username) {
-        return Optional.empty();
+        return userDao.getByUsername(username);
     }
 
     @Override

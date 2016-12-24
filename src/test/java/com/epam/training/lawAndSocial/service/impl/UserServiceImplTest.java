@@ -25,7 +25,6 @@ public class UserServiceImplTest {
                 .userName("testUser")
                 .firstName("John")
                 .lastName("Doe")
-                .email("test@mail.com")
                 .date("01.01.1990")
                 .passwordHash("pwdHash")
                 .build();

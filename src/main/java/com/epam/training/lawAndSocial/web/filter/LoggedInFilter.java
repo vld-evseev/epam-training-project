@@ -35,13 +35,14 @@ public class LoggedInFilter implements Filter {
 
         if (!path.endsWith("/login")
                 && !path.endsWith("/registration")
+                && !path.endsWith("/tlg")
                 && !path.endsWith("/locale")) {
             final HttpSession session = request.getSession(false);
             final boolean isLoggedIn = session != null && session.getAttribute("user") != null;
             if (!isLoggedIn) {
                 LOGGER.debug("Not logged in");
                 req.setAttribute(ServletParams.CREDENTIALS_ATTR, Credentials.builder().build());
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                req.getRequestDispatcher(ServletParams.LOGIN_PAGE).forward(req, resp);
                 return;
             }
         }

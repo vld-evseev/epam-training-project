@@ -33,7 +33,6 @@ public class PgUserDaoTest extends H2DataSourceTest {
                 .userName("testUser")
                 .firstName("John")
                 .lastName("Doe")
-                .email("test@mail.com")
                 .date("01.01.1990")
                 .passwordHash(securityService.encrypt("testPassword"))
                 .build();

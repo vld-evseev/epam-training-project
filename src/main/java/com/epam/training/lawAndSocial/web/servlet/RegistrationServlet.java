@@ -1,10 +1,12 @@
 package com.epam.training.lawAndSocial.web.servlet;
 
+import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
 import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
+import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.web.servlet.model.FieldValidation;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
@@ -36,20 +38,24 @@ public class RegistrationServlet extends HttpServlet {
     private final ValidationService validationService;
     private final SecurityService securityService;
     private final UserService userService;
+    private final ContactsService contactsService;
 
     @Inject
     public RegistrationServlet(ValidationService validationService,
                                SecurityService securityService,
-                               UserService userService) {
+                               UserService userService,
+                               ContactsService contactsService) {
         this.validationService = validationService;
         this.securityService = securityService;
         this.userService = userService;
+        this.contactsService = contactsService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute(CREDENTIALS_ATTR, Credentials.builder().build());
-        req.setAttribute(USER_ATTR, User.builder().build());
+        req.setAttribute(NEW_USER_ATTR, User.builder().build());
+        req.setAttribute(CONTACTS_ATTR, Contacts.builder().build());
         req.getRequestDispatcher(REGISTRATION_JSP).forward(req, resp);
     }
 
@@ -67,7 +73,6 @@ public class RegistrationServlet extends HttpServlet {
         LOGGER.debug("credentials: {}", credentials.toString());
 
         final User user = User.builder()
-                .email(params.get(EMAIL_PARAM))
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
@@ -75,10 +80,15 @@ public class RegistrationServlet extends HttpServlet {
                 .passwordHash(securityService.encrypt(credentials.getPassword()))
                 .build();
 
+        final Contacts contacts = Contacts.builder()
+                .email(params.get(EMAIL_PARAM))
+                .build();
+
         if (validation.isValid()) {
             if (passwordConfirmed(params, validation)
                     && !userExists(user.getUserName(), validation)) {
-                addUser(user, validation);
+                final long userId = addUser(user, validation);
+                addContacts(userId, contacts, validation);
             }
         }
 
@@ -88,7 +98,8 @@ public class RegistrationServlet extends HttpServlet {
                 LOGGER.debug(message);
             }
 
-            req.setAttribute(USER_ATTR, user);
+            req.setAttribute("newUser", user);
+            req.setAttribute(CONTACTS_ATTR, contacts);
             req.setAttribute(CREDENTIALS_ATTR, credentials);
             req.setAttribute(VALIDATION_ATTR, validation);
             req.getRequestDispatcher(REGISTRATION_JSP)
@@ -102,7 +113,7 @@ public class RegistrationServlet extends HttpServlet {
         final HttpSession session = req.getSession(true);
         session.setAttribute(USER_ATTR, user);
 
-        resp.sendRedirect(req.getContextPath() + "/profile");
+        resp.sendRedirect(req.getContextPath() + "/user");
     }
 
     static boolean passwordConfirmed(Map<String, String> params, FormValidation validation) {
@@ -134,13 +145,27 @@ public class RegistrationServlet extends HttpServlet {
         return false;
     }
 
-    void addUser(User user, FormValidation validation) {
+    long addUser(User user, FormValidation validation) {
         final long id = userService.add(user);
         if (id < 0) {
             validation.getErrors().put(
                     "INTERNAL_ERROR",
                     true
             );
+        }
+
+        return id;
+    }
+
+    void addContacts(long userId, Contacts contacts, FormValidation validation) {
+        if (userId > 0) {
+            final long id = contactsService.add(userId, contacts);
+            if (id < 0) {
+                validation.getErrors().put(
+                        "INTERNAL_ERROR",
+                        true
+                );
+            }
         }
     }
 

@@ -32,12 +32,12 @@ public class ValidationServiceImpl implements ValidationService {
                         paramName,
                         FieldValidation.builder().isEmptyField(true).build()
                 );
-            } else if (!sizeValid(paramValue)) {
+            } /*else if (!sizeValid(paramValue)) {
                 validation.getFields().put(
                         paramName,
                         FieldValidation.builder().isIncorrect(true).build()
                 );
-            }
+            }*/
         }
 
         return validation;

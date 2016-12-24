@@ -1,13 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="plugins" tagdir="/WEB-INF/tags/plugins" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:setBundle basename="i18n.error" var="error"/>
-<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
+<jsp:useBean id="newUser" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
+<jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="request"/>
 <jsp:useBean id="credentials" type="com.epam.training.lawAndSocial.model.Credentials" scope="request"/>
-<jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation" scope="request"/>
+<jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
+             scope="request"/>
 
 <div id="signupbox" style="/*display:none; */margin-top:50px"
      class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -48,7 +51,7 @@
                             <fmt:message var="email_address" bundle="${profile}" key="profile.email.address"/>
                             <fmt:message var="email_required" bundle="${profile}" key="profile.email.required"/>
                             <input type="text" class="form-control" name="email" placeholder="${email_address}"
-                                   value="${user.email}"
+                                   value="${contacts.email}"
                                    data-error="${email_required}" required>
                         </div>
                         <div class="help-block with-errors"></div>
@@ -62,7 +65,15 @@
 
 
                 <div
-                        <tags:fieldValidation value="${validation.fields.username}"/>
+                        <c:choose>
+                            <c:when test="${not empty validation.fields.username
+                                || validation.errors.USERNAME_EXISTS}">
+                                class="has-error"
+                            </c:when>
+                            <c:otherwise>
+                                class=""
+                            </c:otherwise>
+                        </c:choose>
                 >
                     <div class="form-group has-feedback">
                         <div class="input-group">
@@ -71,18 +82,24 @@
                             <fmt:message var="username" bundle="${profile}" key="profile.username"/>
                             <fmt:message var="username_required" bundle="${profile}" key="profile.username.required"/>
                             <input type="text" class="form-control" name="username" placeholder="${username}"
-                                   value="${user.userName}"
+                                   value="${newUser.userName}"
                                    data-error="${username_required}" required>
                         </div>
                         <div class="help-block with-errors"></div>
-                        <c:if test="${validation.fields.username.emptyField}">
-                            <span class="help-block">
-                                <fmt:message bundle="${profile}" key="profile.username.required"/>
-                            </span>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${validation.fields.username.emptyField}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${profile}" key="profile.username.required"/>
+                                </span>
+                            </c:when>
+                            <c:when test="${validation.errors.USERNAME_EXISTS}">
+                                <span class="help-block">
+                                    <fmt:message bundle="${error}" key="error.username.exists"/>
+                                </span>
+                            </c:when>
+                        </c:choose>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div
@@ -96,7 +113,7 @@
                                 <fmt:message var="first_name_required" bundle="${profile}"
                                              key="profile.first.name.required"/>
                                 <input type="text" class="form-control" name="firstname" placeholder="${first_name}"
-                                       value="${user.firstName}"
+                                       value="${newUser.firstName}"
                                        data-error="${first_name_required}" required>
                             </div>
                             <div class="help-block with-errors"></div>
@@ -106,10 +123,7 @@
                                 </span>
                             </c:if>
                         </div>
-
-
                     </div>
-
 
                     <div
                             <tags:fieldValidation value="${validation.fields.lastname}"/>
@@ -122,7 +136,7 @@
                                 <fmt:message var="last_name_required" bundle="${profile}"
                                              key="profile.last.name.required"/>
                                 <input type="text" class="form-control" name="lastname" placeholder="${last_name}"
-                                       value="${user.lastName}"
+                                       value="${newUser.lastName}"
                                        data-error="${last_name_required}" required/>
                             </div>
                             <div class="help-block with-errors"></div>
@@ -146,7 +160,7 @@
                             <fmt:message var="birth_date_required" bundle="${profile}"
                                          key="profile.birth.date.required"/>
                             <input class="form-control" id="date" name="date" placeholder="${birth_date}" type="text"
-                                   value="${user.date}"
+                                   value="${newUser.date}"
                                    data-error="${birth_date_required}" required/>
                         </div>
                         <div class="help-block with-errors"></div>
@@ -253,40 +267,4 @@
 
 </div>
 
-<%--datetimepicker--%>
-<c:url var="bsDatepicker" value="/webjars/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"/>
-<script src="${bsDatepicker}"></script>
-
-<c:url var="bsDatepickerRu" value="/webjars/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.ru.min.js"/>
-<script src="${bsDatepickerRu}"></script>
-
-<c:url var="bsValidator" value="/webjars/bootstrap-validator/0.11.5/js/validator.js"/>
-<script src="${bsValidator}"></script>
-
-<c:url var="bsDatepickerCss" value="/webjars/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css"/>
-<link rel="stylesheet" type="text/css" href="${bsDatepickerCss}"/>
-
-<c:set var="localeCode" value="${pageContext.response.locale}"/>
-<c:choose>
-    <c:when test="${localeCode eq 'ru_RU'}">
-        <c:set var="currentLocale" value="ru"/>
-    </c:when>
-    <c:otherwise>
-        <c:set var="currentLocale" value="en"/>
-    </c:otherwise>
-</c:choose>
-
-<script>
-    $(document).ready(function () {
-        var date_input = $('input[name="date"]'); //our date input has the name "date"
-        var options = {
-            format: 'dd.mm.yyyy',
-            todayHighlight: true,
-            autoclose: true,
-            language: '${currentLocale}',
-            startDate: new Date(1900, 1, 1),
-            endDate: new Date(),
-        };
-        date_input.datepicker(options);
-    })
-</script>
+<plugins:datePicker/>

@@ -5,6 +5,7 @@
 <fmt:setBundle basename="i18n.locale" var="loc"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
+<fmt:setBundle basename="i18n.user" var="userPage"/>
 <%--<fmt:setBundle basename="i18n.menu" var="menu"/>--%>
 
 <!DOCTYPE html>
@@ -37,13 +38,20 @@
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only">
+                    <fmt:message bundle="${root}" key="root.toogle.navigation"/>
+                </span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
             <c:url var="rootUrl" value="/"/>
-            <a class="navbar-brand" href="${rootUrl}"><fmt:message bundle="${root}" key="root.site.name"/></a>
+            <a class="navbar-brand" href="${rootUrl}"><i class="fa fa-balance-scale"></i>
+                <fmt:message bundle="${root}" key="root.site.name"/>
+            </a>
+            <%--<a class="navbar-brand" href="${rootUrl}">
+                <fmt:message bundle="${root}" key="root.site.name"/>
+            </a>--%>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -58,10 +66,42 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${sessionScope.user != null}">
+                    <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">
+                            <i class="fa fa-user-circle"></i>
+                                ${user.userName}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <c:url var="userEditUrl" value="/user/edit"/>
+                                <a href="${userEditUrl}">
+                                    <i class="fa fa-cog"></i>
+                                    <fmt:message bundle="${userPage}" key="user.edit"/>
+                                </a>
+                            </li>
+
+                            <li>
+                                <c:url var="signOutUrl" value="/signout"/>
+                                <form class="navbar-form" action="${signOutUrl}" method="post">
+                                    <fmt:message var="signout" bundle="${userPage}" key="user.sign.out"/>
+                                    <button class="btn btn-sm btn-link" role="link" type="submit" title="${signout}">
+                                        <i class="fa fa-sign-out"></i> ${signout}
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </c:if>
+
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">
-                        <i class="glyphicon glyphicon-globe"></i>
+                        <i class="fa fa-globe"></i>
                         <fmt:message bundle="${loc}" key="locale.lang"/>
                         <span class="caret"></span>
                     </a>
@@ -100,7 +140,6 @@
 <div class="container">
     <jsp:doBody/>
 </div>
-
 
 </body>
 </html>
