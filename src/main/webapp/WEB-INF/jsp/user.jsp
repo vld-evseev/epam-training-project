@@ -9,7 +9,8 @@
 <fmt:message var="title" bundle="${root}" key="root.welcome"/>
 <jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="request"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
-<jsp:useBean id="school" type="com.epam.training.lawAndSocial.model.education.School" scope="session"/>
+<jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
+             scope="session"/>
 
 <tags:main title="${title}, ${user.userName}!">
 
@@ -78,10 +79,38 @@
             <div class="panel-body">
                 <table class="table table-user-information">
                     <tbody>
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
-                        <td>${school.name}, ${school.city}, ${school.yearsFrom} - ${school.yearsTo}</td>
-                    </tr>
+
+                    <c:if test="${not empty schools}">
+                        <tr>
+                            <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
+                            <td>
+                                <c:forEach items="${schools}" var="school" varStatus="count">
+                                    <c:out value="${school.name}"/>
+                                    <c:out value="${school.country}"/>
+                                    <c:out value="${school.city}"/>
+                                    <c:out value="${school.yearsFrom}"/> - <c:out value="${school.yearsTo}"/>
+                                    <c:if test="${not count.last}">
+                                        <hr>
+                                    </c:if>
+                                </c:forEach>
+                            </td>
+
+                        </tr>
+                    </c:if>
+
+                        <%--<tr>
+                            <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty school.name}">
+                                        ${school.name}, ${school.city}, ${school.yearsFrom} - ${school.yearsTo}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message bundle="${userPage}" key="user.message.not.specified"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>--%>
 
                     <tr>
                         <td><fmt:message bundle="${userPage}" key="user.education.university"/></td>

@@ -8,17 +8,36 @@
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${userPage}" key="user.edit.profile"/>
-<%--<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>--%>
+<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
+<jsp:useBean id="activeTab" type="java.util.Map" scope="request"/>
 
 <tags:main title="${title}">
 
+    <c:if test="${activeTab.commonInfoTab}">
+        Common info
+    </c:if>
+
+    <c:if test="${activeTab.contactsInfoTab}">
+        Contacts info
+    </c:if>
+
+    <%--<c:set var="active_tab" value="${requestScope.activeTab}"/>--%>
     <tags:leftSide>
-        <ul class="nav nav-tabs" id="settingsTab">
-            <li class="active">
+        <ul class="nav nav-tabs" id="settingsTab" data-tabs="tabs">
+            <li data-toggle="tab"
+                    <c:if test="${activeTab.commonInfoTab}">
+                        class="active"
+                    </c:if>
+            >
                 <a data-toggle="tab" href="#common"><fmt:message bundle="${userPage}"
                                                                  key="user.common.information"/></a>
             </li>
-            <li><a data-toggle="tab" href="#contacts"><fmt:message bundle="${userPage}" key="user.contact.details"/></a>
+            <li data-toggle="tab"
+                <%--<c:if test="${activeTab.contactsInfoTab}">
+                    class="active"
+                </c:if>--%>
+            >
+                <a data-toggle="tab" href="#contacts"><fmt:message bundle="${userPage}" key="user.contact.details"/></a>
             </li>
             <li><a data-toggle="tab" href="#education"><fmt:message bundle="${userPage}" key="user.education"/></a></li>
             <li><a data-toggle="tab" href="#job"><fmt:message bundle="${userPage}" key="user.job"/></a></li>
@@ -36,6 +55,24 @@
 </tags:main>
 
 <script>
+    $(document).ready(function () {
+
+        tabpage = "#common";
+        if (${activeTab.contactsInfoTab}) {
+            tabpage = "#contacts";
+        }
+
+        var selectedTab = $('#settingsTab a[href="' + tabpage + '"]');
+        selectedTab.trigger('click', true);
+        /*$('#settingsTab a[href="' + hash + '"]').tab('show');*/
+
+    });
+
+    /*function activateTab(tab) {
+     $('#settingsTab a[href="' + tab + '"]').tab('show');
+     }*/
+
+
     $('#settingsTab a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');

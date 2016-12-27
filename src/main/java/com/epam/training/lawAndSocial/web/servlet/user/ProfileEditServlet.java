@@ -3,9 +3,9 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
+import com.epam.training.lawAndSocial.model.education.School;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationService;
-import com.epam.training.lawAndSocial.utils.ServletParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 
 @Singleton
 public class ProfileEditServlet extends HttpServlet {
@@ -35,14 +40,25 @@ public class ProfileEditServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        LOGGER.debug("showing {}", PROFILE_EDIT_JSP);
         final HttpSession session = req.getSession(true);
-        final User user = (User) session.getAttribute(ServletParams.USER_ATTR);
+        final User user = (User) session.getAttribute(USER_ATTR);
         if (user != null) {
             final Contacts contacts = getContacts(user.getId());
-            req.setAttribute(ServletParams.CONTACTS_ATTR, contacts);
+            session.setAttribute(CONTACTS_ATTR, contacts);
+
+            final List<School> userSchools = educationService.getUserSchools(user.getId());
+            session.setAttribute(SCHOOLS_ATTR, userSchools);
+
+            for (School userSchool : userSchools) {
+                LOGGER.debug(userSchool.toString());
+            }
         }
 
-        req.getRequestDispatcher(ServletParams.PROFILE_EDIT_PAGE).forward(req, resp);
+        final Map<String, Boolean> activeTab = new HashMap<>();
+        activeTab.put("commonInfoTab", true);
+        req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
+        req.getRequestDispatcher(PROFILE_EDIT_JSP).forward(req, resp);
     }
 
     @Override

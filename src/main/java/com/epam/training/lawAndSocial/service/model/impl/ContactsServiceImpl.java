@@ -26,4 +26,9 @@ public class ContactsServiceImpl implements ContactsService {
         return contactsDao.add(userId, contacts);
     }
 
+    @Override
+    public long update(long userId, Contacts contacts) {
+        return contactsDao.update(userId, contacts);
+    }
+
 }

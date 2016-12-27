@@ -21,7 +21,8 @@ public class RootServlet extends HttpServlet {
         final Object user = req.getSession(true).getAttribute("user");
         if (user != null) {
             LOGGER.debug("redirecting to user page");
-            req.getRequestDispatcher(ServletParams.USER_PAGE).forward(req, resp);
+            resp.sendRedirect(req.getContextPath() + "/user");
+            /*req.getRequestDispatcher(ServletParams.USER_PAGE).forward(req, resp);*/
             return;
         }
 

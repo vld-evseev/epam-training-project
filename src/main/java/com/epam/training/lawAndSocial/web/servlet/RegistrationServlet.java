@@ -7,6 +7,7 @@ import com.epam.training.lawAndSocial.service.SecurityService;
 import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
+import com.epam.training.lawAndSocial.utils.DateValidator;
 import com.epam.training.lawAndSocial.web.servlet.model.FieldValidation;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
@@ -20,9 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -76,7 +74,7 @@ public class RegistrationServlet extends HttpServlet {
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
-                .date(parseDate(params.get(DATE_PARAM), validation))
+                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), validation))
                 .passwordHash(securityService.encrypt(credentials.getPassword()))
                 .build();
 
@@ -175,52 +173,10 @@ public class RegistrationServlet extends HttpServlet {
         params.put(USERNAME_PARAM, req.getParameter(USERNAME_PARAM));
         params.put(FIRSTNAME_PARAM, req.getParameter(FIRSTNAME_PARAM));
         params.put(LASTNAME_PARAM, req.getParameter(LASTNAME_PARAM));
-        params.put(DATE_PARAM, req.getParameter(DATE_PARAM));
+        params.put(BIRTH_DATE_PARAM, req.getParameter(BIRTH_DATE_PARAM));
         params.put(PASSWORD_PARAM, req.getParameter(PASSWORD_PARAM));
         params.put(CONFIRM_PASSWORD_PARAM, req.getParameter(CONFIRM_PASSWORD_PARAM));
         return params;
-    }
-
-    static String parseDate(String date, FormValidation validation) {
-        if (validation == null) {
-            validation = new FormValidation();
-        }
-        final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String defaultDate = LocalDate.now().format(pattern);
-
-        if (date == null || date.isEmpty()) {
-            LOGGER.debug("Attempting to set null or empty date");
-            validation.getFields().put(
-                    DATE_PARAM,
-                    FieldValidation.builder().isIncorrect(true).build()
-            );
-            return defaultDate;
-        }
-
-        try {
-            final LocalDate localDate = LocalDate.parse(date, pattern);
-            if (!dateRangeIsValid(localDate)) {
-                LOGGER.debug("Attempting to set an out-of-range date: {}", date);
-                validation.getFields().put(
-                        DATE_PARAM,
-                        FieldValidation.builder().isIncorrect(true).build()
-                );
-                return defaultDate;
-            }
-            return localDate.format(pattern);
-        } catch (DateTimeException e) {
-            LOGGER.error("Error while parsing date: {}\n{}", date, e.getMessage());
-            validation.getFields().put(
-                    DATE_PARAM,
-                    FieldValidation.builder().isIncorrect(true).build()
-            );
-            return defaultDate;
-        }
-    }
-
-    static boolean dateRangeIsValid(LocalDate date) {
-        return date.isAfter(LocalDate.of(1900, 1, 1))
-                && date.isBefore(LocalDate.now().plusDays(1));
     }
 
 }

@@ -13,4 +13,6 @@ public interface UserService {
 
     long add(User user);
 
+    long update(User user);
+
 }

@@ -11,7 +11,7 @@ public final class ServletParams {
     public static final String CREDENTIALS_ATTR = "credentials";
     public static final String EMAIL_PARAM = "email";
     public static final String FIRSTNAME_PARAM = "firstname";
-    public static final String DATE_PARAM = "date";
+    public static final String BIRTH_DATE_PARAM = "date";
     public static final String CONFIRM_PASSWORD_PARAM = "confirm_password";
     public static final String LASTNAME_PARAM = "lastname";
     public static final String USER_ATTR = "user";
@@ -22,6 +22,12 @@ public final class ServletParams {
     public static final String PROFILE_EDIT_PAGE = "/WEB-INF/jsp/profileEdit.jsp";
     public static final String PROFILE_EDIT_JSP = "/WEB-INF/jsp/profileEdit.jsp";
     public static final String CONTACTS_ATTR = "contacts";
+    public static final String PATRONYMIC_PARAM = "patronymic";
+    public static final String GENDER_PARAM = "gender";
+    public static final String PHONE_PARAM = "phone";
+    public static final String WEBSITE_PARAM = "website";
+    public static final String ACTIVE_TAB_ATTR = "activeTab";
+    public static final String SCHOOLS_ATTR = "schools";
 
     private ServletParams() {
     }

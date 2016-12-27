@@ -7,6 +7,7 @@ import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.impl.ValidationServiceImpl;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
+import com.epam.training.lawAndSocial.utils.DateValidator;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class RegistrationServletTest {
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
-                .date(params.get(DATE_PARAM))
+                .date(params.get(BIRTH_DATE_PARAM))
                 .passwordHash(securityService.encrypt(params.get(PASSWORD_PARAM)))
                 .build();
 
@@ -70,7 +71,7 @@ public class RegistrationServletTest {
         when(req.getParameter(EMAIL_PARAM)).thenReturn(params.get(EMAIL_PARAM));
         when(req.getParameter(USERNAME_PARAM)).thenReturn(params.get(USERNAME_PARAM));
         when(req.getParameter(FIRSTNAME_PARAM)).thenReturn(params.get(FIRSTNAME_PARAM));
-        when(req.getParameter(DATE_PARAM)).thenReturn(params.get(DATE_PARAM));
+        when(req.getParameter(BIRTH_DATE_PARAM)).thenReturn(params.get(BIRTH_DATE_PARAM));
         when(req.getParameter(PASSWORD_PARAM)).thenReturn(params.get(PASSWORD_PARAM));
         when(req.getParameter(CONFIRM_PASSWORD_PARAM)).thenReturn(params.get(CONFIRM_PASSWORD_PARAM));
         when(req.getContextPath()).thenReturn("/contextPath");
@@ -87,7 +88,7 @@ public class RegistrationServletTest {
         params.put(USERNAME_PARAM, "testUsername");
         params.put(FIRSTNAME_PARAM, "testFirstName");
         params.put(LASTNAME_PARAM, "testLastName");
-        params.put(DATE_PARAM, "12.14.1982");
+        params.put(BIRTH_DATE_PARAM, "12.14.1982");
         params.put(PASSWORD_PARAM, "testPassword");
         params.put(CONFIRM_PASSWORD_PARAM, "testPassword");
         return params;
@@ -98,11 +99,11 @@ public class RegistrationServletTest {
         final FormValidation formValidation = mock(FormValidation.class);
 
         final String validDate = "01.12.1945";
-        final String result1 = RegistrationServlet.parseDate(validDate, formValidation);
+        final String result1 = DateValidator.parseDate(validDate, formValidation);
         assertEquals(result1, validDate);
 
         final String nonValidDate = "007";
-        final String result2 = RegistrationServlet.parseDate(nonValidDate, formValidation);
+        final String result2 = DateValidator.parseDate(nonValidDate, formValidation);
         assertEquals(result2, LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
     }
 

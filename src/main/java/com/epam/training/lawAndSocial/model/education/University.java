@@ -7,6 +7,8 @@ import lombok.Value;
 @Builder
 public class University {
 
+    long id;
+    long userId;
     String name;
     String country;
     String city;

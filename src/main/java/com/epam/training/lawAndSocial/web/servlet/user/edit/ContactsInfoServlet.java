@@ -1,10 +1,10 @@
 package com.epam.training.lawAndSocial.web.servlet.user.edit;
 
-import com.epam.training.lawAndSocial.model.Gender;
+import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
-import com.epam.training.lawAndSocial.utils.DateValidator;
+import com.epam.training.lawAndSocial.service.model.ContactsService;
+import com.epam.training.lawAndSocial.utils.ServletParams;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,22 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 
 @Singleton
-public class CommonInfoServlet extends HttpServlet {
+public class ContactsInfoServlet extends HttpServlet {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CommonInfoServlet.class);
-    private final UserService userService;
+    private final static Logger LOGGER = LoggerFactory.getLogger(ContactsInfoServlet.class);
+
+    private final ContactsService contactsService;
     private final ValidationService validationService;
 
     @Inject
-    public CommonInfoServlet(UserService userService, ValidationService validationService) {
-        this.userService = userService;
+    public ContactsInfoServlet(ContactsService contactsService, ValidationService validationService) {
+        this.contactsService = contactsService;
         this.validationService = validationService;
     }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,7 +44,7 @@ public class CommonInfoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final Map<String, Boolean> activeTab = new HashMap<>();
-        activeTab.put("commonInfoTab", true);
+        activeTab.put("contactsInfoTab", true);
         req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
 
         final User currentUser = (User) req.getSession(true).getAttribute(USER_ATTR);
@@ -57,18 +58,23 @@ public class CommonInfoServlet extends HttpServlet {
         final Map<String, String> params = collectParams(req);
         final FormValidation validation = validationService.verify(collectVerifiedParams(req));
 
-        final User updatedUser = User.builder()
-                .id(currentUser.getId())
-                .userName(currentUser.getUserName())
-                .firstName(params.get(FIRSTNAME_PARAM))
-                .lastName(params.get(LASTNAME_PARAM))
-                .patronymic(params.get(PATRONYMIC_PARAM))
-                .gender(Gender.valueOf(params.get(GENDER_PARAM)))
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), validation))
+        final Set<Map.Entry<String, String>> entries = params.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            LOGGER.debug(entry.getKey() + " : " + entry.getValue());
+        }
+
+        for (String msg : validation.messages()) {
+            LOGGER.debug(msg);
+        }
+
+        final Contacts contacts = Contacts.builder()
+                .email(params.get(EMAIL_PARAM))
+                .phone(params.get(PHONE_PARAM))
+                .website(params.get(WEBSITE_PARAM))
                 .build();
 
         if (validation.isValid()) {
-            update(updatedUser, validation);
+            update(currentUser.getId(), contacts, validation);
         }
 
         if (!validation.isValid()) {
@@ -77,14 +83,15 @@ public class CommonInfoServlet extends HttpServlet {
             return;
         }
 
-        req.getSession(true).setAttribute(USER_ATTR, updatedUser);
-        resp.sendRedirect(req.getContextPath() + "/user/edit");
+        req.getSession(true).setAttribute(CONTACTS_ATTR, contacts);
+        /*resp.sendRedirect(req.getContextPath() + "/user/edit");*/
+        req.getRequestDispatcher(ServletParams.PROFILE_EDIT_JSP).forward(req, resp);
     }
 
-    void update(User user, FormValidation validation) {
-        final long id = userService.update(user);
+    private void update(long userId, Contacts contacts, FormValidation validation) {
+        final long id = contactsService.update(userId, contacts);
         if (id < 0) {
-            LOGGER.error("error while updating user {}", user);
+            LOGGER.error("error while updating contacts {}", contacts);
             validation.getErrors().put(
                     "INTERNAL_ERROR",
                     true
@@ -94,19 +101,15 @@ public class CommonInfoServlet extends HttpServlet {
 
     private Map<String, String> collectParams(HttpServletRequest req) {
         final Map<String, String> params = new HashMap<>();
-        params.put(FIRSTNAME_PARAM, req.getParameter(FIRSTNAME_PARAM));
-        params.put(LASTNAME_PARAM, req.getParameter(LASTNAME_PARAM));
-        params.put(PATRONYMIC_PARAM, req.getParameter(PATRONYMIC_PARAM));
-        params.put(GENDER_PARAM, req.getParameter(GENDER_PARAM));
-        params.put(BIRTH_DATE_PARAM, req.getParameter(BIRTH_DATE_PARAM));
+        params.put(EMAIL_PARAM, req.getParameter(EMAIL_PARAM));
+        params.put(PHONE_PARAM, req.getParameter(PHONE_PARAM));
+        params.put(WEBSITE_PARAM, req.getParameter(WEBSITE_PARAM));
         return params;
     }
 
     private Map<String, String> collectVerifiedParams(HttpServletRequest req) {
         final Map<String, String> params = new HashMap<>();
-        params.put(FIRSTNAME_PARAM, req.getParameter(FIRSTNAME_PARAM));
-        params.put(LASTNAME_PARAM, req.getParameter(LASTNAME_PARAM));
-        params.put(BIRTH_DATE_PARAM, req.getParameter(BIRTH_DATE_PARAM));
+        params.put(EMAIL_PARAM, req.getParameter(EMAIL_PARAM));
         return params;
     }
 }

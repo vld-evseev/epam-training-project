@@ -105,6 +105,10 @@ public class PgContactsDao implements ContactsDao {
             return result;
         }
 
+        if (result > 0) {
+            LOGGER.debug("userID {} successfully updated contacts", userId);
+        }
+
         return result;
     }
 

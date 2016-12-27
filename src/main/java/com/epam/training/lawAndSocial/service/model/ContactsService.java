@@ -10,4 +10,6 @@ public interface ContactsService {
 
     long add(long userId, Contacts contacts);
 
+    long update(long userId, Contacts contacts);
+
 }

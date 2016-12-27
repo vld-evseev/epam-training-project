@@ -7,6 +7,9 @@ CREATE TABLE lawAndSocialDb.user (
   username     VARCHAR(255) NOT NULL,
   firstName    VARCHAR(255) NOT NULL,
   lastName     VARCHAR(255) NOT NULL,
+  patronymic   VARCHAR(255),
+  gender       VARCHAR(255) DEFAULT 'UNKNOWN'
+    CHECK (gender IN ('MALE', 'FEMALE', 'UNKNOWN')),
   birthdate    VARCHAR(255) NOT NULL,
   passwordHash VARCHAR(255) NOT NULL
 );

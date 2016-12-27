@@ -26,6 +26,8 @@ import com.epam.training.lawAndSocial.web.servlet.user.ProfileEditServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.ProfileServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.TestSignInServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.edit.CommonInfoServlet;
+import com.epam.training.lawAndSocial.web.servlet.user.edit.ContactsInfoServlet;
+import com.epam.training.lawAndSocial.web.servlet.user.edit.EducationInfoServlet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -72,6 +74,8 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/user").with(ProfileServlet.class);
             serve("/user/edit").with(ProfileEditServlet.class);
             serve("/user/edit/common").with(CommonInfoServlet.class);
+            serve("/user/edit/contacts").with(ContactsInfoServlet.class);
+            serve("/user/edit/education").with(EducationInfoServlet.class);
             serve("/signout").with(SignoutServlet.class);
             serve("/tlg").with(TestSignInServlet.class);
         }

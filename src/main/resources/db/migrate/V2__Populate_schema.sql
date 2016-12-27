@@ -1,10 +1,10 @@
-INSERT INTO lawAndSocialDb.user (id, username, firstName, lastName, birthdate, passwordHash)
-  SELECT nextval('lawAndSocialDb.user_seq'), 'JohnDoug123', 'John', 'Doug', '08.02.1989',
-    '$s0$e0801$c+pEdHwfgqpU+bfRvfoi2g==$5gMZSzI2Dx2PEjA1dYc3SNQ6e1HdBoHD4HA0NsU9VSI=)'
-  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'testUser', 'name1', 'surname2', '05.07.1990',
-              '$s0$e0801$5R872TeqCy+HLGtzOolpeA==$L4NTgEEb5Eq0KWeVUaAQyj7co4nivM39ybkS3oWl0hY='
-  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'anotherUser', 'Another', 'User', '06.12.2016',
-              '$s0$e0801$CplBQViuloA3913AMLI3zA==$sRct7mJY0lEPNRBTGCiaNygB1HaLU6xjFFYXXnVjttY=)';
+INSERT INTO lawAndSocialDb.user (id, username, firstName, lastName, patronymic, gender, birthdate, passwordHash)
+  SELECT nextval('lawAndSocialDb.user_seq'), 'JohnDoug123', 'John', 'Doug', 'Albert', 'MALE', '08.02.1989',
+    '$s0$e0801$c+pEdHwfgqpU+bfRvfoi2g==$5gMZSzI2Dx2PEjA1dYc3SNQ6e1HdBoHD4HA0NsU9VSI='
+  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'testUser', 'name1', 'surname2', NULL, NULL, '05.07.1990',
+              '$s0$e0801$6zvGkIzar10PijTyyrqQyg==$gizYA/v7z48i5V9D7njSluNTdJP/vsp3pUDav7F/TzU='
+  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'anotherUser', 'Another', 'User', NULL, 'FEMALE', '06.12.2016',
+              '$s0$e0801$5R872TeqCy+HLGtzOolpeA==$L4NTgEEb5Eq0KWeVUaAQyj7co4nivM39ybkS3oWl0hY=';
 
 INSERT INTO lawAndSocialDb.school (id, user_id, name, country, city, yearsFrom, yearsTo)
   SELECT nextval('lawAndSocialDb.school_seq'), 2, 'School1', 'Russia', 'Moscow', 1985, 1990
