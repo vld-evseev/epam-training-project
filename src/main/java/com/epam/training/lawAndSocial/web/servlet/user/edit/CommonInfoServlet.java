@@ -57,6 +57,8 @@ public class CommonInfoServlet extends HttpServlet {
         final Map<String, String> params = collectParams(req);
         final FormValidation validation = validationService.verify(collectVerifiedParams(req));
 
+        final String avatar = getImageSrc(currentUser, params);
+
         final User updatedUser = User.builder()
                 .id(currentUser.getId())
                 .userName(currentUser.getUserName())
@@ -64,12 +66,17 @@ public class CommonInfoServlet extends HttpServlet {
                 .lastName(params.get(LASTNAME_PARAM))
                 .patronymic(params.get(PATRONYMIC_PARAM))
                 .gender(Gender.valueOf(params.get(GENDER_PARAM)))
-                .avatar(currentUser.getAvatar())
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), DateValidator.Pattern.DD_MM_YYYY, validation))
+                .avatar(avatar)
+                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM),
+                        DateValidator.Pattern.DD_MM_YYYY,
+                        validation))
                 .build();
 
         if (validation.isValid()) {
             update(updatedUser, validation);
+            if (!avatar.equals(currentUser.getAvatar())) {
+                userService.updateAvatar(currentUser.getId(), avatar);
+            }
         }
 
         if (!validation.isValid()) {
@@ -80,6 +87,15 @@ public class CommonInfoServlet extends HttpServlet {
 
         req.getSession(true).setAttribute(USER_ATTR, updatedUser);
         resp.sendRedirect(req.getContextPath() + "/user/edit");
+    }
+
+    static String getImageSrc(User currentUser, Map<String, String> params) {
+        final String av = params.get(AVATAR_SRC_PARAM);
+        if (av != null && !av.isEmpty()) {
+            return av;
+        }
+
+        return currentUser.getAvatar();
     }
 
     void update(User user, FormValidation validation) {
@@ -100,6 +116,7 @@ public class CommonInfoServlet extends HttpServlet {
         params.put(PATRONYMIC_PARAM, req.getParameter(PATRONYMIC_PARAM));
         params.put(GENDER_PARAM, req.getParameter(GENDER_PARAM));
         params.put(BIRTH_DATE_PARAM, req.getParameter(BIRTH_DATE_PARAM));
+        params.put(AVATAR_SRC_PARAM, req.getParameter(AVATAR_SRC_PARAM));
         return params;
     }
 

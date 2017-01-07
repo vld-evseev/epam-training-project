@@ -19,11 +19,10 @@
     <link rel="stylesheet" type="text/css" href="${customCss}"/>
     <c:url var="paginationCss" value="/static/css/simplePagination.css"/>
     <link rel="stylesheet" type="text/css" href="${paginationCss}"/>
+    <c:url var="bootstrapImageuploadCss" value="/static/css/bootstrap-imageupload.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${bootstrapImageuploadCss}"/>
     <c:url var="fontAwesome" value="/webjars/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="${fontAwesome}"/>
-
-    <c:url var="paginationJs" value="/static/js/jquery.simplePagination.js"/>
-    <script src="${paginationJs}"></script>
 
     <%--JQuery--%>
     <c:url var="jqueryJs" value="/webjars/jquery/1.12.4/jquery.min.js"/>
@@ -32,6 +31,9 @@
     <%--Bootstrap--%>
     <c:url var="bootstrapJs" value="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"/>
     <script src="${bootstrapJs}"></script>
+
+    <c:url var="bootstrapImageuploadJs" value="/static/js/bootstrap-imageupload.min.js"/>
+    <script src="${bootstrapImageuploadJs}"></script>
 
     <title>${title}</title>
 </head>

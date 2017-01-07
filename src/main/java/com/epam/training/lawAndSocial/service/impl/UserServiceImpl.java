@@ -16,7 +16,6 @@ public class UserServiceImpl implements UserService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-
     private final SecurityService securityService;
     private final UserDao userDao;
     private static final int USERS_SHOW_LIMIT = 30;

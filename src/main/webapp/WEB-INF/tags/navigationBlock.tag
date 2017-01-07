@@ -10,8 +10,10 @@
         <div class="col-sm-3">
 
             <div style="margin-bottom:20px; margin-top:20px;">
-                <img alt="img" width="100" height="100" class="img-responsive"
-                     style="margin: 0 auto; border-radius: 50%;"
+                <img alt="img" class="img-responsive"
+                     style="margin: 0 auto; border-radius: 50%;
+                            width: 100px;
+                            height: 100px;"
                      src="data:image/jpeg;base64,${user.avatar}"/>
                 <%--<i class='hi-icon fa fa-user-circle fa-5x'><a href="http://twitter.com"></a></i>--%>
             </div>

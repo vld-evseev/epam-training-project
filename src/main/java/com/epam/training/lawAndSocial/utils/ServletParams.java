@@ -46,6 +46,7 @@ public final class ServletParams {
     public static final String REQUESTED_USER_ATTR = "requestedUser";
     public static final String REQUESTED_USER_SCHOOLS_ATTR = "requestedUserSchools";
     public static final String DEFAULT_AVATAR_PATH = "/static/imgs/default_user.png";
+    public static final String AVATAR_SRC_PARAM = "avatarSrc";
 
     private ServletParams() {
     }

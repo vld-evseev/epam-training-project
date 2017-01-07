@@ -7,6 +7,7 @@
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
+<fmt:setBundle basename="i18n.root" var="root"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 <jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
              scope="request"/>
@@ -18,6 +19,50 @@
 
             <form role="form" action="${commonInfoEditUrl}" method="post">
                 <fieldset>
+
+                    <div class="form-group">
+
+                        <div class="row">
+                            <div class="form-group col-xs-4" id="uploadingBlock">
+                                <label><fmt:message bundle="${userPage}" key="user.change.photo"/> </label>
+                                <div style=" padding-top: 15px; padding-bottom: 15px; ">
+                                    <img id='img-upload'/>
+                                </div>
+                                <input type="hidden" name="avatarSrc" id="avatarSrc" value=""/>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                            <fmt:message bundle="${root}" key="root.browse"/>...
+                                            <input type="file" id="imgInp" onchange="validateAvatar(this);">
+                                        </span>
+                                    </span>
+                                    <%--<input type="text" class="form-control" readonly>--%>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <%--<div class="row">
+
+                        </div>
+                        <div class="row">
+                            <div class="well col-xs-3" style=" padding-top: 15px; padding-bottom: 15px; ">
+                                <img id='img-upload'/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-default btn-file">
+                                        Browse... <input type="file" id="imgInp">
+                                    </span>
+                                </span>
+                                <input type="text" class="form-control" readonly>
+                            </div>
+                        </div>--%>
+                    </div>
+
+
                     <div
                             <tags:fieldValidation value="${validation.fields.firstname}"/>
                     >
@@ -115,3 +160,68 @@
     </div>
 </div>
 <plugins:datePicker/>
+<script>
+    $(document).ready(function () {
+        $(document).on('change', '.btn-file :file', function () {
+            var input = $(this),
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [label]);
+        });
+
+        $('.btn-file :file').on('fileselect', function (event, label) {
+
+            var input = $(this).parents('.input-group').find(':text'),
+                    log = label;
+
+            /*if (input.length) {
+             input.val(log);
+             } else {
+             if (log) alert(log);
+             }*/
+
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img-upload').attr('src', e.target.result);
+                    $('#avatarSrc').attr('value', e.target.result.split(',')[1]);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imgInp").change(function () {
+            readURL(this);
+        });
+    });
+
+    var validFileExtensions = [".jpg", ".jpeg", ".gif", ".png"];
+    function validateAvatar(oInput) {
+        if (oInput.type == "file") {
+            var sFileName = oInput.value;
+            if (sFileName.length > 0) {
+                var isValid = false;
+                for (var j = 0; j < validFileExtensions.length; j++) {
+                    var sCurExtension = validFileExtensions[j];
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        isValid = true;
+                        $("#uploadAlert").remove();
+                        break;
+                    }
+                }
+
+                if (!isValid) {
+                    <fmt:message var="invalidImageUploadMsg" bundle="${userPage}" key="user.message.invalid.image"/>
+                    var message = "${invalidImageUploadMsg}" + ": " + validFileExtensions.join(", ");
+                    $("#uploadingBlock").after("<div class='alert alert-danger' id='uploadAlert'>" + message + "</div>");
+                    oInput.value = "";
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+</script>
