@@ -64,7 +64,8 @@ public class CommonInfoServlet extends HttpServlet {
                 .lastName(params.get(LASTNAME_PARAM))
                 .patronymic(params.get(PATRONYMIC_PARAM))
                 .gender(Gender.valueOf(params.get(GENDER_PARAM)))
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), validation))
+                .avatar(currentUser.getAvatar())
+                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), DateValidator.Pattern.DD_MM_YYYY, validation))
                 .build();
 
         if (validation.isValid()) {

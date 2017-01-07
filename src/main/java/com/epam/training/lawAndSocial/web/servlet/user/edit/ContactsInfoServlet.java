@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 
@@ -57,15 +56,6 @@ public class ContactsInfoServlet extends HttpServlet {
 
         final Map<String, String> params = collectParams(req);
         final FormValidation validation = validationService.verify(collectVerifiedParams(req));
-
-        final Set<Map.Entry<String, String>> entries = params.entrySet();
-        for (Map.Entry<String, String> entry : entries) {
-            LOGGER.debug(entry.getKey() + " : " + entry.getValue());
-        }
-
-        for (String msg : validation.messages()) {
-            LOGGER.debug(msg);
-        }
 
         final Contacts contacts = Contacts.builder()
                 .email(params.get(EMAIL_PARAM))

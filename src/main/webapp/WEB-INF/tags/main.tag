@@ -17,8 +17,13 @@
     <link rel="stylesheet" type="text/css" href="${flagsCss}"/>
     <c:url var="customCss" value="/static/css/custom.css"/>
     <link rel="stylesheet" type="text/css" href="${customCss}"/>
+    <c:url var="paginationCss" value="/static/css/simplePagination.css"/>
+    <link rel="stylesheet" type="text/css" href="${paginationCss}"/>
     <c:url var="fontAwesome" value="/webjars/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="${fontAwesome}"/>
+
+    <c:url var="paginationJs" value="/static/js/jquery.simplePagination.js"/>
+    <script src="${paginationJs}"></script>
 
     <%--JQuery--%>
     <c:url var="jqueryJs" value="/webjars/jquery/1.12.4/jquery.min.js"/>
@@ -67,6 +72,13 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <c:if test="${sessionScope.user != null}">
+                    <li>
+                        <c:url var="communityUrl" value="/community"/>
+                        <a href="${communityUrl}">
+                            <fmt:message bundle="${profile}" key="profile.community"/>
+                        </a>
+                    </li>
+
                     <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"

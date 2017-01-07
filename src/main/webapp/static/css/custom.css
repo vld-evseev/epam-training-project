@@ -40,3 +40,11 @@
 .toppad {
     margin-top: 20px;
 }
+
+.user-block {
+    display: block;
+    top: 15px;
+    bottom: 0;
+    left: 15px;
+    right: 0;
+}

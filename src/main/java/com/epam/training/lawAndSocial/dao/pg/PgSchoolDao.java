@@ -159,17 +159,18 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public long deleteUserFromSchool(School school) {
+    public long deleteUserFromSchool(long userId, School school) {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "DELETE FROM lawAndSocialDb.school" +
-                            " WHERE id = ?;"
+                            " WHERE id = ? AND user_id = ?;"
             );
             query.setLong(1, school.getId());
+            query.setLong(2, userId);
             result = query.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Deleting school caused an exception: {}", e.getMessage());
+            LOGGER.error("Deleting school by user_id caused an exception: {}", e.getMessage());
             LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
             LOGGER.error("School: {}", school.toString());
         }
@@ -178,7 +179,7 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public long updateUserSchool(long userId, School school) {
+    public long updateSchoolByUserId(long userId, School school) {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(

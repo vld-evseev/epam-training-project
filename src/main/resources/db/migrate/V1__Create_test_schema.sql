@@ -11,8 +11,10 @@ CREATE TABLE lawAndSocialDb.user (
   gender       VARCHAR(255) DEFAULT 'UNKNOWN'
     CHECK (gender IN ('MALE', 'FEMALE', 'UNKNOWN')),
   birthdate    VARCHAR(255) NOT NULL,
+  avatar       TEXT,
   passwordHash VARCHAR(255) NOT NULL
 );
+
 
 CREATE SEQUENCE lawAndSocialDb.contacts_seq;
 
@@ -28,6 +30,19 @@ CREATE TABLE lawAndSocialDb.contacts (
 CREATE SEQUENCE lawAndSocialDb.school_seq;
 
 CREATE TABLE lawAndSocialDb.school (
+  id        INTEGER PRIMARY KEY,
+  user_id   INTEGER NOT NULL,
+  name      VARCHAR(255),
+  country   VARCHAR(255),
+  city      VARCHAR(255),
+  yearsFrom INTEGER,
+  yearsTo   INTEGER,
+  FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
+);
+
+CREATE SEQUENCE lawAndSocialDb.university_seq;
+
+CREATE TABLE lawAndSocialDb.university (
   id        INTEGER PRIMARY KEY,
   user_id   INTEGER NOT NULL,
   name      VARCHAR(255),

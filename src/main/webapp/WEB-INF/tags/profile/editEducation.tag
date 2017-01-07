@@ -1,3 +1,4 @@
+<%@ taglib prefix="plugins" tagdir="/WEB-INF/tags/plugins" %>
 <%@attribute name="tabId" rtexprvalue="true" required="true" %>
 <%@ taglib prefix="profile" tagdir="/WEB-INF/tags/profile" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -8,13 +9,14 @@
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 <jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
              scope="session"/>
-
+<jsp:useBean id="universities" type="java.util.List<com.epam.training.lawAndSocial.model.education.University>"
+             scope="session"/>
 
 <div id="${tabId}" class="tab-pane fade">
     <div class="content-box-large">
         <div class="panel-body">
             <c:url var="educationInfoEditUrl" value="/user/edit/education"/>
-            <form role="form" action="${educationInfoEditUrl}" method="post">
+            <form id="schoolForm" role="form" action="${educationInfoEditUrl}" method="post">
                 <fieldset>
                     <div class="row">
                         <div class="col-sm-6">
@@ -28,18 +30,21 @@
                                                 <c:forEach items="${schools}" var="school" varStatus="status">
                                                     <profile:schoolEditForm
                                                             count="${status.count}"
+                                                            schoolId="${school.id}"
+                                                            schoolUserIdValue="${school.userId}"
                                                             schoolNameValue="${school.name}"
                                                             schoolCountryValue="${school.country}"
                                                             schoolCityValue="${school.city}"
                                                             schoolYearFromValue="${school.yearsFrom}"
                                                             schoolYearToValue="${school.yearsTo}"
                                                     />
-
                                                 </c:forEach>
                                             </c:when>
                                             <c:otherwise>
                                                 <profile:schoolEditForm
                                                         count="1"
+                                                        schoolId=""
+                                                        schoolUserIdValue=""
                                                         schoolNameValue=""
                                                         schoolCountryValue=""
                                                         schoolCityValue=""
@@ -48,7 +53,6 @@
                                                 />
                                             </c:otherwise>
                                         </c:choose>
-
                                     </div>
 
                                     <div class="row">
@@ -72,54 +76,39 @@
                                 <div class="panel-heading"><fmt:message bundle="${userPage}"
                                                                         key="user.education.university"/></div>
                                 <div class="panel-body">
-                                    <div class="row">
-                                        <div class="form-group col-md-12">
-                                            <fmt:message var="name" bundle="${userPage}" key="user.education.name"/>
-                                            <label for="univName"><fmt:message bundle="${userPage}"
-                                                                               key="user.education.university"/></label>
-                                            <input id="univName" class="form-control input-sm" placeholder="${name}"
-                                                   type="text">
-                                        </div>
+                                    <div id="dynamicUniversityInput">
+                                        <c:choose>
+                                            <c:when test="${not empty universities}">
+                                                <c:forEach items="${universities}" var="university" varStatus="status">
+                                                    <profile:universityEditForm
+                                                            count="${status.count}"
+                                                            universityId="${university.id}"
+                                                            universityUserIdValue="${university.userId}"
+                                                            universityNameValue="${university.name}"
+                                                            universityCountryValue="${university.country}"
+                                                            universityCityValue="${university.city}"
+                                                            universityYearFromValue="${university.yearsFrom}"
+                                                            universityYearToValue="${university.yearsTo}"
+                                                    />
+                                                </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <profile:universityEditForm
+                                                        count="1"
+                                                />
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
-
-
                                     <div class="row">
-                                        <div class="form-group col-md-12">
-                                            <label for="univCountry"><fmt:message bundle="${userPage}"
-                                                                                  key="user.country"/></label>
-                                            <input id="univCountry" class="form-control input-sm" type="text">
+                                        <div class="form-group col-xs-6">
+                                            <button class="btn btn-warning btn-block" id="addUniversity">
+                                                <fmt:message bundle="${userPage}" key="user.add"/>
+                                            </button>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-12">
-                                            <label for="univCity"><fmt:message bundle="${userPage}"
-                                                                               key="user.city"/></label>
-                                            <input id="univCity" class="form-control input-sm" type="text">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <fmt:message var="univYears" bundle="${userPage}"
-                                                         key="user.education.years"/>
-                                            <label>${univYears}</label>
-                                            <div class="row">
-                                                <div class="form-group col-xs-6">
-                                                    <fmt:message var="univYearsFrom" bundle="${userPage}"
-                                                                 key="user.education.years.from"/>
-                                                    <input class="form-control input-sm" id="dateYear" name="dateYear"
-                                                           placeholder="${univYearsFrom}"
-                                                           type="text"/>
-                                                </div>
-                                                <div class="form-group col-xs-6">
-                                                    <fmt:message var="univYearsTo" bundle="${userPage}"
-                                                                 key="user.education.years.to"/>
-                                                    <input class="form-control input-sm" id="dateYear" name="dateYear"
-                                                           placeholder="${univYearsTo}"
-                                                           type="text"/>
-                                                </div>
-                                            </div>
+                                        <div class="form-group col-xs-6">
+                                            <button class="btn btn-danger btn-block" id="removeUniversity">
+                                                <fmt:message bundle="${userPage}" key="user.delete"/>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -140,92 +129,127 @@
     </div>
 </div>
 
+<plugins:verifySchoolsForm/>
+
 <script>
+    <fmt:message var="clearMsg" bundle="${userPage}" key="user.clear"/>
+    <fmt:message var="deleteMsg" bundle="${userPage}" key="user.delete"/>
     $(document).ready(function () {
-        $('#schoolCountry').prop('disabled', true);
-        $('#schoolCity').prop('disabled', true);
-        $('#schoolYearFrom').prop('disabled', true);
-        $('#schoolYearTo').prop('disabled', true);
-        $('#schoolName').keyup(function () {
-            $('#schoolCountry').prop('disabled', this.value == "");
-            $('#schoolCity').prop('disabled', this.value == "");
-            $('#schoolYearFrom').prop('disabled', this.value == "");
-            $('#schoolYearTo').prop('disabled', this.value == "");
-        });
 
-
-        var next = $("#dynamicSchoolInput > div").length;
+        var next = $("#dynamicUniversityInput > div").length;
         var limit = 3;
 
+        if ($('.dateYear').val() == '1' || $('.dateYear').val() == '0') {
+            $('.dateYear').val('');
+        }
+
+        if (!$('#universityName' + next).val()) {
+            $('#universityCountry' + next).prop('disabled', true);
+            $('#universityCity' + next).prop('disabled', true);
+            $('#universityYearFrom' + next).prop('disabled', true);
+            $('#universityYearTo' + next).prop('disabled', true);
+        }
+
+        $('#universityName').keyup(function () {
+            $('#universityCountry').prop('disabled', this.value == "");
+            $('#universityCity').prop('disabled', this.value == "");
+            $('#universityYearFrom').prop('disabled', this.value == "");
+            $('#universityYearTo').prop('disabled', this.value == "");
+        });
+
         if (next == 1) {
-            $("#removeSchool").hide();
+            $('#removeUniversity').addClass("university-remove");
+            $("#removeUniversity").html("${clearMsg}");
         }
 
 
-        $("#addSchool").click(function (e) {
+        $("#addUniversity").click(function (e) {
             e.preventDefault();
             if (next < limit) {
                 next = next + 1;
-                $("#dynamicSchoolInput").append("<div id='schoolForm" + next + "'><input type='hidden' name='schoolCount' value=" + next + " />" +
+                $("#dynamicUniversityInput").append("<div id='universityForm" + next + "'><input type='hidden' name='universityCount' value=" + next + " />" +
+                        "<input type='hidden' id='universityId" + next + "' name='universityId''/>" +
+                        "<input type='hidden' id='universityUserId" + next + "' name='universityUserId' value='${user.id}'/>" +
                         "<div class='row'> <div class='form-group col-md-12'>" +
                         "<fmt:message var='name' bundle='${userPage}' key='user.education.name'/>" +
-                        "<label for='schoolName" + next + "'><fmt:message bundle='${userPage}' key='user.education.school'/></label>" +
-                        "<input id='schoolName" + next + "' class='form-control input-sm' placeholder='${name}' name='schoolName' oninput='verify(" + next + ")' type='text'>" +
+                        "<label for='universityName" + next + "'><fmt:message bundle='${userPage}' key='user.education.university'/></label>" +
+                        "<input id='universityName" + next + "' class='form-control input-sm' placeholder='${name}' name='universityName' oninput='verify(" + next + ")' type='text'>" +
                         "</div> </div>" +
                         "<div class='row'> <div class='form-group col-md-12'>" +
-                        "<label for='schoolCountry" + next + "'><fmt:message bundle='${userPage}' key='user.country'/></label>" +
-                        "<input id='schoolCountry" + next + "' class='form-control input-sm' name='schoolCountry' type='text'>" +
+                        "<label for='universityCountry" + next + "'><fmt:message bundle='${userPage}' key='user.country'/></label>" +
+                        "<input id='universityCountry" + next + "' class='form-control input-sm' name='universityCountry' type='text'>" +
                         "</div> </div>" +
                         "<div class='row'> <div class='form-group col-md-12'>" +
-                        "<label for='schoolCity" + next + "'><fmt:message bundle='${userPage}' key='user.city'/></label>" +
-                        "<input id='schoolCity" + next + "' class='form-control input-sm' name='schoolCity' type='text'>" +
+                        "<label for='universityCity" + next + "'><fmt:message bundle='${userPage}' key='user.city'/></label>" +
+                        "<input id='universityCity" + next + "' class='form-control input-sm' name='universityCity' type='text'>" +
                         "</div> </div>" +
                         "<div class='row'> <div class='col-md-12'>" +
-                        "<fmt:message var='schoolYears' bundle='${userPage}' key='user.education.years'/>" +
-                        "<label>${schoolYears}</label> <div class='row'> <div class='form-group col-xs-6'>" +
-                        "<fmt:message var='schoolYearFrom' bundle='${userPage}' key='user.education.years.from'/>" +
-                        "<input class='form-control input-sm' id='schoolYearFrom" + next + "' name='schoolYearFrom' placeholder='${schoolYearFrom}' type='text'/>" +
+                        "<fmt:message var='universityYears' bundle='${userPage}' key='user.education.years'/>" +
+                        "<label>${universityYears}</label> <div class='row'> <div class='form-group col-xs-6'>" +
+                        "<fmt:message var='universityYearFrom' bundle='${userPage}' key='user.education.years.from'/>" +
+                        "<input class='form-control input-sm dateYear' id='universityYearFrom" + next + "' name='universityYearFrom' placeholder='${universityYearFrom}' type='text'/>" +
                         "</div> <div class='form-group col-xs-6'>" +
-                        "<fmt:message var='schoolYearTo' bundle='${userPage}' key='user.education.years.to'/>" +
-                        "<input class='form-control input-sm' id='schoolYearTo" + next + "' name='schoolYearTo' placeholder='${schoolYearTo}' type='text'/>" +
+                        "<fmt:message var='universityYearTo' bundle='${userPage}' key='user.education.years.to'/>" +
+                        "<input class='form-control input-sm dateYear' id='universityYearTo" + next + "' name='universityYearTo' placeholder='${universityYearTo}' type='text'/>" +
                         "</div> </div> </div> </div> <hr> </div>"
                 );
 
-                $('#schoolCountry' + next).prop('disabled', true);
-                $('#schoolCity' + next).prop('disabled', true);
-                $('#schoolYearFrom' + next).prop('disabled', true);
-                $('#schoolYearTo' + next).prop('disabled', true);
-                /*$('#schoolName' + next).keyup(function () {
-                 $('#schoolCountry' + next).prop('disabled', this.value == "");
-                 $('#schoolCity' + next).prop('disabled', this.value == "");
-                 $('#schoolYearFrom' + next).prop('disabled', this.value == "");
-                 $('#schoolYearTo' + next).prop('disabled', this.value == "");
-                 });*/
+                $('#universityCountry' + next).prop('disabled', true);
+                $('#universityCity' + next).prop('disabled', true);
+                $('#universityYearFrom' + next).prop('disabled', true);
+                $('#universityYearTo' + next).prop('disabled', true);
 
-                $("#removeSchool").show();
+                changeUniversityButtonBehavior(next);
                 window.scrollTo(0, document.body.scrollHeight);
             }
+
+            if ($('.dateYear').val() == '1' || $('.dateYear').val() == '0') {
+                $('.dateYear').val('');
+            }
         });
-        $("#removeSchool").click(function (e) {
+
+        $("#removeUniversity").click(function (e) {
             e.preventDefault();
             if (next > 1) {
-                var formID = '#schoolForm' + next;
+                var formID = '#universityForm' + next;
                 $(formID).remove();
                 next = next - 1;
             }
-            if (next == 1) {
-                $(this).hide();
-            }
+            changeUniversityButtonBehavior(next);
         });
     });
 
-    function verify(idx) {
-        $('#schoolName' + idx).keyup(function () {
-            $('#schoolCountry' + idx).prop('disabled', this.value == "");
-            $('#schoolCity' + idx).prop('disabled', this.value == "");
-            $('#schoolYearFrom' + idx).prop('disabled', this.value == "");
-            $('#schoolYearTo' + idx).prop('disabled', this.value == "");
-        });
+    function changeUniversityButtonBehavior(next) {
+        if ($("#removeUniversity").hasClass("university-remove")) {
+            if (next == 1) {
+                $("#universityName" + next).val('');
+                $("#universityCountry" + next).val('');
+                $("#universityCity" + next).val('');
+                $("#universityYearFrom" + next).val('');
+                $("#universityYearTo" + next).val('');
+
+                $('#universityCountry' + next).prop('disabled', true);
+                $('#universityCity' + next).prop('disabled', true);
+                $('#universityYearFrom' + next).prop('disabled', true);
+                $('#universityYearTo' + next).prop('disabled', true);
+            }
+        }
+
+        if (next == 1) {
+            $('#removeUniversity').addClass("university-remove");
+            $("#removeUniversity").html("${clearMsg}");
+        } else {
+            $('#removeUniversity').removeClass("university-remove");
+            $("#removeUniversity").html("${deleteMsg}");
+        }
     }
 
+    function verifyUniversityFields(idx) {
+        $('#universityName' + idx).keyup(function () {
+            $('#universityCountry' + idx).prop('disabled', this.value == "");
+            $('#universityCity' + idx).prop('disabled', this.value == "");
+            $('#universityYearFrom' + idx).prop('disabled', this.value == "");
+            $('#universityYearTo' + idx).prop('disabled', this.value == "");
+        });
+    }
 </script>

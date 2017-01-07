@@ -38,7 +38,7 @@
     });
 
     $(document).ready(function () {
-        var date_input_year = $('input[name="dateYear"]'); //our date input has the name "date"
+        var date_input_year = $('.dateYear'); //our date input has the name "date"
         var options = {
             format: "yyyy",
             todayHighlight: true,

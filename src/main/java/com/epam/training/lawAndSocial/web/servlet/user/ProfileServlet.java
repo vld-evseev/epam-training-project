@@ -3,8 +3,10 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.School;
+import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationService;
+import com.epam.training.lawAndSocial.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +31,13 @@ public class ProfileServlet extends HttpServlet {
 
     private final EducationService educationService;
     private final ContactsService contactsService;
+    private final UserService userService;
 
     @Inject
-    public ProfileServlet(EducationService educationService, ContactsService contactsService) {
+    public ProfileServlet(EducationService educationService, ContactsService contactsService, UserService userService) {
         this.educationService = educationService;
         this.contactsService = contactsService;
+        this.userService = userService;
     }
 
     @Override
@@ -40,6 +45,29 @@ public class ProfileServlet extends HttpServlet {
         LOGGER.debug("Successfully authorised");
         final HttpSession session = req.getSession(true);
         final User user = (User) session.getAttribute(USER_ATTR);
+
+        final String idParam = req.getParameter("id");
+        if (idParam != null && !idParam.isEmpty() && CheckUtils.isNumeric(idParam)) {
+            final Optional<User> userOptional = userService.getUserById(Long.parseLong(idParam));
+            if (userOptional.isPresent()) {
+                final User requestedUser = userOptional.get();
+                req.setAttribute(REQUESTED_USER_ATTR, requestedUser);
+
+                final Contacts requestedUserContacts = getContacts(requestedUser.getId());
+                req.setAttribute(CONTACTS_ATTR, requestedUserContacts);
+
+                final List<School> requestedUserSchools = educationService.getUserSchools(requestedUser.getId());
+                req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, requestedUserSchools);
+
+                req.getRequestDispatcher(USER_PAGE)
+                        .forward(req, resp);
+                return;
+            }
+        }
+
+        req.setAttribute(REQUESTED_USER_ATTR, User.builder().build());
+        req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, Collections.emptyList());
+
         if (user != null) {
             final Contacts contacts = getContacts(user.getId());
             req.setAttribute(CONTACTS_ATTR, contacts);
@@ -62,8 +90,8 @@ public class ProfileServlet extends HttpServlet {
         final Optional<Contacts> contacts = contactsService.getByUserId(userId);
         if (contacts.isPresent()) {
             return contacts.get();
-        } else {
-            return Contacts.builder().build();
         }
+
+        return Contacts.builder().build();
     }
 }

@@ -1,7 +1,5 @@
-package com.epam.training.lawAndSocial.dao.impl;
+package com.epam.training.lawAndSocial.dao.pg;
 
-import com.epam.training.lawAndSocial.dao.pg.PgContactsDao;
-import com.epam.training.lawAndSocial.dao.pg.PgUserDao;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;

@@ -10,7 +10,7 @@
 <tags:main title="${title}">
 
     <div class="container">
-        <tags:loginBox/>
+        <tags:loginBlock/>
     </div>
 
 </tags:main>

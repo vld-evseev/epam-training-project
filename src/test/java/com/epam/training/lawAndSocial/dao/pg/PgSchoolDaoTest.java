@@ -1,7 +1,5 @@
-package com.epam.training.lawAndSocial.dao.impl;
+package com.epam.training.lawAndSocial.dao.pg;
 
-import com.epam.training.lawAndSocial.dao.pg.PgSchoolDao;
-import com.epam.training.lawAndSocial.dao.pg.PgUserDao;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.School;
@@ -79,11 +77,18 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
         final Optional<School> schoolOptional = schoolDao.getBySchoolId(1);
         Assert.assertTrue(schoolOptional.isPresent());
 
-        final long deleted = schoolDao.deleteUserFromSchool(schoolOptional.get());
+        final PgUserDao userDao = new PgUserDao(dataSource);
+        final Optional<User> testUser = userDao.getByUsername("testUser");
+        Assert.assertTrue(testUser.isPresent());
+
+        final long deleted = schoolDao.deleteUserFromSchool(testUser.get().getId(), schoolOptional.get());
         Assert.assertEquals(deleted, 1);
 
-        final long notDeletedBecauseNoLongerExists = schoolDao.deleteUserFromSchool(schoolOptional.get());
+        final long notDeletedBecauseNoLongerExists = schoolDao.deleteUserFromSchool(testUser.get().getId(), schoolOptional.get());
         Assert.assertEquals(notDeletedBecauseNoLongerExists, 0);
+
+        final List<School> testUserSchoolList = schoolDao.getByUserId(testUser.get().getId());
+        Assert.assertEquals(testUserSchoolList.size(), 1);
     }
 
     @Test
@@ -107,7 +112,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
                 .yearsTo(1995)
                 .build();
 
-        final long updated = schoolDao.updateUserSchool(testUser.get().getId(), updatedSchool);
+        final long updated = schoolDao.updateSchoolByUserId(testUser.get().getId(), updatedSchool);
         Assert.assertEquals(updated, 1);
 
         final Optional<School> updatedSchoolOptional = schoolDao.getBySchoolId(1);

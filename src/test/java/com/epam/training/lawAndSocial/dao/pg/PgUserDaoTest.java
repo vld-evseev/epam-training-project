@@ -1,22 +1,26 @@
-package com.epam.training.lawAndSocial.dao.impl;
+package com.epam.training.lawAndSocial.dao.pg;
 
 import com.epam.training.lawAndSocial.dao.UserDao;
-import com.epam.training.lawAndSocial.dao.pg.PgUserDao;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.Gender;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
+import com.epam.training.lawAndSocial.utils.ImageUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.sql.DataSource;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PgUserDaoTest extends H2DataSourceTest {
+
 
     private DataSource dataSource;
 
@@ -83,6 +87,38 @@ public class PgUserDaoTest extends H2DataSourceTest {
         Assert.assertEquals(user.getPatronymic(), "updatedPatronymic");
         Assert.assertEquals(user.getGender(), Gender.MALE);
         Assert.assertEquals(user.getDate(), "02.12.1950");
+    }
+
+    @Test
+    public void getUsers() throws Exception {
+        final PgUserDao userDao = new PgUserDao(dataSource);
+
+        final int offset = 1;
+        final int limit = 2;
+
+        final List<User> userList = userDao.getUsers(limit, offset);
+        System.out.println(Arrays.toString(userList.toArray()));
+        Assert.assertFalse(userList.isEmpty());
+    }
+
+    @Test
+    public void updateAvatar() throws Exception {
+        final PgUserDao userDao = new PgUserDao(dataSource);
+        final Optional<User> testUser = userDao.getByUsername("testUser");
+        Assert.assertTrue(testUser.isPresent());
+
+        final URL defaultAvatar = getClass().getClassLoader().getResource("imgs/default_user.png");
+
+        final long updated = userDao.updateAvatar(testUser.get().getId(), ImageUtils.encodeBase64(defaultAvatar));
+        Assert.assertTrue(updated > 0);
+
+        final Optional<User> updatedTestUser = userDao.getByUsername("testUser");
+        Assert.assertTrue(updatedTestUser.isPresent());
+
+        final User user = updatedTestUser.get();
+        Assert.assertFalse(user.getAvatar().isEmpty());
+
+        System.out.println(user.toString());
     }
 
 }

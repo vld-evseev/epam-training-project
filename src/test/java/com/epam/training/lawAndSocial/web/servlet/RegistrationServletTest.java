@@ -7,7 +7,6 @@ import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.impl.ValidationServiceImpl;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
-import com.epam.training.lawAndSocial.utils.DateValidator;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.junit.Test;
 
@@ -16,14 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class RegistrationServletTest {
@@ -92,19 +90,6 @@ public class RegistrationServletTest {
         params.put(PASSWORD_PARAM, "testPassword");
         params.put(CONFIRM_PASSWORD_PARAM, "testPassword");
         return params;
-    }
-
-    @Test
-    public void parseDateTest() {
-        final FormValidation formValidation = mock(FormValidation.class);
-
-        final String validDate = "01.12.1945";
-        final String result1 = DateValidator.parseDate(validDate, formValidation);
-        assertEquals(result1, validDate);
-
-        final String nonValidDate = "007";
-        final String result2 = DateValidator.parseDate(nonValidDate, formValidation);
-        assertEquals(result2, LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
     }
 
     @Test

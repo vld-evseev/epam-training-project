@@ -1,4 +1,6 @@
 <%@attribute name="count" rtexprvalue="true" required="true" %>
+<%@attribute name="schoolId" rtexprvalue="true" required="true" %>
+<%@attribute name="schoolUserIdValue" rtexprvalue="true" required="true" %>
 <%@attribute name="schoolNameValue" rtexprvalue="true" required="true" %>
 <%@attribute name="schoolCountryValue" rtexprvalue="true" required="true" %>
 <%@attribute name="schoolCityValue" rtexprvalue="true" required="true" %>
@@ -7,9 +9,11 @@
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
+<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 
 <div id="schoolForm${count}">
-    <input type="hidden" name="schoolCount" value="${count}"/>
+    <input type="hidden" id="schoolId${count}" name="schoolId" value="${schoolId}"/>
+    <input type="hidden" id="schoolUserId${count}" name="schoolUserId" value="${schoolUserIdValue}"/>
     <div class="row">
         <div class="form-group col-md-12">
             <fmt:message var="name" bundle="${userPage}"
@@ -21,7 +25,7 @@
                    name="schoolName"
                    value="${schoolNameValue}"
                    type="text"
-                   oninput="verify(${count})">
+                   oninput="verifySchoolFields(${count})">
         </div>
     </div>
 
@@ -48,7 +52,6 @@
         </div>
     </div>
 
-
     <div class="row">
         <div class="col-md-12">
             <fmt:message var="schoolYears" bundle="${userPage}"
@@ -58,7 +61,7 @@
                 <div class="form-group col-xs-6">
                     <fmt:message var="schoolYearFrom" bundle="${userPage}"
                                  key="user.education.years.from"/>
-                    <input class="form-control input-sm" id="schoolYearFrom${count}"
+                    <input class="form-control input-sm dateYear" id="schoolYearFrom${count}"
                            name="schoolYearFrom"
                            placeholder="${schoolYearFrom}"
                            value="${schoolYearFromValue}"
@@ -67,7 +70,7 @@
                 <div class="form-group col-xs-6">
                     <fmt:message var="schoolYearTo" bundle="${userPage}"
                                  key="user.education.years.to"/>
-                    <input class="form-control input-sm" id="schoolYearTo${count}"
+                    <input class="form-control input-sm dateYear" id="schoolYearTo${count}"
                            name="schoolYearTo"
                            placeholder="${schoolYearTo}"
                            value="${schoolYearToValue}"

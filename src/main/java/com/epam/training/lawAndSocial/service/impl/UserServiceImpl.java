@@ -9,14 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
+
     private final SecurityService securityService;
     private final UserDao userDao;
+    private static final int USERS_SHOW_LIMIT = 30;
 
     @Inject
     public UserServiceImpl(SecurityService securityService, UserDao userDao) {
@@ -50,6 +53,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> getUserById(long id) {
+        return userDao.getByUserId(id);
+    }
+
+    @Override
     public long add(User user) {
         return userDao.add(user);
     }
@@ -58,4 +66,21 @@ public class UserServiceImpl implements UserService {
     public long update(User user) {
         return userDao.update(user);
     }
+
+    @Override
+    public long updateAvatar(long id, String base64EncodedImage) {
+        return userDao.updateAvatar(id, base64EncodedImage);
+    }
+
+    @Override
+    public List<User> getUsers(int offset) {
+        return userDao.getUsers(USERS_SHOW_LIMIT, offset);
+    }
+
+    @Override
+    public long getNumberOfUsers() {
+        return userDao.getNumberOfUsers();
+    }
+
+
 }

@@ -15,8 +15,8 @@ public interface SchoolDao {
 
     long addUserToSchool(long userId, School school);
 
-    long deleteUserFromSchool(School school);
+    long deleteUserFromSchool(long userId, School school);
 
-    long updateUserSchool(long userId, School school);
+    long updateSchoolByUserId(long userId, School school);
 
 }

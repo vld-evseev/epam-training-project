@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 public class PgUserDao implements UserDao {
@@ -30,9 +33,9 @@ public class PgUserDao implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
             final PreparedStatement query = connection.prepareStatement(
-                    "INSERT INTO lawAndSocialDb.user(id, username, firstName, lastName, patronymic, gender, birthdate, passwordHash)" +
+                    "INSERT INTO lawAndSocialDb.user(id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)" +
                             " VALUES (nextval('lawAndSocialDb.user_seq')," +
-                            " ?, ?, ?, ?, ?, ?, ?);",
+                            " ?, ?, ?, ?, ?, ?, ?, ?);",
                     returnColumns
             );
             query.setString(1, user.getUserName());
@@ -41,7 +44,8 @@ public class PgUserDao implements UserDao {
             query.setString(4, user.getPatronymic());
             query.setString(5, Gender.UNKNOWN.toString());
             query.setString(6, user.getDate());
-            query.setString(7, user.getPasswordHash());
+            query.setString(7, user.getAvatar());
+            query.setString(8, user.getPasswordHash());
             query.executeUpdate();
             final ResultSet generatedKeys = query.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -61,7 +65,7 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, username, firstName, lastName, patronymic, gender, birthdate, passwordHash" +
+                    "SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE username = ?;"
             );
             query.setString(1, username);
@@ -77,6 +81,7 @@ public class PgUserDao implements UserDao {
                                 .patronymic(resultSet.getString("patronymic"))
                                 .gender(Gender.valueOf(gender))
                                 .date(resultSet.getString("birthdate"))
+                                .avatar(resultSet.getString("avatar"))
                                 .passwordHash(resultSet.getString("passwordHash"))
                                 .build()
                 );
@@ -85,6 +90,41 @@ public class PgUserDao implements UserDao {
             LOGGER.error("Getting user by userName caused an exception: {}", e.getMessage());
             LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
             LOGGER.error("Username: {}", username);
+            return Optional.empty();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Optional<User> getByUserId(long id) {
+        Optional<User> result = Optional.empty();
+        try (Connection connection = dataSource.getConnection()) {
+            final PreparedStatement query = connection.prepareStatement(
+                    "SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                            " FROM lawAndSocialDb.user WHERE id = ?;"
+            );
+            query.setLong(1, id);
+            final ResultSet resultSet = query.executeQuery();
+            if (resultSet.next()) {
+                final String gender = getGender(resultSet.getString("gender"));
+                result = Optional.of(
+                        User.builder()
+                                .id(resultSet.getLong("id"))
+                                .userName(resultSet.getString("username"))
+                                .firstName(resultSet.getString("firstName"))
+                                .lastName(resultSet.getString("lastName"))
+                                .patronymic(resultSet.getString("patronymic"))
+                                .gender(Gender.valueOf(gender))
+                                .date(resultSet.getString("birthdate"))
+                                .avatar(resultSet.getString("avatar"))
+                                .build()
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Getting user by userId caused an exception: {}", e.getMessage());
+            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
+            LOGGER.error("userId: {}", id);
             return Optional.empty();
         }
 
@@ -120,9 +160,89 @@ public class PgUserDao implements UserDao {
     }
 
     @Override
+    public long updateAvatar(long id, String base64EncodedImage) {
+        long result = -1;
+        try (Connection connection = dataSource.getConnection()) {
+            final PreparedStatement query = connection.prepareStatement(
+                    "UPDATE lawAndSocialDb.user" +
+                            " SET avatar = ?" +
+                            " WHERE id = ?;"
+            );
+            query.setString(1, base64EncodedImage);
+            query.setLong(2, id);
+            result = query.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("Updating avatar caused an exception: {}", e.getMessage());
+            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
+            LOGGER.error("User id: {}", id);
+            return result;
+        }
+
+        return result;
+    }
+
+    @Override
     public long delete(User user) {
         return 0;
     }
+
+    @Override
+    public List<User> getUsers(int limit, int offset) {
+        List<User> result = new LinkedList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            final PreparedStatement query = connection.prepareStatement("SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                    " FROM lawAndSocialDb.user" +
+                    " ORDER BY id ASC" +
+                    " LIMIT ?" +
+                    " OFFSET ?;");
+            query.setInt(1, limit);
+            query.setInt(2, offset);
+            final ResultSet resultSet = query.executeQuery();
+            while (resultSet.next()) {
+                final String gender = getGender(resultSet.getString("gender"));
+                result.add(
+                        User.builder()
+                                .id(resultSet.getLong("id"))
+                                .userName(resultSet.getString("username"))
+                                .firstName(resultSet.getString("firstName"))
+                                .lastName(resultSet.getString("lastName"))
+                                .patronymic(resultSet.getString("patronymic"))
+                                .gender(Gender.valueOf(gender))
+                                .date(resultSet.getString("birthdate"))
+                                .passwordHash(resultSet.getString("passwordHash"))
+                                .build()
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Getting list of users caused an exception: {}", e.getMessage());
+            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
+            LOGGER.error("current offset: {}, limit: {}", offset, limit);
+            return Collections.emptyList();
+        }
+
+        return result;
+    }
+
+    @Override
+    public long getNumberOfUsers() {
+        long result = -1;
+        try (Connection connection = dataSource.getConnection()) {
+            final PreparedStatement query = connection.prepareStatement(
+                    "SELECT count(id) AS total FROM lawAndSocialDb.user;"
+            );
+            final ResultSet resultSet = query.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getLong("total");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Getting number of users caused an exception: {}", e.getMessage());
+            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
+            return result;
+        }
+
+        return result;
+    }
+
 
     private String getGender(String result) throws SQLException {
         if (result == null) {

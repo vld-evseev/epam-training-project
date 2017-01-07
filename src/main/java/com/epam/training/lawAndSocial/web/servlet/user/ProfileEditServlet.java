@@ -4,6 +4,7 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.School;
+import com.epam.training.lawAndSocial.model.education.University;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationService;
 import org.slf4j.Logger;
@@ -37,7 +38,6 @@ public class ProfileEditServlet extends HttpServlet {
         this.contactsService = contactsService;
     }
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LOGGER.debug("showing {}", PROFILE_EDIT_JSP);
@@ -49,6 +49,9 @@ public class ProfileEditServlet extends HttpServlet {
 
             final List<School> userSchools = educationService.getUserSchools(user.getId());
             session.setAttribute(SCHOOLS_ATTR, userSchools);
+
+            final List<University> userUniversities = educationService.getUserUniversities(user.getId());
+            session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
 
             for (School userSchool : userSchools) {
                 LOGGER.debug(userSchool.toString());

@@ -1,3 +1,4 @@
+<%@ taglib prefix="profile" tagdir="/WEB-INF/tags/profile" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="utf-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -11,157 +12,37 @@
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 <jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
              scope="session"/>
+<jsp:useBean id="requestedUser" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
+<jsp:useBean id="requestedUserSchools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
+             scope="request"/>
+
+<c:set var="userIsRequested" value="${requestedUser.id != 0}"/>
 
 <tags:main title="${title}, ${user.userName}!">
 
-    <tags:leftSide>
-        <div class="text-left" style="margin-bottom:20px; margin-left:20px;">
-            <p> <h4><strong>${user.lastName}</strong></h4></p>
-            <p> <h4><strong>${user.firstName}</strong></h4></p>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4><fmt:message bundle="${userPage}" key="user.common.information"/></h4>
-            </div>
-            <div class="panel-body">
-                <table class="table table-user-information">
-                    <tbody>
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.birth.date"/></td>
-                        <td>${user.date}</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.country"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.city"/></td>
-                        <td>stub</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4><fmt:message bundle="${userPage}" key="user.contact.details"/></h4>
-            </div>
-            <div class="panel-body">
-                <table class="table table-user-information">
-                    <tbody>
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.email"/></td>
-                        <td>${contacts.email}</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.phone"/></td>
-                        <td>${contacts.phone}</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.website"/></td>
-                        <td>${contacts.website}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4><fmt:message bundle="${userPage}" key="user.education"/></h4>
-            </div>
-            <div class="panel-body">
-                <table class="table table-user-information">
-                    <tbody>
-
-                    <c:if test="${not empty schools}">
-                        <tr>
-                            <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
-                            <td>
-                                <c:forEach items="${schools}" var="school" varStatus="count">
-                                    <c:out value="${school.name}"/>
-                                    <c:out value="${school.country}"/>
-                                    <c:out value="${school.city}"/>
-                                    <c:out value="${school.yearsFrom}"/> - <c:out value="${school.yearsTo}"/>
-                                    <c:if test="${not count.last}">
-                                        <hr>
-                                    </c:if>
-                                </c:forEach>
-                            </td>
-
-                        </tr>
-                    </c:if>
-
-                        <%--<tr>
-                            <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${not empty school.name}">
-                                        ${school.name}, ${school.city}, ${school.yearsFrom} - ${school.yearsTo}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <fmt:message bundle="${userPage}" key="user.message.not.specified"/>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                        </tr>--%>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.education.university"/></td>
-                        <td>stub</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4><fmt:message bundle="${userPage}" key="user.job"/></h4>
-            </div>
-            <div class="panel-body">
-                <table class="table table-user-information">
-                    <tbody>
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.organization"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.position"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.industry"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.organization.website"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.years"/></td>
-                        <td>stub</td>
-                    </tr>
-
-                    <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.job.description"/></td>
-                        <td>stub</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </tags:leftSide>
+    <tags:navigationBlock>
+        <c:choose>
+            <c:when test="${userIsRequested}">
+                <profile:userBlock firstname="${requestedUser.firstName}"
+                                   lastname="${requestedUser.lastName}"
+                                   birthdate="${requestedUser.date}"
+                                   email="${contacts.email}"
+                                   phone="${contacts.phone}"
+                                   website="${contacts.website}"
+                                   schools="${requestedUserSchools}"
+                />
+            </c:when>
+            <c:otherwise>
+                <profile:userBlock firstname="${user.firstName}"
+                                   lastname="${user.lastName}"
+                                   birthdate="${user.date}"
+                                   email="${contacts.email}"
+                                   phone="${contacts.phone}"
+                                   website="${contacts.website}"
+                                   schools="${schools}"
+                />
+            </c:otherwise>
+        </c:choose>
+    </tags:navigationBlock>
 
 </tags:main>

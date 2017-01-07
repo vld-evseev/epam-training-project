@@ -2,9 +2,11 @@ package com.epam.training.lawAndSocial.web.listener;
 
 import com.epam.training.lawAndSocial.dao.ContactsDao;
 import com.epam.training.lawAndSocial.dao.SchoolDao;
+import com.epam.training.lawAndSocial.dao.UniversityDao;
 import com.epam.training.lawAndSocial.dao.UserDao;
 import com.epam.training.lawAndSocial.dao.pg.PgContactsDao;
 import com.epam.training.lawAndSocial.dao.pg.PgSchoolDao;
+import com.epam.training.lawAndSocial.dao.pg.PgUniversityDao;
 import com.epam.training.lawAndSocial.dao.pg.PgUserDao;
 import com.epam.training.lawAndSocial.db.H2Config;
 import com.epam.training.lawAndSocial.db.impl.h2.H2ConfigProvider;
@@ -48,8 +50,9 @@ public class GuiceConfig extends GuiceServletContextListener {
             bind(H2Config.class).toProvider(H2ConfigProvider.class).in(Singleton.class);
             bind(DataSource.class).toProvider(H2DatasourceProvider.class).in(Singleton.class);
             bind(UserDao.class).to(PgUserDao.class).in(Singleton.class);
-            bind(SchoolDao.class).to(PgSchoolDao.class).in(Singleton.class);
             bind(ContactsDao.class).to(PgContactsDao.class).in(Singleton.class);
+            bind(SchoolDao.class).to(PgSchoolDao.class).in(Singleton.class);
+            bind(UniversityDao.class).to(PgUniversityDao.class).in(Singleton.class);
         }
     }
 
@@ -71,6 +74,7 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/locale").with(LocaleServlet.class);
             serve("/login").with(LoginServlet.class);
             serve("/registration").with(RegistrationServlet.class);
+            serve("/community").with(CommunityServlet.class);
             serve("/user").with(ProfileServlet.class);
             serve("/user/edit").with(ProfileEditServlet.class);
             serve("/user/edit/common").with(CommonInfoServlet.class);

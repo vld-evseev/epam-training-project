@@ -13,16 +13,7 @@
 
 <tags:main title="${title}">
 
-    <c:if test="${activeTab.commonInfoTab}">
-        Common info
-    </c:if>
-
-    <c:if test="${activeTab.contactsInfoTab}">
-        Contacts info
-    </c:if>
-
-    <%--<c:set var="active_tab" value="${requestScope.activeTab}"/>--%>
-    <tags:leftSide>
+    <tags:navigationBlock>
         <ul class="nav nav-tabs" id="settingsTab" data-tabs="tabs">
             <li data-toggle="tab"
                     <c:if test="${activeTab.commonInfoTab}">
@@ -50,28 +41,31 @@
             <profile:editJob tabId="job"/>
         </div>
 
-    </tags:leftSide>
+    </tags:navigationBlock>
 
 </tags:main>
 
 <script>
     $(document).ready(function () {
+        var contactsTabActive = false;
+        <c:if test="${activeTab.contactsInfoTab}">
+        contactsTabActive = true;
+        </c:if>
+        var educationTabActive = false;
+        <c:if test="${activeTab.educationInfoTab}" >
+        educationTabActive = true;
+        </c:if>
 
         tabpage = "#common";
-        if (${activeTab.contactsInfoTab}) {
+        if (contactsTabActive) {
             tabpage = "#contacts";
+        } else if (educationTabActive) {
+            tabpage = "#education";
         }
 
         var selectedTab = $('#settingsTab a[href="' + tabpage + '"]');
         selectedTab.trigger('click', true);
-        /*$('#settingsTab a[href="' + hash + '"]').tab('show');*/
-
     });
-
-    /*function activateTab(tab) {
-     $('#settingsTab a[href="' + tab + '"]').tab('show');
-     }*/
-
 
     $('#settingsTab a').click(function (e) {
         e.preventDefault();

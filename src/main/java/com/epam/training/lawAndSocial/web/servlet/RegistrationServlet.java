@@ -8,6 +8,7 @@ import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.utils.DateValidator;
+import com.epam.training.lawAndSocial.utils.ImageUtils;
 import com.epam.training.lawAndSocial.web.servlet.model.FieldValidation;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -70,11 +72,17 @@ public class RegistrationServlet extends HttpServlet {
 
         LOGGER.debug("credentials: {}", credentials.toString());
 
+        final URL defaultAvatar = getServletContext().getResource(DEFAULT_AVATAR_PATH);
+
+        final String avatar = ImageUtils.encodeBase64(defaultAvatar);
+        System.out.println(avatar);
+
         final User user = User.builder()
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), validation))
+                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), DateValidator.Pattern.DD_MM_YYYY, validation))
+                .avatar(avatar)
                 .passwordHash(securityService.encrypt(credentials.getPassword()))
                 .build();
 

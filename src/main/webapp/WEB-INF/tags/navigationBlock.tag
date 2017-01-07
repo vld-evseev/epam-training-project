@@ -3,15 +3,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
-<%--<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>--%>
+<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-3">
 
-            <div class="text-center" style="margin-bottom:20px;">
-                <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+            <div style="margin-bottom:20px; margin-top:20px;">
+                <img alt="img" width="100" height="100" class="img-responsive"
+                     style="margin: 0 auto; border-radius: 50%;"
+                     src="data:image/jpeg;base64,${user.avatar}"/>
+                <%--<i class='hi-icon fa fa-user-circle fa-5x'><a href="http://twitter.com"></a></i>--%>
             </div>
+
             <!-- Left column -->
             <ul class="nav nav-stacked collapse in" id="userMenu">
                 <li class="active">
