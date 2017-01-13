@@ -15,12 +15,12 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PgUserDaoTest extends H2DataSourceTest {
-
 
     private DataSource dataSource;
 
@@ -35,6 +35,7 @@ public class PgUserDaoTest extends H2DataSourceTest {
         when(securityService.encrypt("testPassword")).thenReturn("passwordHash");
 
         final User testUser = User.builder()
+                .uuid(UUID.randomUUID().toString())
                 .userName("testUser")
                 .firstName("John")
                 .lastName("Doe")
@@ -64,6 +65,7 @@ public class PgUserDaoTest extends H2DataSourceTest {
         Assert.assertTrue(testUser.isPresent());
 
         final User updatedUser = User.builder()
+                .uuid(UUID.randomUUID().toString())
                 .id(testUser.get().getId())
                 .userName(testUser.get().getUserName())
                 .firstName("updatedFirstName")
@@ -80,6 +82,7 @@ public class PgUserDaoTest extends H2DataSourceTest {
         Assert.assertTrue(updatedUserOptional.isPresent());
 
         final User user = updatedUserOptional.get();
+        Assert.assertFalse(user.getUuid().isEmpty());
         Assert.assertEquals(user.getId(), testUser.get().getId());
         Assert.assertEquals(user.getUserName(), testUser.get().getUserName());
         Assert.assertEquals(user.getFirstName(), "updatedFirstName");
@@ -120,5 +123,25 @@ public class PgUserDaoTest extends H2DataSourceTest {
 
         System.out.println(user.toString());
     }
+
+    @Test
+    public void getByUserId() throws Exception {
+        final UserDao userDao = new PgUserDao(dataSource);
+        final Optional<User> testUser1 = userDao.getByUserId(1);
+        Assert.assertTrue(testUser1.isPresent());
+
+        final Optional<User> testUser2 = userDao.getByUserId(2);
+        Assert.assertTrue(testUser2.isPresent());
+
+        final int hc1 = testUser1.get().getUuid().hashCode();
+        final int hc2 = testUser2.get().getUuid().hashCode();
+
+        System.out.println(hc1);
+        System.out.println(hc2);
+
+        System.out.println(Math.abs(hc1) + Math.abs(hc2));
+        System.out.println(Math.abs(hc2) + Math.abs(hc1));
+    }
+
 
 }

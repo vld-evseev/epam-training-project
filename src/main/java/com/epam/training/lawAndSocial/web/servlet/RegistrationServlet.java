@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 
@@ -78,6 +79,7 @@ public class RegistrationServlet extends HttpServlet {
         System.out.println(avatar);
 
         final User user = User.builder()
+                .uuid(UUID.randomUUID().toString())
                 .userName(params.get(USERNAME_PARAM))
                 .firstName(params.get(FIRSTNAME_PARAM))
                 .lastName(params.get(LASTNAME_PARAM))

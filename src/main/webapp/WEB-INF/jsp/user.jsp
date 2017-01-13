@@ -23,7 +23,8 @@
     <tags:navigationBlock>
         <c:choose>
             <c:when test="${userIsRequested}">
-                <profile:userBlock firstname="${requestedUser.firstName}"
+                <profile:userBlock id="${requestedUser.id}"
+                                   firstname="${requestedUser.firstName}"
                                    lastname="${requestedUser.lastName}"
                                    birthdate="${requestedUser.date}"
                                    email="${contacts.email}"
@@ -33,7 +34,8 @@
                 />
             </c:when>
             <c:otherwise>
-                <profile:userBlock firstname="${user.firstName}"
+                <profile:userBlock id="${user.id}"
+                                   firstname="${user.firstName}"
                                    lastname="${user.lastName}"
                                    birthdate="${user.date}"
                                    email="${contacts.email}"

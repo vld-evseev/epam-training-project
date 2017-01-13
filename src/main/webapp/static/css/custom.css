@@ -49,6 +49,23 @@
     right: 0;
 }
 
+.avatar-icon {
+    padding-right: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 5px;
+    text-align: center;
+}
+
+.avatar-img {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border-left-width: 5px;
+    margin-left: 5px;
+}
+
 .btn-file {
     position: relative;
     overflow: hidden;
@@ -70,8 +87,67 @@
     display: block;
 }
 
+.btn-follow {
+    width: 95px;
+    height: 30px;
+}
+
 #img-upload {
     border-radius: 50%;
     width: 100px;
     height: 100px;
+}
+
+section {
+    display: flex;
+    flex-flow: column;
+    height: 400px;
+    overflow-x: hidden;
+}
+
+.chat-window {
+    flex: 2;
+    /*overflow: auto;*/
+    list-style-type: none;
+}
+
+footer {
+    min-height: 60px;
+}
+
+.discussion li {
+    display: flex;
+}
+
+.avatar-msg {
+    width: 40px;
+    height: 40px;
+}
+
+.avatar-msg img {
+    width: 100%;
+    display: block;
+    margin-right: 15px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.self .message {
+    background: lightgreen;
+}
+
+.other .message {
+    background: lightblue;
+}
+
+.message-row {
+    margin-bottom: 20px;
+}
+
+time {
+    font-size: 0.7rem;
+    color: olive;
 }

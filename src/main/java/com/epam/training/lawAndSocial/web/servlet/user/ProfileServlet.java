@@ -76,6 +76,8 @@ public class ProfileServlet extends HttpServlet {
             session.setAttribute(SCHOOLS_ATTR, userSchools);
         }
 
+        LOGGER.debug("user entered profile page: {}", user.toString());
+
         req.getRequestDispatcher(USER_PAGE)
                 .forward(req, resp);
     }

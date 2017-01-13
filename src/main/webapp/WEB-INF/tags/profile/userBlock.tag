@@ -1,3 +1,4 @@
+<%@attribute name="id" rtexprvalue="true" required="true" %>
 <%@attribute name="firstname" rtexprvalue="true" required="true" %>
 <%@attribute name="lastname" rtexprvalue="true" required="true" %>
 <%@attribute name="birthdate" rtexprvalue="true" required="false" %>
@@ -14,11 +15,30 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 
+<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
+
 <div class="text-left" style="margin-bottom:20px; margin-left:20px;">
-    <p> <h4><strong>${lastname}</strong></h4></p>
-    <p> <h4><strong>${firstname}</strong></h4></p>
+    <div class="row">
+        <div class="col-sm-4">
+            <h4><strong>${lastname}</strong></h4>
+            <h4><strong>${firstname}</strong></h4>
+        </div>
+        <c:if test="${id != user.id}">
+            <div class="col-sm-4 pull-right">
+                <c:url var="sendMsgUrl" value="/user/message">
+                    <c:param name="id" value="${id}"/>
+                </c:url>
+                <a href="${sendMsgUrl}" class="btn btn-info">
+                    <i class="fa fa-envelope"></i>
+                    <fmt:message bundle="${userPage}" key="user.send.message"/>
+                </a>
+            </div>
+        </c:if>
+    </div>
 </div>
 
 <div class="panel panel-default">
@@ -29,7 +49,8 @@
         <table class="table table-user-information">
             <tbody>
             <tr>
-                <td><fmt:message bundle="${userPage}" key="user.birth.date"/></td>
+                <fmt:message var="dateMsg" bundle="${userPage}" key="user.birth.date"/>
+                <td>${dateMsg}</td>
                 <td>${birthdate}</td>
             </tr>
 

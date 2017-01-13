@@ -20,10 +20,10 @@
             <form role="form" action="${commonInfoEditUrl}" method="post">
                 <fieldset>
 
-                    <div class="form-group">
+                    <div class="form-group" id="uploadingBlock">
 
                         <div class="row">
-                            <div class="form-group col-xs-4" id="uploadingBlock">
+                            <div class="form-group col-xs-4">
                                 <label><fmt:message bundle="${userPage}" key="user.change.photo"/> </label>
                                 <div style=" padding-top: 15px; padding-bottom: 15px; ">
                                     <img id='img-upload'/>
@@ -40,26 +40,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-                        <%--<div class="row">
-
-                        </div>
-                        <div class="row">
-                            <div class="well col-xs-3" style=" padding-top: 15px; padding-bottom: 15px; ">
-                                <img id='img-upload'/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <span class="btn btn-default btn-file">
-                                        Browse... <input type="file" id="imgInp">
-                                    </span>
-                                </span>
-                                <input type="text" class="form-control" readonly>
-                            </div>
-                        </div>--%>
                     </div>
 
 
@@ -112,7 +92,8 @@
                                 <fmt:message bundle="${userPage}" key="user.gender"/>
                             </label>
                             <select id="gender" class="form-control input-sm" name="gender">
-                                <option value="UNKNOWN" <c:out value="${user.gender eq 'UNKNOWN' ? 'selected': ''}"/>>
+                                <option value="UNKNOWN" <c:out
+                                        value="${user.gender eq 'UNKNOWN' ? 'selected': ''}"/>>
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.unknown"/>
                                 </option>
@@ -120,7 +101,8 @@
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.male"/>
                                 </option>
-                                <option value="FEMALE" <c:out value="${user.gender eq 'FEMALE' ? 'selected': ''}"/>>
+                                <option value="FEMALE" <c:out
+                                        value="${user.gender eq 'FEMALE' ? 'selected': ''}"/>>
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.female"/>
                                 </option>
@@ -172,22 +154,26 @@
 
             var input = $(this).parents('.input-group').find(':text'),
                     log = label;
-
-            /*if (input.length) {
-             input.val(log);
-             } else {
-             if (log) alert(log);
-             }*/
-
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
+
+                if (input.files[0].size > 2097152) {
+                    <fmt:message var="invalidImageSizeMsg" bundle="${userPage}" key="user.message.invalid.size"/>
+                    $("#uploadingBlock")
+                            .after(
+                                    "<div class='alert alert-danger' id='uploadAlert'>" + " ${invalidImageSizeMsg}" + " </div> "
+                            );
+                    input.value = "";
+                    return false;
+                }
+
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
                     $('#img-upload').attr('src', e.target.result);
                     $('#avatarSrc').attr('value', e.target.result.split(',')[1]);
-                }
+                };
 
                 reader.readAsDataURL(input.files[0]);
             }
@@ -204,6 +190,7 @@
             var sFileName = oInput.value;
             if (sFileName.length > 0) {
                 var isValid = false;
+
                 for (var j = 0; j < validFileExtensions.length; j++) {
                     var sCurExtension = validFileExtensions[j];
                     if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
@@ -214,8 +201,8 @@
                 }
 
                 if (!isValid) {
-                    <fmt:message var="invalidImageUploadMsg" bundle="${userPage}" key="user.message.invalid.image"/>
-                    var message = "${invalidImageUploadMsg}" + ": " + validFileExtensions.join(", ");
+                    <fmt:message var="invalidImageExtensionMsg" bundle="${userPage}" key="user.message.invalid.image"/>
+                    var message = "${invalidImageExtensionMsg}" + ": " + validFileExtensions.join(", ");
                     $("#uploadingBlock").after("<div class='alert alert-danger' id='uploadAlert'>" + message + "</div>");
                     oInput.value = "";
                     return false;

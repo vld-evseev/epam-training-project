@@ -24,6 +24,7 @@ public class TestSignInServlet extends HttpServlet {
 
     private final UserService userService;
     private final static Logger LOGGER = LoggerFactory.getLogger(TestSignInServlet.class);
+    //private final ChatService chatService;
 
     @Inject
     public TestSignInServlet(UserService userService) {

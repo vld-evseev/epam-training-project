@@ -27,22 +27,30 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <c:url var="userMessagesUrl" value="/user/messages"/>
+                    <a href="${userMessagesUrl}">
                         <i class="fa fa-envelope"> </i>
                         <fmt:message bundle="${userPage}" key="user.messages"/>
-                        <span class="badge badge-info">4</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fa fa-user"></i>
-                        <fmt:message bundle="${userPage}" key="user.friends"/>
+                    <c:url var="userFollowingUrl" value="/user/following"/>
+                    <a href="${userFollowingUrl}">
+                        <i class="fa fa-users"></i>
+                        <fmt:message bundle="${userPage}" key="user.following"/>
+                    </a>
+                </li>
+                <li>
+                    <c:url var="userFollowersUrl" value="/user/followers"/>
+                    <a href="${userFollowersUrl}">
+                        <i class="fa fa-users"></i>
+                        <fmt:message bundle="${userPage}" key="user.followers"/>
                     </a>
                 </li>
                 <li>
                     <c:url var="userEditUrl" value="/user/edit"/>
                     <a href="${userEditUrl}">
-                        <i class="fa fa-user"></i>
+                        <i class="fa fa-cog"></i>
                         <fmt:message bundle="${userPage}" key="user.edit"/>
                     </a>
                 </li>

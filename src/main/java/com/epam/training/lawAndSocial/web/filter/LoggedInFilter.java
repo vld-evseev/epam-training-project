@@ -23,13 +23,9 @@ public class LoggedInFilter implements Filter {
         final HttpServletRequest request = (HttpServletRequest) req;
 
         final String path = request.getRequestURI();
-        LOGGER.debug(path);
-
         if (path.indexOf("/static") > 0) {
-            LOGGER.debug("contains css");
             chain.doFilter(req, resp);
         } else if (path.indexOf("/webjars") > 0) {
-            LOGGER.debug("contains webjars");
             chain.doFilter(req, resp);
         }
 

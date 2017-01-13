@@ -19,8 +19,8 @@ public final class ServletParams {
     public static final String INDEX_PAGE = "/WEB-INF/index.jsp";
     public static final String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
     public static final String NEW_USER_ATTR = "newUser";
-    public static final String PROFILE_EDIT_PAGE = "/WEB-INF/jsp/profileEdit.jsp";
     public static final String PROFILE_EDIT_JSP = "/WEB-INF/jsp/profileEdit.jsp";
+    public static final String MESSAGE_JSP = "/WEB-INF/jsp/message.jsp";
     public static final String CONTACTS_ATTR = "contacts";
     public static final String PATRONYMIC_PARAM = "patronymic";
     public static final String GENDER_PARAM = "gender";
@@ -47,6 +47,12 @@ public final class ServletParams {
     public static final String REQUESTED_USER_SCHOOLS_ATTR = "requestedUserSchools";
     public static final String DEFAULT_AVATAR_PATH = "/static/imgs/default_user.png";
     public static final String AVATAR_SRC_PARAM = "avatarSrc";
+    public static final String PAGES_COUNT_ATTR = "pagesCount";
+    public static final String USER_LIST_ATTR = "userList";
+    public static final String COMMUNITY_JSP = "/WEB-INF/jsp/community.jsp";
+    public static final String ACTION_PARAM = "action";
+    public static final String USER_ID_PARAM = "userId";
+
 
     private ServletParams() {
     }

@@ -3,11 +3,15 @@ package com.epam.training.lawAndSocial;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 public class Misc {
 
     @Test
     public void test() {
-        System.out.println(Math.ceil((double) 1003 / 30));
+        final UUID uuid = UUID.randomUUID();
+        System.out.println(uuid);
+
     }
 
 }

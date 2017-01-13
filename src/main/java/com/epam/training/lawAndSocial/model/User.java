@@ -8,6 +8,7 @@ import lombok.Value;
 public class User {
 
     long id;
+    String uuid;
     String userName;
     String firstName;
     String lastName;

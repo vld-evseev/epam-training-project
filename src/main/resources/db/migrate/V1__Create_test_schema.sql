@@ -4,6 +4,7 @@ CREATE SEQUENCE lawAndSocialDb.user_seq;
 
 CREATE TABLE lawAndSocialDb.user (
   id           INTEGER PRIMARY KEY,
+  uuid         VARCHAR(255) NOT NULL,
   username     VARCHAR(255) NOT NULL,
   firstName    VARCHAR(255) NOT NULL,
   lastName     VARCHAR(255) NOT NULL,
@@ -53,6 +54,20 @@ CREATE TABLE lawAndSocialDb.university (
   FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
 );
 
+CREATE TABLE lawAndSocialDb.follow (
+  user_id          INTEGER NOT NULL REFERENCES lawAndSocialDb.user (id),
+  followed_user_id INTEGER NOT NULL REFERENCES lawAndSocialDb.user (id),
+  CONSTRAINT followed_user_key PRIMARY KEY (user_id, followed_user_id)
+);
+
+CREATE TABLE lawAndSocialDb.message_history (
+  from_user_id INTEGER NOT NULL,
+  to_user_id   INTEGER NOT NULL,
+  dateValue    BIGINT  NOT NULL,
+  textValue    TEXT    NOT NULL,
+  FOREIGN KEY (from_user_id) REFERENCES lawAndSocialDb.user (id),
+  FOREIGN KEY (to_user_id) REFERENCES lawAndSocialDb.user (id)
+);
 
 /*CREATE TABLE lawAndSocialDb.user_school (
   user_id   INTEGER REFERENCES lawAndSocialDb.user (id) ON UPDATE CASCADE,

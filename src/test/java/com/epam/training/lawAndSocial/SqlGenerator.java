@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Random;
+import java.util.UUID;
 
 public class SqlGenerator extends H2DataSourceTest {
 
@@ -63,12 +64,12 @@ public class SqlGenerator extends H2DataSourceTest {
 
         System.out.println(generateBirthDate(beginTime, endTime));
 
-        final String pattern = "INSERT INTO lawAndSocialDb.user (id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)\n" +
-                "  SELECT nextval('lawAndSocialDb.user_seq'), 'JohnDoug123', 'John', 'Doug', 'Albert', 'MALE', '08.02.1989', NULL,\n" +
+        final String pattern = "INSERT INTO lawAndSocialDb.user (id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)\n" +
+                "  SELECT nextval('lawAndSocialDb.user_seq'), '14675655-63bb-4dad-99c2-005768902ade', 'JohnDoug123', 'John', 'Doug', 'Albert', 'MALE', '08.02.1989', NULL,\n" +
                 "    '$s0$e0801$c+pEdHwfgqpU+bfRvfoi2g==$5gMZSzI2Dx2PEjA1dYc3SNQ6e1HdBoHD4HA0NsU9VSI='\n" +
-                "  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'testUser', 'name1', 'surname2', NULL, NULL, '05.07.1990', NULL,\n" +
+                "  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), '337daaed-b5c7-4fb8-bb49-b96816a89699', 'testUser', 'name1', 'surname2', NULL, NULL, '05.07.1990', NULL,\n" +
                 "              '$s0$e0801$6zvGkIzar10PijTyyrqQyg==$gizYA/v7z48i5V9D7njSluNTdJP/vsp3pUDav7F/TzU='\n" +
-                "  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'anotherUser', 'Another', 'User', NULL, 'FEMALE', '06.12.2016', NULL,\n" +
+                "  UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), 'b2ddc07f-8e5c-40b5-ac06-dc124cab7cc6', 'anotherUser', 'Another', 'User', NULL, 'FEMALE', '06.12.2016', NULL,\n" +
                 "              '$s0$e0801$5R872TeqCy+HLGtzOolpeA==$L4NTgEEb5Eq0KWeVUaAQyj7co4nivM39ybkS3oWl0hY='";
 
         final StringBuilder stringBuilder = new StringBuilder();
@@ -78,6 +79,7 @@ public class SqlGenerator extends H2DataSourceTest {
             final long date = generateBirthDate(beginTime, endTime);
             Gender randomGender = Gender.values()[(int) (Math.random() * Gender.values().length)];
             final User user = User.builder()
+                    .uuid(UUID.randomUUID().toString())
                     .userName(generateName())
                     .firstName(generateName())
                     .lastName(generateName())
@@ -87,6 +89,7 @@ public class SqlGenerator extends H2DataSourceTest {
                     .build();
 
             stringBuilder.append(" UNION ALL SELECT nextval('lawAndSocialDb.user_seq'), '")
+                    .append(user.getUuid()).append("','")
                     .append(user.getUserName()).append("','");
             stringBuilder.append(user.getFirstName()).append("','");
             stringBuilder.append(user.getLastName()).append("',");

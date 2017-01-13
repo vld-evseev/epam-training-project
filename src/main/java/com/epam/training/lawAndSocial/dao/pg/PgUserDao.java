@@ -33,19 +33,20 @@ public class PgUserDao implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
             final PreparedStatement query = connection.prepareStatement(
-                    "INSERT INTO lawAndSocialDb.user(id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)" +
+                    "INSERT INTO lawAndSocialDb.user(id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)" +
                             " VALUES (nextval('lawAndSocialDb.user_seq')," +
-                            " ?, ?, ?, ?, ?, ?, ?, ?);",
+                            " ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                     returnColumns
             );
-            query.setString(1, user.getUserName());
-            query.setString(2, user.getFirstName());
-            query.setString(3, user.getLastName());
-            query.setString(4, user.getPatronymic());
-            query.setString(5, Gender.UNKNOWN.toString());
-            query.setString(6, user.getDate());
-            query.setString(7, user.getAvatar());
-            query.setString(8, user.getPasswordHash());
+            query.setString(1, user.getUuid());
+            query.setString(2, user.getUserName());
+            query.setString(3, user.getFirstName());
+            query.setString(4, user.getLastName());
+            query.setString(5, user.getPatronymic());
+            query.setString(6, Gender.UNKNOWN.toString());
+            query.setString(7, user.getDate());
+            query.setString(8, user.getAvatar());
+            query.setString(9, user.getPasswordHash());
             query.executeUpdate();
             final ResultSet generatedKeys = query.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -65,7 +66,7 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                    "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE username = ?;"
             );
             query.setString(1, username);
@@ -75,6 +76,7 @@ public class PgUserDao implements UserDao {
                 result = Optional.of(
                         User.builder()
                                 .id(resultSet.getLong("id"))
+                                .uuid(resultSet.getString("uuid"))
                                 .userName(resultSet.getString("username"))
                                 .firstName(resultSet.getString("firstName"))
                                 .lastName(resultSet.getString("lastName"))
@@ -101,7 +103,7 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                    "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE id = ?;"
             );
             query.setLong(1, id);
@@ -111,6 +113,7 @@ public class PgUserDao implements UserDao {
                 result = Optional.of(
                         User.builder()
                                 .id(resultSet.getLong("id"))
+                                .uuid(resultSet.getString("uuid"))
                                 .userName(resultSet.getString("username"))
                                 .firstName(resultSet.getString("firstName"))
                                 .lastName(resultSet.getString("lastName"))
@@ -190,11 +193,12 @@ public class PgUserDao implements UserDao {
     public List<User> getUsers(int limit, int offset) {
         List<User> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
-            final PreparedStatement query = connection.prepareStatement("SELECT id, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
-                    " FROM lawAndSocialDb.user" +
-                    " ORDER BY id ASC" +
-                    " LIMIT ?" +
-                    " OFFSET ?;");
+            final PreparedStatement query = connection.prepareStatement(
+                    "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                            " FROM lawAndSocialDb.user" +
+                            " ORDER BY id ASC" +
+                            " LIMIT ?" +
+                            " OFFSET ?;");
             query.setInt(1, limit);
             query.setInt(2, offset);
             final ResultSet resultSet = query.executeQuery();
@@ -203,12 +207,14 @@ public class PgUserDao implements UserDao {
                 result.add(
                         User.builder()
                                 .id(resultSet.getLong("id"))
+                                .uuid(resultSet.getString("uuid"))
                                 .userName(resultSet.getString("username"))
                                 .firstName(resultSet.getString("firstName"))
                                 .lastName(resultSet.getString("lastName"))
                                 .patronymic(resultSet.getString("patronymic"))
                                 .gender(Gender.valueOf(gender))
                                 .date(resultSet.getString("birthdate"))
+                                .avatar(resultSet.getString("avatar"))
                                 .passwordHash(resultSet.getString("passwordHash"))
                                 .build()
                 );
@@ -220,7 +226,7 @@ public class PgUserDao implements UserDao {
             return Collections.emptyList();
         }
 
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     @Override
