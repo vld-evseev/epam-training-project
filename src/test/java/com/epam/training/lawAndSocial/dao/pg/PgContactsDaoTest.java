@@ -20,14 +20,13 @@ public class PgContactsDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void addTest() {
+    public void addTest() throws Exception {
         final PgContactsDao contactsDao = new PgContactsDao(dataSource);
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("anotherUser");
         Assert.assertTrue(testUser.isPresent());
 
         final Contacts contacts = Contacts.builder()
-                .userId(testUser.get().getId())
                 .email("another@mail.com")
                 .phone("+9444111")
                 .website("testWebsite.com")
@@ -38,7 +37,7 @@ public class PgContactsDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void getTest() {
+    public void getTest() throws Exception {
         final PgContactsDao contactsDao = new PgContactsDao(dataSource);
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
@@ -56,7 +55,7 @@ public class PgContactsDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void deleteTest() {
+    public void deleteTest() throws Exception {
         final PgContactsDao contactsDao = new PgContactsDao(dataSource);
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
@@ -67,7 +66,7 @@ public class PgContactsDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void updateTest() {
+    public void updateTest() throws Exception {
         final PgContactsDao contactsDao = new PgContactsDao(dataSource);
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");

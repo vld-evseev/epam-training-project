@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
 import com.epam.training.lawAndSocial.dao.UserDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.Gender;
 import com.epam.training.lawAndSocial.model.User;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class PgUserDao implements UserDao {
     }
 
     @Override
-    public long add(User user) {
+    public long add(User user) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
@@ -52,17 +52,19 @@ public class PgUserDao implements UserDao {
             if (generatedKeys.next()) {
                 result = generatedKeys.getInt(1);
             }
-        } catch (SQLException e) {
-            LOGGER.error("Adding user caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User: {}", user.toString());
+
+            if (result == 0) {
+                throw new PersistException("Rows are not affected on add: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public Optional<User> getByUsername(String username) {
+    public Optional<User> getByUsername(String username) throws PersistException {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -88,18 +90,15 @@ public class PgUserDao implements UserDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting user by userName caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("Username: {}", username);
-            return Optional.empty();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public Optional<User> getByUserId(long id) {
+    public Optional<User> getByUserId(long id) throws PersistException {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -124,18 +123,15 @@ public class PgUserDao implements UserDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting user by userId caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("userId: {}", id);
-            return Optional.empty();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long update(User user) {
+    public long update(User user) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -152,18 +148,19 @@ public class PgUserDao implements UserDao {
             query.setString(6, user.getDate());
             query.setLong(7, user.getId());
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Updating user caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User: {}", user.toString());
-            return result;
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on update: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long updateAvatar(long id, String base64EncodedImage) {
+    public long updateAvatar(long id, String base64EncodedImage) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -174,23 +171,19 @@ public class PgUserDao implements UserDao {
             query.setString(1, base64EncodedImage);
             query.setLong(2, id);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Updating avatar caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User id: {}", id);
-            return result;
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on update: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long delete(User user) {
-        return 0;
-    }
-
-    @Override
-    public List<User> getUsers(int limit, int offset) {
+    public List<User> getUsers(int limit, int offset) throws PersistException {
         List<User> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -219,18 +212,15 @@ public class PgUserDao implements UserDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting list of users caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("current offset: {}, limit: {}", offset, limit);
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return Collections.unmodifiableList(result);
     }
 
     @Override
-    public long getNumberOfUsers() {
+    public long getNumberOfUsers() throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -240,17 +230,15 @@ public class PgUserDao implements UserDao {
             if (resultSet.next()) {
                 result = resultSet.getLong("total");
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting number of users caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            return result;
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
 
-    private String getGender(String result) throws SQLException {
+    private String getGender(String result) {
         if (result == null) {
             return Gender.UNKNOWN.toString();
         }

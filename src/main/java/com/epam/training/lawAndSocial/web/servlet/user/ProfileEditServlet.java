@@ -47,10 +47,10 @@ public class ProfileEditServlet extends HttpServlet {
             final Contacts contacts = getContacts(user.getId());
             session.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<School> userSchools = educationService.getUserSchools(user.getId());
+            final List<School> userSchools = educationService.getSchoolsByUserId(user.getId());
             session.setAttribute(SCHOOLS_ATTR, userSchools);
 
-            final List<University> userUniversities = educationService.getUserUniversities(user.getId());
+            final List<University> userUniversities = educationService.getUniversitiesByUserId(user.getId());
             session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
 
             for (School userSchool : userSchools) {

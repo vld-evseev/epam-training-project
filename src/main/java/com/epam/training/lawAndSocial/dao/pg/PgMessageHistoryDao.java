@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
 import com.epam.training.lawAndSocial.dao.MessageHistoryDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.model.User;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 public class PgMessageHistoryDao implements MessageHistoryDao {
@@ -26,7 +26,7 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
     }
 
     @Override
-    public int add(Message message) {
+    public int add(Message message) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -38,10 +38,12 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
             query.setLong(3, message.getDate());
             query.setString(4, message.getText());
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Adding message caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("Message: {}", message.toString());
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on add: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
@@ -53,7 +55,7 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
     }
 
     @Override
-    public List<Message> getByUserId(long userId, long otherUserId) {
+    public List<Message> getByUserId(long userId, long otherUserId) throws PersistException {
         List<Message> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -77,18 +79,15 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting list of messages by user id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User id: {}", userId);
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return Collections.unmodifiableList(result);
     }
 
     @Override
-    public Set<User> getContacts(long userId, int limit, int offset) {
+    public Set<User> getContacts(long userId, int limit, int offset) throws PersistException {
         Set<User> result = new LinkedHashSet<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -127,11 +126,8 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
                     );
                 }
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting contacts by user id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}, limit: {}, offset: {}", userId, limit, offset);
-            return Collections.emptySet();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return Collections.unmodifiableSet(result);

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 public class UserServiceImplTest {
 
     @Test
-    public void getByCredentialsTest() {
+    public void getByCredentialsTest() throws Exception {
         final SecurityService securityService = mock(SecurityService.class);
         when(securityService.validate("password", "pwdHash")).thenReturn(true);
 

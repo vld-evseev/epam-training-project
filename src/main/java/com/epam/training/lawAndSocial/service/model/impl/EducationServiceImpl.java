@@ -2,6 +2,7 @@ package com.epam.training.lawAndSocial.service.model.impl;
 
 import com.epam.training.lawAndSocial.dao.SchoolDao;
 import com.epam.training.lawAndSocial.dao.UniversityDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.education.School;
 import com.epam.training.lawAndSocial.model.education.University;
 import com.epam.training.lawAndSocial.service.model.EducationService;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,14 +42,14 @@ public class EducationServiceImpl implements EducationService {
         for (School school : schoolList) {
             if (school.getName() != null) {
                 if (!userAssociatedToSchool(userId, school)) {
-                    result = schoolDao.addUserToSchool(userId, school);
+                    result = addUserToSchool(userId, school);
                     LOGGER.debug("userId {} added school info {}", userId, school.toString());
                 } else {
                     if (school.getName().isEmpty()) {
-                        result = schoolDao.deleteUserFromSchool(userId, school);
+                        result = deleteUserFromSchool(userId, school);
                         LOGGER.debug("userId {} deleted school info {} - by name", userId, school.toString());
                     } else {
-                        result = schoolDao.updateSchoolByUserId(userId, school);
+                        result = updateSchoolByUserId(userId, school);
                         LOGGER.debug("userId {} updated school info {}", userId, school.toString());
                     }
                 }
@@ -60,16 +62,53 @@ public class EducationServiceImpl implements EducationService {
             LOGGER.debug(school.toString());
         }
         for (School school : schoolsToDelete) {
-            result = schoolDao.deleteUserFromSchool(userId, school);
+            result = deleteUserFromSchool(userId, school);
             LOGGER.debug("userId {} deleted school info {} - by intersection", userId, school.toString());
         }
 
         return result;
     }
 
+    public long updateSchoolByUserId(long userId, School school) {
+        try {
+            return schoolDao.updateSchoolByUserId(userId, school);
+        } catch (PersistException e) {
+            LOGGER.error("Updating user school caused an exception: {}", e.getMessage());
+            LOGGER.error("School: {}", school.toString());
+            LOGGER.error("User id: {}", userId);
+            return -1;
+        }
+    }
+
+    public long deleteUserFromSchool(long userId, School school) {
+        try {
+            return schoolDao.deleteUserFromSchool(userId, school);
+        } catch (PersistException e) {
+            LOGGER.error("Deleting school by user_id caused an exception: {}", e.getMessage());
+            LOGGER.error("School: {}", school.toString());
+            return -1;
+        }
+    }
+
+    public long addUserToSchool(long userId, School school) {
+        try {
+            return schoolDao.addUserToSchool(userId, school);
+        } catch (PersistException e) {
+            LOGGER.error("Adding school caused an exception: {}", e.getMessage());
+            LOGGER.error("School: {}", school.toString());
+            return -1;
+        }
+    }
+
     @Override
-    public List<School> getUserSchools(long userId) {
-        return schoolDao.getByUserId(userId);
+    public List<School> getSchoolsByUserId(long userId) {
+        try {
+            return schoolDao.getByUserId(userId);
+        } catch (PersistException e) {
+            LOGGER.error("Getting school by userName caused an exception: {}", e.getMessage());
+            LOGGER.error("UserId: {}", userId);
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -84,14 +123,14 @@ public class EducationServiceImpl implements EducationService {
         for (University university : universityList) {
             if (university.getName() != null) {
                 if (!userAssociatedToUniversity(userId, university)) {
-                    result = universityDao.addUserToUniversity(userId, university);
+                    result = addUserToUniversity(userId, university);
                     LOGGER.debug("userId {} added university info {}", userId, university.toString());
                 } else {
                     if (university.getName().isEmpty()) {
-                        result = universityDao.deleteUserFromUniversity(userId, university);
+                        result = deleteUserFromUniversity(userId, university);
                         LOGGER.debug("userId {} deleted university info {} - by name", userId, university.toString());
                     } else {
-                        result = universityDao.updateUniversityByUserId(userId, university);
+                        result = updateUniversityByUserId(userId, university);
                         LOGGER.debug("userId {} updated university info {}", userId, university.toString());
                     }
                 }
@@ -104,20 +143,57 @@ public class EducationServiceImpl implements EducationService {
             LOGGER.debug(university.toString());
         }
         for (University university : universitiesToDelete) {
-            result = universityDao.deleteUserFromUniversity(userId, university);
+            result = deleteUserFromUniversity(userId, university);
             LOGGER.debug("userId {} deleted university info {} - by intersection", userId, university.toString());
         }
 
         return result;
     }
 
+    public long updateUniversityByUserId(long userId, University university) {
+        try {
+            return universityDao.updateUniversityByUserId(userId, university);
+        } catch (PersistException e) {
+            LOGGER.error("Updating user university caused an exception: {}", e.getMessage());
+            LOGGER.error("University: {}", university.toString());
+            LOGGER.error("User id: {}", userId);
+            return -1;
+        }
+    }
+
+    public long deleteUserFromUniversity(long userId, University university) {
+        try {
+            return universityDao.deleteUserFromUniversity(userId, university);
+        } catch (PersistException e) {
+            LOGGER.error("Deleting university by user_id caused an exception: {}", e.getMessage());
+            LOGGER.error("University: {}", university.toString());
+            return -1;
+        }
+    }
+
+    public long addUserToUniversity(long userId, University university) {
+        try {
+            return universityDao.addUserToUniversity(userId, university);
+        } catch (PersistException e) {
+            LOGGER.error("Adding university caused an exception: {}", e.getMessage());
+            LOGGER.error("University: {}", university.toString());
+            return -1;
+        }
+    }
+
     @Override
-    public List<University> getUserUniversities(long userId) {
-        return universityDao.getByUserId(userId);
+    public List<University> getUniversitiesByUserId(long userId) {
+        try {
+            return universityDao.getByUserId(userId);
+        } catch (PersistException e) {
+            LOGGER.error("Getting university by userName caused an exception: {}", e.getMessage());
+            LOGGER.error("UserId: {}", userId);
+            return Collections.emptyList();
+        }
     }
 
     private List<School> findSchoolsToDelete(long userId, List<School> updatedSchoolList) {
-        final List<School> persistentSchoolList = schoolDao.getByUserId(userId);
+        final List<School> persistentSchoolList = getSchoolsByUserId(userId);
         LOGGER.debug("persistent schools: {}", Arrays.toString(persistentSchoolList.toArray()));
         LOGGER.debug("updatedSchoolList: {}", Arrays.toString(updatedSchoolList.toArray()));
         persistentSchoolList.removeAll(updatedSchoolList);
@@ -125,7 +201,7 @@ public class EducationServiceImpl implements EducationService {
     }
 
     private List<University> findUniversitiesToDelete(long userId, List<University> updatedUniversityList) {
-        final List<University> persistentUniversityList = universityDao.getByUserId(userId);
+        final List<University> persistentUniversityList = getUniversitiesByUserId(userId);
         LOGGER.debug("persistent universities: {}", Arrays.toString(persistentUniversityList.toArray()));
         LOGGER.debug("updatedUniversityList: {}", Arrays.toString(updatedUniversityList.toArray()));
         persistentUniversityList.removeAll(updatedUniversityList);
@@ -133,7 +209,7 @@ public class EducationServiceImpl implements EducationService {
     }
 
     private boolean userAssociatedToUniversity(long userId, University university) {
-        final Optional<University> universityOptional = universityDao.getByUniversityName(university.getName());
+        final Optional<University> universityOptional = getByUniversityName(university.getName());
         if (universityOptional.isPresent()) {
             return university.getUserId() == userId;
         }
@@ -141,12 +217,32 @@ public class EducationServiceImpl implements EducationService {
         return false;
     }
 
+    public Optional<University> getByUniversityName(String universityName) {
+        try {
+            return universityDao.getByUniversityName(universityName);
+        } catch (PersistException e) {
+            LOGGER.error("Getting university by name caused an exception: {}", e.getMessage());
+            LOGGER.error("University name: {}", universityName);
+            return Optional.empty();
+        }
+    }
+
     private boolean userAssociatedToSchool(long userId, School school) {
-        final Optional<School> schoolOptional = schoolDao.getBySchoolName(school.getName());
+        final Optional<School> schoolOptional = getSchoolByName(school.getName());
         if (schoolOptional.isPresent()) {
             return school.getUserId() == userId;
         }
 
         return false;
+    }
+
+    public Optional<School> getSchoolByName(String schoolName) {
+        try {
+            return schoolDao.getBySchoolName(schoolName);
+        } catch (PersistException e) {
+            LOGGER.error("Getting school by name caused an exception: {}", e.getMessage());
+            LOGGER.error("School name: {}", schoolName);
+            return Optional.empty();
+        }
     }
 }

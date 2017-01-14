@@ -1,5 +1,6 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.University;
@@ -70,7 +71,7 @@ public class PgUniversityDaoTest extends H2DataSourceTest {
         Assert.assertTrue(inserted > 0);
     }
 
-    @Test
+    @Test(expected = PersistException.class)
     public void deleteUserFromUniversity() throws Exception {
         final PgUniversityDao universityDao = new PgUniversityDao(dataSource);
 

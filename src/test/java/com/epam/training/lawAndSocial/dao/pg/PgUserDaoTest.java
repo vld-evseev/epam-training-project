@@ -30,7 +30,7 @@ public class PgUserDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void addUserTest() {
+    public void addUserTest() throws Exception {
         final SecurityService securityService = mock(SecurityService.class);
         when(securityService.encrypt("testPassword")).thenReturn("passwordHash");
 
@@ -52,14 +52,14 @@ public class PgUserDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void getUserByNameTest() {
+    public void getUserByNameTest() throws Exception {
         final UserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
         Assert.assertTrue(testUser.isPresent());
     }
 
     @Test
-    public void updateUserTest() {
+    public void updateUserTest() throws Exception {
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
         Assert.assertTrue(testUser.isPresent());
@@ -129,18 +129,6 @@ public class PgUserDaoTest extends H2DataSourceTest {
         final UserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser1 = userDao.getByUserId(1);
         Assert.assertTrue(testUser1.isPresent());
-
-        final Optional<User> testUser2 = userDao.getByUserId(2);
-        Assert.assertTrue(testUser2.isPresent());
-
-        final int hc1 = testUser1.get().getUuid().hashCode();
-        final int hc2 = testUser2.get().getUuid().hashCode();
-
-        System.out.println(hc1);
-        System.out.println(hc2);
-
-        System.out.println(Math.abs(hc1) + Math.abs(hc2));
-        System.out.println(Math.abs(hc2) + Math.abs(hc1));
     }
 
 

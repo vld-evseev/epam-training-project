@@ -1,5 +1,6 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.School;
@@ -21,7 +22,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void getByUserIdTest() {
+    public void getByUserIdTest() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final PgUserDao userDao = new PgUserDao(dataSource);
@@ -40,7 +41,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void getSchoolById() {
+    public void getSchoolById() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final Optional<School> schoolOptional = schoolDao.getBySchoolId(1);
@@ -48,7 +49,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void getSchoolByName() {
+    public void getSchoolByName() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final Optional<School> schoolOptional = schoolDao.getBySchoolName("School1");
@@ -56,7 +57,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void addUserToSchoolTest() {
+    public void addUserToSchoolTest() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final Optional<School> schoolOptional = schoolDao.getBySchoolId(3);
@@ -70,8 +71,8 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
         Assert.assertTrue(inserted > 0);
     }
 
-    @Test
-    public void deleteUserFromSchool() {
+    @Test(expected = PersistException.class)
+    public void deleteUserFromSchool() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final Optional<School> schoolOptional = schoolDao.getBySchoolId(1);
@@ -92,7 +93,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     }
 
     @Test
-    public void updateUserSchoolTest() {
+    public void updateUserSchoolTest() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
         final Optional<School> schoolToUpdateOptional = schoolDao.getBySchoolId(1);

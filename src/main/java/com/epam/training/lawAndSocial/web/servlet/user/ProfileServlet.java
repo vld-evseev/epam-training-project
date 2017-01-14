@@ -56,7 +56,7 @@ public class ProfileServlet extends HttpServlet {
                 final Contacts requestedUserContacts = getContacts(requestedUser.getId());
                 req.setAttribute(CONTACTS_ATTR, requestedUserContacts);
 
-                final List<School> requestedUserSchools = educationService.getUserSchools(requestedUser.getId());
+                final List<School> requestedUserSchools = educationService.getSchoolsByUserId(requestedUser.getId());
                 req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, requestedUserSchools);
 
                 req.getRequestDispatcher(USER_PAGE)
@@ -72,7 +72,7 @@ public class ProfileServlet extends HttpServlet {
             final Contacts contacts = getContacts(user.getId());
             req.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<School> userSchools = educationService.getUserSchools(user.getId());
+            final List<School> userSchools = educationService.getSchoolsByUserId(user.getId());
             session.setAttribute(SCHOOLS_ATTR, userSchools);
         }
 

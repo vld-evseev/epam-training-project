@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
 import com.epam.training.lawAndSocial.dao.SchoolDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.education.School;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,7 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public List<School> getByUserId(long userId) {
+    public List<School> getByUserId(long userId) throws PersistException {
         List<School> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -51,18 +50,15 @@ public class PgSchoolDao implements SchoolDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting school by userName caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}", userId);
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public Optional<School> getBySchoolId(long id) {
+    public Optional<School> getBySchoolId(long id) throws PersistException {
         Optional<School> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -84,18 +80,17 @@ public class PgSchoolDao implements SchoolDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.error("Getting school by id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
             LOGGER.error("School id: {}", id);
-            return Optional.empty();
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public Optional<School> getBySchoolName(String schoolName) {
+    public Optional<School> getBySchoolName(String schoolName) throws PersistException {
         Optional<School> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -116,11 +111,8 @@ public class PgSchoolDao implements SchoolDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting school by name caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("School name: {}", schoolName);
-            return Optional.empty();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
@@ -128,7 +120,7 @@ public class PgSchoolDao implements SchoolDao {
 
 
     @Override
-    public long addUserToSchool(long userId, School school) {
+    public long addUserToSchool(long userId, School school) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
@@ -149,17 +141,19 @@ public class PgSchoolDao implements SchoolDao {
             if (generatedKeys.next()) {
                 result = generatedKeys.getInt(1);
             }
-        } catch (SQLException e) {
-            LOGGER.error("Adding school caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("School: {}", school.toString());
+
+            if (result == 0) {
+                throw new PersistException("Rows are not affected on add: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long deleteUserFromSchool(long userId, School school) {
+    public long deleteUserFromSchool(long userId, School school) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -169,17 +163,19 @@ public class PgSchoolDao implements SchoolDao {
             query.setLong(1, school.getId());
             query.setLong(2, userId);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Deleting school by user_id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("School: {}", school.toString());
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on delete: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long updateSchoolByUserId(long userId, School school) {
+    public long updateSchoolByUserId(long userId, School school) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -195,12 +191,12 @@ public class PgSchoolDao implements SchoolDao {
             query.setLong(6, school.getId());
             query.setLong(7, userId);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Updating user school caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("School: {}", school.toString());
-            LOGGER.error("User id: {}", userId);
-            return result;
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on update: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;

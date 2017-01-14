@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
 import com.epam.training.lawAndSocial.dao.FollowDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class PgFollowDao implements FollowDao {
     }
 
     @Override
-    public int follow(long userId, long followedUserId) {
+    public int follow(long userId, long followedUserId) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -36,23 +36,19 @@ public class PgFollowDao implements FollowDao {
             query.setLong(1, userId);
             query.setLong(2, followedUserId);
             result = query.executeUpdate();
-            /*final ResultSet generatedKeys = query.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                result = generatedKeys.getInt(1);
-            }*/
 
-        } catch (SQLException e) {
-            LOGGER.error("Follow user caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}", userId);
-            LOGGER.error("Followed userId: {}", followedUserId);
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on follow: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public int unfollow(long userId, long unfollowedUserId) {
+    public int unfollow(long userId, long unfollowedUserId) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -62,18 +58,19 @@ public class PgFollowDao implements FollowDao {
             query.setLong(1, userId);
             query.setLong(2, unfollowedUserId);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Unfollow user caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}", userId);
-            LOGGER.error("Unfollowed userId: {}", unfollowedUserId);
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on unfollow: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public List<User> getFollowing(long userId, int limit, int offset) {
+    public List<User> getFollowing(long userId, int limit, int offset) throws PersistException {
         List<User> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -90,13 +87,6 @@ public class PgFollowDao implements FollowDao {
                             " ORDER BY fl.followed_user_id ASC" +
                             " LIMIT ?" +
                             " OFFSET ?;"
-
-                    /*"SELECT user_id, followed_user_id" +
-                            " FROM lawAndSocialDb.follow" +
-                            " WHERE user_id = ?" +
-                            " ORDER BY user_id ASC" +
-                            " LIMIT ?" +
-                            " OFFSET ?;"*/
             );
             query.setLong(1, userId);
             query.setInt(2, limit);
@@ -112,18 +102,15 @@ public class PgFollowDao implements FollowDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting following users by user id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}", userId);
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return Collections.unmodifiableList(result);
     }
 
     @Override
-    public List<User> getFollowers(long userId, int limit, int offset) {
+    public List<User> getFollowers(long userId, int limit, int offset) throws PersistException {
         List<User> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -155,18 +142,15 @@ public class PgFollowDao implements FollowDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting followers by user id caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("UserId: {}", userId);
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return Collections.unmodifiableList(result);
     }
 
     @Override
-    public long getFollowersNumber(long userId) {
+    public long getFollowersNumber(long userId) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -178,18 +162,15 @@ public class PgFollowDao implements FollowDao {
             if (resultSet.next()) {
                 result = resultSet.getLong("total");
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting number of users caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User id: {}", userId);
-            return result;
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long getFollowingNumber(long userId) {
+    public long getFollowingNumber(long userId) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -201,11 +182,8 @@ public class PgFollowDao implements FollowDao {
             if (resultSet.next()) {
                 result = resultSet.getLong("total");
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting number of users caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("User id: {}", userId);
-            return result;
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;

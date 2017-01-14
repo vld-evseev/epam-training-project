@@ -1,5 +1,6 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.User;
 import org.junit.Assert;
@@ -21,7 +22,7 @@ public class PgFollowDaoTest extends H2DataSourceTest {
         dataSource = getDataSource();
     }
 
-    @Test
+    @Test(expected = PersistException.class)
     public void followSameUser() throws Exception {
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");

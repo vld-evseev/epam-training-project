@@ -68,8 +68,8 @@ public class EducationInfoServlet extends HttpServlet {
             return;
         }
 
-        final List<School> updatedSchoolList = educationService.getUserSchools(currentUser.getId());
-        final List<University> updatedUniversitiesList = educationService.getUserUniversities(currentUser.getId());
+        final List<School> updatedSchoolList = educationService.getSchoolsByUserId(currentUser.getId());
+        final List<University> updatedUniversitiesList = educationService.getUniversitiesByUserId(currentUser.getId());
 
         session.setAttribute(SCHOOLS_ATTR, updatedSchoolList);
         session.setAttribute(UNIVERSITIES_ATTR, updatedUniversitiesList);

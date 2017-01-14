@@ -2,6 +2,7 @@ package com.epam.training.lawAndSocial.dao.pg;
 
 
 import com.epam.training.lawAndSocial.dao.ContactsDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.Contacts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class PgContactsDao implements ContactsDao {
@@ -25,7 +25,7 @@ public class PgContactsDao implements ContactsDao {
     }
 
     @Override
-    public long add(long userId, Contacts contacts) {
+    public long add(long userId, Contacts contacts) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
@@ -44,17 +44,18 @@ public class PgContactsDao implements ContactsDao {
             if (generatedKeys.next()) {
                 result = generatedKeys.getInt(1);
             }
-        } catch (SQLException e) {
-            LOGGER.error("Adding contacts caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("Contacts: {}", contacts.toString());
+            if (result == 0) {
+                throw new PersistException("Rows are not affected on add: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public Optional<Contacts> get(long userId) {
+    public Optional<Contacts> get(long userId) throws PersistException {
         Optional<Contacts> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -73,18 +74,15 @@ public class PgContactsDao implements ContactsDao {
                                 .build()
                 );
             }
-        } catch (SQLException e) {
-            LOGGER.error("Getting contacts by userId caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("userId: {}", userId);
-            return Optional.empty();
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long update(long userId, Contacts contacts) {
+    public long update(long userId, Contacts contacts) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -97,23 +95,18 @@ public class PgContactsDao implements ContactsDao {
             query.setString(3, contacts.getWebsite());
             query.setLong(4, userId);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Updating contacts by userId caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("Contacts: {}", contacts.toString());
-            LOGGER.error("UserId: {}", userId);
-            return result;
-        }
-
-        if (result > 0) {
-            LOGGER.debug("userID {} successfully updated contacts", userId);
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on update: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;
     }
 
     @Override
-    public long delete(long userId) {
+    public long delete(long userId) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -122,10 +115,12 @@ public class PgContactsDao implements ContactsDao {
             );
             query.setLong(1, userId);
             result = query.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Deleting contacts by userId caused an exception: {}", e.getMessage());
-            LOGGER.error("SQL state: {}\nError code: {}", e.getSQLState(), e.getErrorCode());
-            LOGGER.error("userId: {}", userId);
+
+            if (result != 1) {
+                throw new PersistException("None or more than one row affected on delete: " + result);
+            }
+        } catch (Exception e) {
+            throw new PersistException(e);
         }
 
         return result;

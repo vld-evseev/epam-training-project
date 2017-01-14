@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.service.model.impl;
 
 import com.epam.training.lawAndSocial.dao.MessageHistoryDao;
+import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
@@ -26,12 +27,24 @@ public class MessageHistoryServiceImpl implements MessageHistoryService {
 
     @Override
     public int add(Message message) {
-        return messageHistoryDao.add(message);
+        try {
+            return messageHistoryDao.add(message);
+        } catch (PersistException e) {
+            LOGGER.error("Adding message caused an exception: {}", e.getMessage());
+            LOGGER.error("Message: {}", message.toString());
+            return -1;
+        }
     }
 
     @Override
     public List<Message> getByUserId(long userId, long otherUserId) {
-        return Collections.unmodifiableList(messageHistoryDao.getByUserId(userId, otherUserId));
+        try {
+            return Collections.unmodifiableList(messageHistoryDao.getByUserId(userId, otherUserId));
+        } catch (PersistException e) {
+            LOGGER.error("Getting list of messages by user id caused an exception: {}", e.getMessage());
+            LOGGER.error("User id: {}", userId);
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -44,16 +57,16 @@ public class MessageHistoryServiceImpl implements MessageHistoryService {
         final Set<User> contacts = getContacts(userId, USERS_SHOW_LIMIT, offset);
         final List<User> users = new ArrayList<>();
         users.addAll(contacts);
-
-        /*LOGGER.debug("Number of users: {}, userID:{}, offset: {}", contacts.size(), userId, offset);
-        LOGGER.debug("requestedUsers");
-        for (User requestedUser : contacts) {
-            LOGGER.debug(requestedUser.toString());
-        }*/
         return Collections.unmodifiableList(users);
     }
 
     private Set<User> getContacts(long userId, int limit, int offset) {
-        return messageHistoryDao.getContacts(userId, limit, offset);
+        try {
+            return messageHistoryDao.getContacts(userId, limit, offset);
+        } catch (PersistException e) {
+            LOGGER.error("Getting contacts by user id caused an exception: {}", e.getMessage());
+            LOGGER.error("UserId: {}, limit: {}, offset: {}", userId, limit, offset);
+            return Collections.emptySet();
+        }
     }
 }
