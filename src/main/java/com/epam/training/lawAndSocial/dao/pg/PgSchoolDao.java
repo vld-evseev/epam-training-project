@@ -58,7 +58,7 @@ public class PgSchoolDao implements SchoolDao {
             return Collections.emptyList();
         }
 
-        return Collections.unmodifiableList(result);
+        return result;
     }
 
     @Override

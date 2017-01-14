@@ -1,5 +1,5 @@
-<%@ taglib prefix="plugins" tagdir="/WEB-INF/tags/plugins" %>
 <%@attribute name="tabId" rtexprvalue="true" required="true" %>
+<%@ taglib prefix="plugins" tagdir="/WEB-INF/tags/plugins" %>
 <%@ taglib prefix="profile" tagdir="/WEB-INF/tags/profile" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -16,7 +16,7 @@
     <div class="content-box-large">
         <div class="panel-body">
             <c:url var="educationInfoEditUrl" value="/user/edit/education"/>
-            <form id="schoolForm" role="form" action="${educationInfoEditUrl}" method="post">
+            <form id="educationForm" role="form" action="${educationInfoEditUrl}" method="post">
                 <fieldset>
                     <div class="row">
                         <div class="col-sm-6">
@@ -28,28 +28,23 @@
                                         <c:choose>
                                             <c:when test="${not empty schools}">
                                                 <c:forEach items="${schools}" var="school" varStatus="status">
-                                                    <profile:schoolEditForm
+                                                    <profile:editFormTemplate
+                                                            subject="School"
                                                             count="${status.count}"
-                                                            schoolId="${school.id}"
-                                                            schoolUserIdValue="${school.userId}"
-                                                            schoolNameValue="${school.name}"
-                                                            schoolCountryValue="${school.country}"
-                                                            schoolCityValue="${school.city}"
-                                                            schoolYearFromValue="${school.yearsFrom}"
-                                                            schoolYearToValue="${school.yearsTo}"
+                                                            id="${school.id}"
+                                                            userIdValue="${school.userId}"
+                                                            nameValue="${school.name}"
+                                                            countryValue="${school.country}"
+                                                            cityValue="${school.city}"
+                                                            yearFromValue="${school.yearsFrom}"
+                                                            yearToValue="${school.yearsTo}"
                                                     />
                                                 </c:forEach>
                                             </c:when>
                                             <c:otherwise>
-                                                <profile:schoolEditForm
+                                                <profile:editFormTemplate
+                                                        subject="School"
                                                         count="1"
-                                                        schoolId=""
-                                                        schoolUserIdValue=""
-                                                        schoolNameValue=""
-                                                        schoolCountryValue=""
-                                                        schoolCityValue=""
-                                                        schoolYearFromValue=""
-                                                        schoolYearToValue=""
                                                 />
                                             </c:otherwise>
                                         </c:choose>
@@ -80,20 +75,22 @@
                                         <c:choose>
                                             <c:when test="${not empty universities}">
                                                 <c:forEach items="${universities}" var="university" varStatus="status">
-                                                    <profile:universityEditForm
+                                                    <profile:editFormTemplate
+                                                            subject="University"
                                                             count="${status.count}"
-                                                            universityId="${university.id}"
-                                                            universityUserIdValue="${university.userId}"
-                                                            universityNameValue="${university.name}"
-                                                            universityCountryValue="${university.country}"
-                                                            universityCityValue="${university.city}"
-                                                            universityYearFromValue="${university.yearsFrom}"
-                                                            universityYearToValue="${university.yearsTo}"
+                                                            id="${university.id}"
+                                                            userIdValue="${university.userId}"
+                                                            nameValue="${university.name}"
+                                                            countryValue="${university.country}"
+                                                            cityValue="${university.city}"
+                                                            yearFromValue="${university.yearsFrom}"
+                                                            yearToValue="${university.yearsTo}"
                                                     />
                                                 </c:forEach>
                                             </c:when>
                                             <c:otherwise>
-                                                <profile:universityEditForm
+                                                <profile:editFormTemplate
+                                                        subject="University"
                                                         count="1"
                                                 />
                                             </c:otherwise>
@@ -117,20 +114,74 @@
 
                     </div>
 
+                    <input type="hidden" id="jsonSchoolData" name="jsonSchoolData"/>
+                    <input type="hidden" id="jsonUniversityData" name="jsonUniversityData"/>
+
                 </fieldset>
                 <div>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" onclick="collectData()">
                         <i class="fa fa-save"></i>
                         <fmt:message bundle="${userPage}" key="user.save"/>
                     </button>
                 </div>
             </form>
         </div>
+
+        <button class="btn btn-primary" onclick="collectData()">
+            <i class="fa fa-save"></i>
+            Test
+        </button>
+
     </div>
 </div>
 
-<plugins:verifySchoolsForm/>
+<plugins:dynamicFormConstructor subject="School"/>
+<plugins:dynamicFormConstructor subject="University"/>
 
+<script>
+    function collectData() {
+        var schools = getFormElements('school');
+        var universities = getFormElements('university');
+        $('#jsonSchoolData').attr('value', schools);
+        $('#jsonUniversityData').attr('value', universities);
+    }
+
+    function getFormElements(subject) {
+        var elements = document.forms['educationForm'].getElementsByTagName("input");
+
+        var formLimit = 3;
+        var data = [];
+
+        for (var i = 1; i <= formLimit; i++) {
+            var subjectElements = $(elements).filter("*[id*='" + subject + "']").filter("*[id*='" + i + "']");
+            var id = $(subjectElements).filter('*[id*="Id"]');
+            var userId = $(subjectElements).filter('*[id*="UserId"]');
+            var name = $(subjectElements).filter('*[id*="Name"]');
+            var country = $(subjectElements).filter('*[id*="Country"]');
+            var city = $(subjectElements).filter('*[id*="City"]');
+            var yearFrom = $(subjectElements).filter('*[id*="YearFrom"]');
+            var yearTo = $(subjectElements).filter('*[id*="YearTo"]');
+
+            if (name.val()) {
+                var jsonMsg = {
+                    id: !id.val() ? -1 : id.val(),
+                    userId: userId.val(),
+                    name: name.val(),
+                    country: country.val(),
+                    city: city.val(),
+                    yearFrom: yearFrom.val(),
+                    yearTo: yearTo.val()
+                };
+                console.log("Data: " + JSON.stringify(jsonMsg));
+                data.push(JSON.stringify(jsonMsg));
+            }
+        }
+
+        return data;
+    }
+</script>
+
+<%--
 <script>
     <fmt:message var="clearMsg" bundle="${userPage}" key="user.clear"/>
     <fmt:message var="deleteMsg" bundle="${userPage}" key="user.delete"/>
@@ -173,7 +224,7 @@
                         "<div class='row'> <div class='form-group col-md-12'>" +
                         "<fmt:message var='name' bundle='${userPage}' key='user.education.name'/>" +
                         "<label for='universityName" + next + "'><fmt:message bundle='${userPage}' key='user.education.university'/></label>" +
-                        "<input id='universityName" + next + "' class='form-control input-sm' placeholder='${name}' name='universityName' oninput='verify(" + next + ")' type='text'>" +
+                        "<input id='universityName" + next + "' class='form-control input-sm' placeholder='${name}' name='universityName' oninput='verifyUniversityFields(" + next + ")' type='text'>" +
                         "</div> </div>" +
                         "<div class='row'> <div class='form-group col-md-12'>" +
                         "<label for='universityCountry" + next + "'><fmt:message bundle='${userPage}' key='user.country'/></label>" +
@@ -252,4 +303,4 @@
             $('#universityYearTo' + idx).prop('disabled', this.value == "");
         });
     }
-</script>
+</script>--%>

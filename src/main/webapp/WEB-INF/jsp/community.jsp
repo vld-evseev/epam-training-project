@@ -3,10 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${profile}" key="profile.community"/>
+
 <jsp:useBean id="userList" type="java.util.List<com.epam.training.lawAndSocial.model.User>"
              scope="request"/>
 <jsp:useBean id="path" type="java.lang.String" scope="request"/>
@@ -16,7 +18,6 @@
 <tags:main title="${title}">
 
     <tags:navigationBlock>
-
         <div class="panel-group">
             <c:forEach items="${userList}" var="otherUser" varStatus="count">
                 <c:if test="${user.id != otherUser.id}">
@@ -37,6 +38,7 @@
                                         <i class="fa fa-user fa-2x avatar-icon"></i>
                                     </c:otherwise>
                                 </c:choose>
+
                                 <a href="${userUrl}">
                                         ${otherUser.id} :
                                         ${otherUser.firstName}
@@ -53,8 +55,8 @@
                                                 <fmt:message bundle="${profile}" key="profile.unfollow"/>
                                             </button>
                                         </form>
-
                                     </c:when>
+
                                     <c:otherwise>
                                         <form class="pull-right" action="${returnPath}" method="post">
                                             <input type="hidden" name="action" value="follow">
@@ -63,7 +65,6 @@
                                                 <fmt:message bundle="${profile}" key="profile.follow"/>
                                             </button>
                                         </form>
-
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -74,5 +75,6 @@
         </div>
 
         <community:pagination path="${path}"/>
+
     </tags:navigationBlock>
 </tags:main>

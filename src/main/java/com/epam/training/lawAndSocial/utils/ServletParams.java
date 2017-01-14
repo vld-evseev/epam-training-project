@@ -52,6 +52,8 @@ public final class ServletParams {
     public static final String COMMUNITY_JSP = "/WEB-INF/jsp/community.jsp";
     public static final String ACTION_PARAM = "action";
     public static final String USER_ID_PARAM = "userId";
+    public static final String JSON_SCHOOL_DATA_PARAM = "jsonSchoolData";
+    public static final String JSON_UNIVERSITY_DATA_PARAM = "jsonUniversityData";
 
 
     private ServletParams() {

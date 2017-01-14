@@ -2,7 +2,7 @@ package com.epam.training.lawAndSocial.service.impl;
 
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.service.ChatService;
-import com.epam.training.lawAndSocial.service.MessageHistoryService;
+import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
 import com.google.gson.Gson;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;

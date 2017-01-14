@@ -32,12 +32,16 @@
             autoclose: true,
             language: '${currentLocale}',
             startDate: new Date(1900, 1, 1),
-            endDate: new Date(),
+            endDate: new Date()
         };
         date_input.datepicker(options);
     });
 
     $(document).ready(function () {
+        yearPicker();
+    });
+
+    function yearPicker() {
         var date_input_year = $('.dateYear'); //our date input has the name "date"
         var options = {
             format: "yyyy",
@@ -50,5 +54,7 @@
             endDate: new Date()
         };
         date_input_year.datepicker(options);
-    });
+    }
+
+
 </script>

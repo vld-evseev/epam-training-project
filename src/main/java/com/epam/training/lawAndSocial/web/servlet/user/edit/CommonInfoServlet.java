@@ -34,25 +34,16 @@ public class CommonInfoServlet extends HttpServlet {
         this.validationService = validationService;
     }
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setActiveTabAttribute(req);
         req.getRequestDispatcher(PROFILE_EDIT_JSP).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final Map<String, Boolean> activeTab = new HashMap<>();
-        activeTab.put("commonInfoTab", true);
-        req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
-
+        setActiveTabAttribute(req);
         final User currentUser = (User) req.getSession(true).getAttribute(USER_ATTR);
-
-        if (currentUser == null) {
-            LOGGER.error("user not exists in session");
-            resp.sendRedirect(req.getContextPath() + "/user/edit/common");
-            return;
-        }
 
         final Map<String, String> params = collectParams(req);
         final FormValidation validation = validationService.verify(collectVerifiedParams(req));
@@ -60,6 +51,7 @@ public class CommonInfoServlet extends HttpServlet {
         final String avatar = getImageSrc(currentUser, params);
 
         final User updatedUser = User.builder()
+                .uuid(currentUser.getUuid())
                 .id(currentUser.getId())
                 .userName(currentUser.getUserName())
                 .firstName(params.get(FIRSTNAME_PARAM))
@@ -86,7 +78,13 @@ public class CommonInfoServlet extends HttpServlet {
         }
 
         req.getSession(true).setAttribute(USER_ATTR, updatedUser);
-        resp.sendRedirect(req.getContextPath() + "/user/edit");
+        req.getRequestDispatcher(PROFILE_EDIT_JSP).forward(req, resp);
+    }
+
+    private void setActiveTabAttribute(HttpServletRequest req) {
+        final Map<String, Boolean> activeTab = new HashMap<>();
+        activeTab.put("commonInfoTab", true);
+        req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
     }
 
     static String getImageSrc(User currentUser, Map<String, String> params) {

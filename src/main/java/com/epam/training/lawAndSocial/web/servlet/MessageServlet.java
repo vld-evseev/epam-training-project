@@ -2,8 +2,8 @@ package com.epam.training.lawAndSocial.web.servlet;
 
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.service.MessageHistoryService;
 import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
 import com.epam.training.lawAndSocial.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

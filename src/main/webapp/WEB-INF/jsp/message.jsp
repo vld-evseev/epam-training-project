@@ -84,9 +84,6 @@
         opponentAvatar = "${opponent.avatar}";
         </c:if>
 
-        var currentUserId = ${user.id};
-        var uniq = guidGenerator();
-
         connection.onopen = function () {
             console.log('Connected!');
 
@@ -132,6 +129,7 @@
             var messageClass = 'self';
             var avatar = currentUserAvatar;
             var firstName = "${user.firstName}";
+            var currentUserId = ${user.id};
             if (fromId != currentUserId) {
                 messageClass = 'other';
                 avatar = opponentAvatar;
@@ -196,13 +194,5 @@
     function scrollDown() {
         $('.chat-section').scrollTop($('.chat-section')[0].scrollHeight);
     }
-
-    function guidGenerator() {
-        var S4 = function () {
-            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-        };
-        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
-    }
-
 
 </script>

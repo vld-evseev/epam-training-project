@@ -140,13 +140,6 @@ public class PgFollowDao implements FollowDao {
                             " ORDER BY fl_followed_user_id ASC" +
                             " LIMIT ?" +
                             " OFFSET ?;"
-
-                    /*"SELECT user_id, followed_user_id" +
-                            " FROM lawAndSocialDb.follow" +
-                            " WHERE followed_user_id = ?" +
-                            " ORDER BY followed_user_id ASC" +
-                            " LIMIT ?" +
-                            " OFFSET ?;"*/
             );
             query.setLong(1, userId);
             query.setInt(2, limit);

@@ -22,14 +22,18 @@ public class FormValidation {
     public List<String> messages() {
         final ArrayList<String> messages = new ArrayList<>();
 
-        final Set<Map.Entry<String, FieldValidation>> fieldEntries = fields.entrySet();
-        for (Map.Entry<String, FieldValidation> fieldEntry : fieldEntries) {
-            messages.add(fieldEntry.getKey() + " : " + fieldEntry.getValue().toString());
+        if (!fields.isEmpty()) {
+            final Set<Map.Entry<String, FieldValidation>> fieldEntries = fields.entrySet();
+            for (Map.Entry<String, FieldValidation> fieldEntry : fieldEntries) {
+                messages.add(fieldEntry.getKey() + " : " + fieldEntry.getValue().toString());
+            }
         }
 
-        final Set<Map.Entry<String, Boolean>> errorsEntries = errors.entrySet();
-        for (Map.Entry<String, Boolean> errorsEntry : errorsEntries) {
-            messages.add(errorsEntry.getKey() + " : " + errorsEntry.getValue());
+        if (!errors.isEmpty()) {
+            final Set<Map.Entry<String, Boolean>> errorsEntries = errors.entrySet();
+            for (Map.Entry<String, Boolean> errorsEntry : errorsEntries) {
+                messages.add(errorsEntry.getKey() + " : " + errorsEntry.getValue());
+            }
         }
 
         return messages;

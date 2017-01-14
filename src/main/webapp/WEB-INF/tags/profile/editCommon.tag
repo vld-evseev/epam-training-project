@@ -141,7 +141,9 @@
         </div>
     </div>
 </div>
+
 <plugins:datePicker/>
+
 <script>
     $(document).ready(function () {
         $(document).on('change', '.btn-file :file', function () {
@@ -151,7 +153,6 @@
         });
 
         $('.btn-file :file').on('fileselect', function (event, label) {
-
             var input = $(this).parents('.input-group').find(':text'),
                     log = label;
         });
@@ -185,15 +186,15 @@
     });
 
     var validFileExtensions = [".jpg", ".jpeg", ".gif", ".png"];
-    function validateAvatar(oInput) {
-        if (oInput.type == "file") {
-            var sFileName = oInput.value;
-            if (sFileName.length > 0) {
+    function validateAvatar(input) {
+        if (input.type == "file") {
+            var fileName = input.value;
+            if (fileName.length > 0) {
                 var isValid = false;
 
                 for (var j = 0; j < validFileExtensions.length; j++) {
-                    var sCurExtension = validFileExtensions[j];
-                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                    var currentExtension = validFileExtensions[j];
+                    if (fileName.substr(fileName.length - currentExtension.length, currentExtension.length).toLowerCase() == currentExtension.toLowerCase()) {
                         isValid = true;
                         $("#uploadAlert").remove();
                         break;
@@ -204,7 +205,7 @@
                     <fmt:message var="invalidImageExtensionMsg" bundle="${userPage}" key="user.message.invalid.image"/>
                     var message = "${invalidImageExtensionMsg}" + ": " + validFileExtensions.join(", ");
                     $("#uploadingBlock").after("<div class='alert alert-danger' id='uploadAlert'>" + message + "</div>");
-                    oInput.value = "";
+                    input.value = "";
                     return false;
                 }
             }

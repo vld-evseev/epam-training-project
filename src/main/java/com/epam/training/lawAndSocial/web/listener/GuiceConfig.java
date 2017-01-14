@@ -5,20 +5,29 @@ import com.epam.training.lawAndSocial.dao.pg.*;
 import com.epam.training.lawAndSocial.db.H2Config;
 import com.epam.training.lawAndSocial.db.impl.h2.H2ConfigProvider;
 import com.epam.training.lawAndSocial.db.impl.h2.H2DatasourceProvider;
-import com.epam.training.lawAndSocial.service.*;
-import com.epam.training.lawAndSocial.service.impl.*;
+import com.epam.training.lawAndSocial.service.ChatService;
+import com.epam.training.lawAndSocial.service.SecurityService;
+import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.service.ValidationService;
+import com.epam.training.lawAndSocial.service.impl.ChatServiceImpl;
+import com.epam.training.lawAndSocial.service.impl.SecurityServiceImpl;
+import com.epam.training.lawAndSocial.service.impl.UserServiceImpl;
+import com.epam.training.lawAndSocial.service.impl.ValidationServiceImpl;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationService;
 import com.epam.training.lawAndSocial.service.model.FollowService;
+import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
 import com.epam.training.lawAndSocial.service.model.impl.ContactsServiceImpl;
 import com.epam.training.lawAndSocial.service.model.impl.EducationServiceImpl;
 import com.epam.training.lawAndSocial.service.model.impl.FollowServiceImpl;
+import com.epam.training.lawAndSocial.service.model.impl.MessageHistoryServiceImpl;
 import com.epam.training.lawAndSocial.web.filter.CharsetFilter;
 import com.epam.training.lawAndSocial.web.filter.LoggedInFilter;
 import com.epam.training.lawAndSocial.web.servlet.*;
 import com.epam.training.lawAndSocial.web.servlet.community.CommunityServlet;
 import com.epam.training.lawAndSocial.web.servlet.community.FollowerServlet;
 import com.epam.training.lawAndSocial.web.servlet.community.FollowingServlet;
+import com.epam.training.lawAndSocial.web.servlet.community.MessageHistoryServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.ProfileEditServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.ProfileServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.TestSignInServlet;
@@ -86,7 +95,7 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/user/edit/education").with(EducationInfoServlet.class);
             serve("/user/following").with(FollowingServlet.class);
             serve("/user/followers").with(FollowerServlet.class);
-            serve("/user/messages").with(MessageServlet.class);
+            serve("/user/messages").with(MessageHistoryServlet.class);
             serve("/user/message").with(MessageServlet.class);
             serve("/signout").with(SignoutServlet.class);
             serve("/tlg").with(TestSignInServlet.class);
@@ -116,13 +125,13 @@ public class GuiceConfig extends GuiceServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         //super.contextInitialized(servletContextEvent);
         final Binding<ChatService> binding = getInjector().getBinding(ChatService.class);
-        binding.getProvider().get().startup();
+        //binding.getProvider().get().startup();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         //super.contextDestroyed(servletContextEvent);
         final Binding<ChatService> binding = getInjector().getBinding(ChatService.class);
-        binding.getProvider().get().shutdown();
+        //binding.getProvider().get().shutdown();
     }
 }

@@ -63,8 +63,8 @@ CREATE TABLE lawAndSocialDb.follow (
 CREATE TABLE lawAndSocialDb.message_history (
   from_user_id INTEGER NOT NULL,
   to_user_id   INTEGER NOT NULL,
-  dateValue    BIGINT  NOT NULL,
-  textValue    TEXT    NOT NULL,
+  date_value   BIGINT  NOT NULL,
+  text_value   TEXT    NOT NULL,
   FOREIGN KEY (from_user_id) REFERENCES lawAndSocialDb.user (id),
   FOREIGN KEY (to_user_id) REFERENCES lawAndSocialDb.user (id)
 );

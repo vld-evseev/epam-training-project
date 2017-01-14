@@ -57,7 +57,7 @@ public class PgUniversityDao implements UniversityDao {
             return Collections.emptyList();
         }
 
-        return Collections.unmodifiableList(result);
+        return result;
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class PgMessageHistoryDaoTest extends H2DataSourceTest {
 
@@ -65,6 +66,24 @@ public class PgMessageHistoryDaoTest extends H2DataSourceTest {
         System.out.println(Arrays.toString(messageList.toArray()));
 
         Assert.assertFalse(messageList.isEmpty());
+    }
+
+    @Test
+    public void getContacts() throws Exception {
+        final PgUserDao userDao = new PgUserDao(dataSource);
+        final Optional<User> userOptional = userDao.getByUserId(2);
+        Assert.assertTrue(userOptional.isPresent());
+
+        final PgMessageHistoryDao messageHistoryDao = new PgMessageHistoryDao(dataSource);
+        final long id = userOptional.get().getId();
+        final Set<User> contacts = messageHistoryDao.getContacts(id, 30, 0);
+        Assert.assertFalse(contacts.isEmpty());
+        Assert.assertEquals(contacts.size(), 4);
+
+
+        for (User contact : contacts) {
+            System.out.println(contact.toString());
+        }
     }
 
 }

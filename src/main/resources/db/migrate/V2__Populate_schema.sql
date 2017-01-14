@@ -334,13 +334,15 @@ INSERT INTO lawAndSocialDb.follow (user_id, followed_user_id)
   UNION ALL SELECT 5, 2
   UNION ALL SELECT 6, 2;
 
-INSERT INTO lawAndSocialDb.message_history (from_user_id, to_user_id, dateValue, textValue)
+INSERT INTO lawAndSocialDb.message_history (from_user_id, to_user_id, date_value, text_value)
   SELECT 1, 2, 0, 'First Message from 1 to 2'
   UNION ALL SELECT 1, 2, 0, 'Second Message from 1 to 2'
   UNION ALL SELECT 2, 1, 0, 'First response from 2 to 1'
   UNION ALL SELECT 2, 1, 0, 'Second response from 2 to 1'
   UNION ALL SELECT 1, 3, 0, 'Message from 1 to 3'
-  UNION ALL SELECT 2, 3, 0, 'Message from 2 to 3';
+  UNION ALL SELECT 2, 3, 0, 'Message from 2 to 3'
+  UNION ALL SELECT 2, 6, 13, 'Test 2-6'
+  UNION ALL SELECT 7, 2, 31, 'Test 7-2';
 /*
 INSERT INTO lawAndSocialDb.user_school (user_id, school_id, yearsFrom, yearsTo)
   SELECT '4', '1', '1994', '2000'
