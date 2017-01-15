@@ -1,8 +1,9 @@
 package com.epam.training.lawAndSocial.dao.pg;
 
-import com.epam.training.lawAndSocial.dao.SchoolDao;
+import com.epam.training.lawAndSocial.dao.EducationInfoDao;
 import com.epam.training.lawAndSocial.dao.exception.PersistException;
-import com.epam.training.lawAndSocial.model.education.School;
+import com.epam.training.lawAndSocial.model.education.EducationInfo;
+import com.epam.training.lawAndSocial.model.education.impl.School;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class PgSchoolDao implements SchoolDao {
+public class PgSchoolDao implements EducationInfoDao<EducationInfo> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PgSchoolDao.class);
 
@@ -27,11 +28,11 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public List<School> getByUserId(long userId) throws PersistException {
-        List<School> result = new LinkedList<>();
+    public List<EducationInfo> getByUserId(long userId) throws PersistException {
+        List<EducationInfo> result = new LinkedList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, user_id, name, country, city, yearsFrom, yearsTo" +
+                    "SELECT id, user_id, name, country, city, yearFrom, yearTo" +
                             " FROM lawAndSocialDb.school" +
                             " WHERE user_id = ?;"
             );
@@ -45,8 +46,8 @@ public class PgSchoolDao implements SchoolDao {
                                 .name(resultSet.getString("name"))
                                 .country(resultSet.getString("country"))
                                 .city(resultSet.getString("city"))
-                                .yearsFrom(resultSet.getInt("yearsFrom"))
-                                .yearsTo(resultSet.getInt("yearsTo"))
+                                .yearFrom(resultSet.getInt("yearFrom"))
+                                .yearTo(resultSet.getInt("yearTo"))
                                 .build()
                 );
             }
@@ -58,11 +59,11 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public Optional<School> getBySchoolId(long id) throws PersistException {
-        Optional<School> result = Optional.empty();
+    public Optional<EducationInfo> getBySubjectId(long id) throws PersistException {
+        Optional<EducationInfo> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, user_id, name, country, city, yearsFrom, yearsTo" +
+                    "SELECT id, user_id, name, country, city, yearFrom, yearTo" +
                             " FROM lawAndSocialDb.school WHERE id = ?;"
             );
             query.setLong(1, id);
@@ -75,8 +76,8 @@ public class PgSchoolDao implements SchoolDao {
                                 .name(resultSet.getString("name"))
                                 .country(resultSet.getString("country"))
                                 .city(resultSet.getString("city"))
-                                .yearsFrom(resultSet.getInt("yearsFrom"))
-                                .yearsTo(resultSet.getInt("yearsTo"))
+                                .yearFrom(resultSet.getInt("yearFrom"))
+                                .yearTo(resultSet.getInt("yearTo"))
                                 .build()
                 );
             }
@@ -90,11 +91,11 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public Optional<School> getBySchoolName(String schoolName) throws PersistException {
-        Optional<School> result = Optional.empty();
+    public Optional<EducationInfo> getBySubjectName(String schoolName) throws PersistException {
+        Optional<EducationInfo> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, user_id, name, country, city, yearsFrom, yearsTo" +
+                    "SELECT id, user_id, name, country, city, yearFrom, yearTo" +
                             " FROM lawAndSocialDb.school WHERE name = ?;"
             );
             query.setString(1, schoolName);
@@ -106,8 +107,8 @@ public class PgSchoolDao implements SchoolDao {
                                 .name(resultSet.getString("name"))
                                 .country(resultSet.getString("country"))
                                 .city(resultSet.getString("city"))
-                                .yearsFrom(resultSet.getInt("yearsFrom"))
-                                .yearsTo(resultSet.getInt("yearsTo"))
+                                .yearFrom(resultSet.getInt("yearFrom"))
+                                .yearTo(resultSet.getInt("yearTo"))
                                 .build()
                 );
             }
@@ -120,12 +121,12 @@ public class PgSchoolDao implements SchoolDao {
 
 
     @Override
-    public long addUserToSchool(long userId, School school) throws PersistException {
+    public long addUserToSubject(long userId, EducationInfo school) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
             final PreparedStatement query = connection.prepareStatement(
-                    "INSERT INTO lawAndSocialDb.school(id, user_id, name, country, city, yearsFrom, yearsTo)" +
+                    "INSERT INTO lawAndSocialDb.school(id, user_id, name, country, city, yearFrom, yearTo)" +
                             " VALUES (nextval('lawAndSocialDb.school_seq')," +
                             " ?, ?, ?, ?, ?, ?);",
                     returnColumns
@@ -134,8 +135,8 @@ public class PgSchoolDao implements SchoolDao {
             query.setString(2, school.getName());
             query.setString(3, school.getCountry());
             query.setString(4, school.getCity());
-            query.setInt(5, school.getYearsFrom());
-            query.setInt(6, school.getYearsTo());
+            query.setInt(5, school.getYearFrom());
+            query.setInt(6, school.getYearTo());
             query.executeUpdate();
             final ResultSet generatedKeys = query.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -153,7 +154,7 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public long deleteUserFromSchool(long userId, School school) throws PersistException {
+    public long deleteUserFromSubject(long userId, EducationInfo school) throws PersistException {
         int result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
@@ -175,19 +176,19 @@ public class PgSchoolDao implements SchoolDao {
     }
 
     @Override
-    public long updateSchoolByUserId(long userId, School school) throws PersistException {
+    public long updateSubjectByUserId(long userId, EducationInfo school) throws PersistException {
         long result = -1;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "UPDATE lawAndSocialDb.school" +
-                            " SET name = ?, country = ?, city = ?, yearsFrom = ?, yearsTo = ?" +
+                            " SET name = ?, country = ?, city = ?, yearFrom = ?, yearTo = ?" +
                             " WHERE id = ? AND user_id = ?;"
             );
             query.setString(1, school.getName());
             query.setString(2, school.getCountry());
             query.setString(3, school.getCity());
-            query.setInt(4, school.getYearsFrom());
-            query.setInt(5, school.getYearsTo());
+            query.setInt(4, school.getYearFrom());
+            query.setInt(5, school.getYearTo());
             query.setLong(6, school.getId());
             query.setLong(7, userId);
             result = query.executeUpdate();

@@ -2,8 +2,8 @@ package com.epam.training.lawAndSocial.web.servlet.user.edit;
 
 import com.epam.training.lawAndSocial.model.Gender;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
+import com.epam.training.lawAndSocial.service.model.UserService;
 import com.epam.training.lawAndSocial.utils.DateValidator;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;

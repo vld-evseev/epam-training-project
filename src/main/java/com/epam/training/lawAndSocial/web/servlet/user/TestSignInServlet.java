@@ -1,7 +1,7 @@
 package com.epam.training.lawAndSocial.web.servlet.user;
 
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.service.model.UserService;
 import com.epam.training.lawAndSocial.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 <%@attribute name="subject" rtexprvalue="true" required="true" %>
 <%@attribute name="count" rtexprvalue="true" required="true" %>
 <%@attribute name="id" rtexprvalue="true" required="false" %>
-<%@attribute name="userIdValue" rtexprvalue="true" required="false" %>
+<%@attribute name="userIdValue" rtexprvalue="true" required="true" %>
 <%@attribute name="nameValue" rtexprvalue="true" required="false" %>
 <%@attribute name="countryValue" rtexprvalue="true" required="false" %>
 <%@attribute name="cityValue" rtexprvalue="true" required="false" %>

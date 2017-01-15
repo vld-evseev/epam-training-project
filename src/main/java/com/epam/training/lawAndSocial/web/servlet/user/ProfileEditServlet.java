@@ -3,10 +3,11 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.model.education.School;
-import com.epam.training.lawAndSocial.model.education.University;
+import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
-import com.epam.training.lawAndSocial.service.model.EducationService;
+import com.epam.training.lawAndSocial.service.model.EducationInfoService;
+import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.SchoolInfo;
+import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.UniverInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +30,17 @@ import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 public class ProfileEditServlet extends HttpServlet {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProfileEditServlet.class);
-    private final EducationService educationService;
     private final ContactsService contactsService;
+    private final EducationInfoService<EducationInfo> schoolInfoService;
+    private final EducationInfoService<EducationInfo> univerInfoService;
 
     @Inject
-    public ProfileEditServlet(EducationService educationService, ContactsService contactsService) {
-        this.educationService = educationService;
+    public ProfileEditServlet(ContactsService contactsService,
+                              @SchoolInfo EducationInfoService<EducationInfo> schoolInfoService,
+                              @UniverInfo EducationInfoService<EducationInfo> univerInfoService) {
         this.contactsService = contactsService;
+        this.schoolInfoService = schoolInfoService;
+        this.univerInfoService = univerInfoService;
     }
 
     @Override
@@ -47,15 +52,18 @@ public class ProfileEditServlet extends HttpServlet {
             final Contacts contacts = getContacts(user.getId());
             session.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<School> userSchools = educationService.getSchoolsByUserId(user.getId());
+            final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
             session.setAttribute(SCHOOLS_ATTR, userSchools);
 
-            final List<University> userUniversities = educationService.getUniversitiesByUserId(user.getId());
-            session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
+            final List<EducationInfo> userUniversities = univerInfoService.getList(user.getId());
 
-            for (School userSchool : userSchools) {
-                LOGGER.debug(userSchool.toString());
+            LOGGER.debug("----------------");
+            for (EducationInfo userUniversity : userUniversities) {
+                LOGGER.debug(userUniversity.toString());
             }
+
+
+            session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
         }
 
         final Map<String, Boolean> activeTab = new HashMap<>();

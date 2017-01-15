@@ -309,12 +309,12 @@ INSERT INTO lawAndSocialDb.user (id, uuid, username, firstName, lastName, patron
               'Creoarker', 'Raarktron', NULL, NULL, '14.08.1969', NULL,
               '$s0$e0801$A2jVenDDSbB1RtbHQab+Jg==$zfJ1KW/IlffzN8M+JPUcvmmTD9GIZ6fiqYif1ndV6XY=';
 
-INSERT INTO lawAndSocialDb.school (id, user_id, name, country, city, yearsFrom, yearsTo)
+INSERT INTO lawAndSocialDb.school (id, user_id, name, country, city, yearFrom, yearTo)
   SELECT nextval('lawAndSocialDb.school_seq'), 2, 'School1', 'Russia', 'Moscow', 1985, 1990
   UNION ALL SELECT nextval('lawAndSocialDb.school_seq'), 2, 'School2', 'Ukraine', 'Kiev', 1995, 2000
   UNION ALL SELECT nextval('lawAndSocialDb.school_seq'), 1, 'School3', 'Russia', 'S.Petersburg', 1990, 2000;
 
-INSERT INTO lawAndSocialDb.university (id, user_id, name, country, city, yearsFrom, yearsTo)
+INSERT INTO lawAndSocialDb.university (id, user_id, name, country, city, yearFrom, yearTo)
   SELECT nextval('lawAndSocialDb.university_seq'), 2, 'Harvard', 'UK', 'London', 1985, 1990
   UNION ALL SELECT nextval('lawAndSocialDb.university_seq'), 2, 'SPBGU', 'Russia', 'St.Petersburg', 1995, 2000
   UNION ALL SELECT nextval('lawAndSocialDb.university_seq'), 1, 'Univ3', 'Ukraine', 'Kiev', 1988, 1994;
@@ -344,7 +344,7 @@ INSERT INTO lawAndSocialDb.message_history (from_user_id, to_user_id, date_value
   UNION ALL SELECT 2, 6, 13, 'Test 2-6'
   UNION ALL SELECT 7, 2, 31, 'Test 7-2';
 /*
-INSERT INTO lawAndSocialDb.user_school (user_id, school_id, yearsFrom, yearsTo)
+INSERT INTO lawAndSocialDb.user_school (user_id, school_id, yearFrom, yearTo)
   SELECT '4', '1', '1994', '2000'
   UNION ALL SELECT '4', '3', '1955', '1960'
   UNION ALL SELECT '1', '2', '1984', '1940';

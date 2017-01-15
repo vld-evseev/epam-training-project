@@ -3,10 +3,10 @@ package com.epam.training.lawAndSocial.web.servlet;
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
-import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.impl.ValidationServiceImpl;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
+import com.epam.training.lawAndSocial.service.model.UserService;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.junit.Test;
 

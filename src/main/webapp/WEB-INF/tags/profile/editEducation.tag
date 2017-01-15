@@ -7,9 +7,9 @@
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
-<jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
+<jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
              scope="session"/>
-<jsp:useBean id="universities" type="java.util.List<com.epam.training.lawAndSocial.model.education.University>"
+<jsp:useBean id="universities" type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
              scope="session"/>
 
 <div id="${tabId}" class="tab-pane fade">
@@ -36,8 +36,8 @@
                                                             nameValue="${school.name}"
                                                             countryValue="${school.country}"
                                                             cityValue="${school.city}"
-                                                            yearFromValue="${school.yearsFrom}"
-                                                            yearToValue="${school.yearsTo}"
+                                                            yearFromValue="${school.yearFrom}"
+                                                            yearToValue="${school.yearTo}"
                                                     />
                                                 </c:forEach>
                                             </c:when>
@@ -45,6 +45,7 @@
                                                 <profile:editFormTemplate
                                                         subject="School"
                                                         count="1"
+                                                        userIdValue="${user.id}"
                                                 />
                                             </c:otherwise>
                                         </c:choose>
@@ -83,8 +84,8 @@
                                                             nameValue="${university.name}"
                                                             countryValue="${university.country}"
                                                             cityValue="${university.city}"
-                                                            yearFromValue="${university.yearsFrom}"
-                                                            yearToValue="${university.yearsTo}"
+                                                            yearFromValue="${university.yearFrom}"
+                                                            yearToValue="${university.yearTo}"
                                                     />
                                                 </c:forEach>
                                             </c:when>
@@ -92,6 +93,7 @@
                                                 <profile:editFormTemplate
                                                         subject="University"
                                                         count="1"
+                                                        userIdValue="${user.id}"
                                                 />
                                             </c:otherwise>
                                         </c:choose>
@@ -126,12 +128,6 @@
                 </div>
             </form>
         </div>
-
-        <button class="btn btn-primary" onclick="collectData()">
-            <i class="fa fa-save"></i>
-            Test
-        </button>
-
     </div>
 </div>
 
@@ -169,8 +165,8 @@
                     name: name.val(),
                     country: country.val(),
                     city: city.val(),
-                    yearFrom: yearFrom.val(),
-                    yearTo: yearTo.val()
+                    yearFrom: !yearFrom.val() ? 0 : yearFrom.val(),
+                    yearTo: !yearTo.val() ? 0 : yearTo.val()
                 };
                 console.log("Data: " + JSON.stringify(jsonMsg));
                 data.push(JSON.stringify(jsonMsg));

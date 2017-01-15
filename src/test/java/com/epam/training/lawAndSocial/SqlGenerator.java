@@ -6,9 +6,9 @@ import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.Gender;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
-import com.epam.training.lawAndSocial.service.UserService;
 import com.epam.training.lawAndSocial.service.impl.SecurityServiceImpl;
-import com.epam.training.lawAndSocial.service.impl.UserServiceImpl;
+import com.epam.training.lawAndSocial.service.model.UserService;
+import com.epam.training.lawAndSocial.service.model.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -8,9 +8,9 @@
 <%@attribute name="phone" rtexprvalue="true" required="false" %>
 <%@attribute name="website" rtexprvalue="true" required="false" %>
 <%@attribute name="schools" rtexprvalue="true" required="false"
-             type="java.util.List<com.epam.training.lawAndSocial.model.education.School>" %>
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.impl.School>" %>
 <%@attribute name="universities" rtexprvalue="true" required="false"
-             type="java.util.List<com.epam.training.lawAndSocial.model.education.University>" %>
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.impl.University>" %>
 <%@attribute name="jobs" rtexprvalue="true" required="false" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -117,7 +117,7 @@
                                 <c:out value="${school.name}"/>
                                 <c:out value="${school.country}"/>
                                 <c:out value="${school.city}"/>
-                                <c:out value="${school.yearsFrom}"/> - <c:out value="${school.yearsTo}"/>
+                                <c:out value="${school.yearFrom}"/> - <c:out value="${school.yearTo}"/>
                                 <c:if test="${not count.last}">
                                     <hr>
                                 </c:if>

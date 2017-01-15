@@ -31,26 +31,26 @@ CREATE TABLE lawAndSocialDb.contacts (
 CREATE SEQUENCE lawAndSocialDb.school_seq;
 
 CREATE TABLE lawAndSocialDb.school (
-  id        INTEGER PRIMARY KEY,
-  user_id   INTEGER NOT NULL,
-  name      VARCHAR(255),
-  country   VARCHAR(255),
-  city      VARCHAR(255),
-  yearsFrom INTEGER,
-  yearsTo   INTEGER,
+  id       INTEGER PRIMARY KEY,
+  user_id  INTEGER NOT NULL,
+  name     VARCHAR(255),
+  country  VARCHAR(255),
+  city     VARCHAR(255),
+  yearFrom INTEGER,
+  yearTo   INTEGER,
   FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
 );
 
 CREATE SEQUENCE lawAndSocialDb.university_seq;
 
 CREATE TABLE lawAndSocialDb.university (
-  id        INTEGER PRIMARY KEY,
-  user_id   INTEGER NOT NULL,
-  name      VARCHAR(255),
-  country   VARCHAR(255),
-  city      VARCHAR(255),
-  yearsFrom INTEGER,
-  yearsTo   INTEGER,
+  id       INTEGER PRIMARY KEY,
+  user_id  INTEGER NOT NULL,
+  name     VARCHAR(255),
+  country  VARCHAR(255),
+  city     VARCHAR(255),
+  yearFrom INTEGER,
+  yearTo   INTEGER,
   FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
 );
 
@@ -72,8 +72,8 @@ CREATE TABLE lawAndSocialDb.message_history (
 /*CREATE TABLE lawAndSocialDb.user_school (
   user_id   INTEGER REFERENCES lawAndSocialDb.user (id) ON UPDATE CASCADE,
   school_id INTEGER REFERENCES lawAndSocialDb.school (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  yearsFrom INTEGER,
-  yearsTo   INTEGER,
+  yearFrom INTEGER,
+  yearTo   INTEGER,
   CONSTRAINT user_school_key PRIMARY KEY (user_id, school_id)
 );*/
 

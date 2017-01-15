@@ -1,11 +1,11 @@
-package com.epam.training.lawAndSocial.service.impl;
+package com.epam.training.lawAndSocial.service.model.impl;
 
 import com.epam.training.lawAndSocial.dao.UserDao;
 import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
-import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.service.model.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

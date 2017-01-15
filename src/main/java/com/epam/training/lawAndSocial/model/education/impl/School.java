@@ -1,20 +1,21 @@
-package com.epam.training.lawAndSocial.model.education;
+package com.epam.training.lawAndSocial.model.education.impl;
 
 
+import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
-public class School {
+public class School implements EducationInfo {
 
     long id;
     long userId;
     String name;
     String country;
     String city;
-    int yearsFrom;
-    int yearsTo;
+    int yearFrom;
+    int yearTo;
 
     @Override
     public boolean equals(Object o) {

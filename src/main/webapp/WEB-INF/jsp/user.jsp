@@ -10,10 +10,11 @@
 <fmt:message var="title" bundle="${root}" key="root.welcome"/>
 <jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="request"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
-<jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
+<jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
              scope="session"/>
 <jsp:useBean id="requestedUser" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
-<jsp:useBean id="requestedUserSchools" type="java.util.List<com.epam.training.lawAndSocial.model.education.School>"
+<jsp:useBean id="requestedUserSchools"
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
              scope="request"/>
 
 <c:set var="userIsRequested" value="${requestedUser.id != 0}"/>

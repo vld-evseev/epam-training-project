@@ -2,10 +2,12 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 
 import com.epam.training.lawAndSocial.model.Contacts;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.model.education.School;
-import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
-import com.epam.training.lawAndSocial.service.model.EducationService;
+import com.epam.training.lawAndSocial.service.model.EducationInfoService;
+import com.epam.training.lawAndSocial.service.model.UserService;
+import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.SchoolInfo;
+import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.UniverInfo;
 import com.epam.training.lawAndSocial.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +31,19 @@ public class ProfileServlet extends HttpServlet {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProfileServlet.class);
 
-    private final EducationService educationService;
     private final ContactsService contactsService;
     private final UserService userService;
+    private final EducationInfoService<EducationInfo> schoolInfoService;
+    private final EducationInfoService<EducationInfo> univerInfoService;
 
     @Inject
-    public ProfileServlet(EducationService educationService, ContactsService contactsService, UserService userService) {
-        this.educationService = educationService;
+    public ProfileServlet(ContactsService contactsService, UserService userService,
+                          @SchoolInfo EducationInfoService<EducationInfo> schoolInfoService,
+                          @UniverInfo EducationInfoService<EducationInfo> univerInfoService) {
         this.contactsService = contactsService;
         this.userService = userService;
+        this.schoolInfoService = schoolInfoService;
+        this.univerInfoService = univerInfoService;
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ProfileServlet extends HttpServlet {
                 final Contacts requestedUserContacts = getContacts(requestedUser.getId());
                 req.setAttribute(CONTACTS_ATTR, requestedUserContacts);
 
-                final List<School> requestedUserSchools = educationService.getSchoolsByUserId(requestedUser.getId());
+                final List<EducationInfo> requestedUserSchools = schoolInfoService.getList(requestedUser.getId());
                 req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, requestedUserSchools);
 
                 req.getRequestDispatcher(USER_PAGE)
@@ -72,7 +78,7 @@ public class ProfileServlet extends HttpServlet {
             final Contacts contacts = getContacts(user.getId());
             req.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<School> userSchools = educationService.getSchoolsByUserId(user.getId());
+            final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
             session.setAttribute(SCHOOLS_ATTR, userSchools);
         }
 

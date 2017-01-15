@@ -4,7 +4,8 @@ import com.epam.training.lawAndSocial.dao.UserDao;
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
-import com.epam.training.lawAndSocial.service.UserService;
+import com.epam.training.lawAndSocial.service.model.UserService;
+import com.epam.training.lawAndSocial.service.model.impl.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

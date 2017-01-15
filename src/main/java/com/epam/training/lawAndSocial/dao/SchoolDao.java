@@ -1,7 +1,7 @@
 package com.epam.training.lawAndSocial.dao;
 
 import com.epam.training.lawAndSocial.dao.exception.PersistException;
-import com.epam.training.lawAndSocial.model.education.School;
+import com.epam.training.lawAndSocial.model.education.impl.School;
 
 import java.util.List;
 import java.util.Optional;

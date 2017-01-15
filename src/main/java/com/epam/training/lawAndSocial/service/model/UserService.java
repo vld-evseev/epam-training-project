@@ -1,4 +1,4 @@
-package com.epam.training.lawAndSocial.service;
+package com.epam.training.lawAndSocial.service.model;
 
 import com.epam.training.lawAndSocial.model.Credentials;
 import com.epam.training.lawAndSocial.model.User;

@@ -3,7 +3,8 @@ package com.epam.training.lawAndSocial.dao.pg;
 import com.epam.training.lawAndSocial.dao.exception.PersistException;
 import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.User;
-import com.epam.training.lawAndSocial.model.education.School;
+import com.epam.training.lawAndSocial.model.education.EducationInfo;
+import com.epam.training.lawAndSocial.model.education.impl.School;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +30,11 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
         final Optional<User> testUser = userDao.getByUsername("testUser");
         Assert.assertTrue(testUser.isPresent());
 
-        final List<School> schoolList = schoolDao.getByUserId(testUser.get().getId());
+        final List<EducationInfo> schoolList = schoolDao.getByUserId(testUser.get().getId());
         Assert.assertFalse(schoolList.isEmpty());
         Assert.assertEquals(schoolList.size(), 2);
 
-        final School school = schoolList.get(0);
+        final EducationInfo school = schoolList.get(0);
         Assert.assertNotNull(school);
 
         final String name = school.getName();
@@ -44,7 +45,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     public void getSchoolById() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
-        final Optional<School> schoolOptional = schoolDao.getBySchoolId(1);
+        final Optional<EducationInfo> schoolOptional = schoolDao.getBySubjectId(1);
         Assert.assertTrue(schoolOptional.isPresent());
     }
 
@@ -52,7 +53,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     public void getSchoolByName() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
-        final Optional<School> schoolOptional = schoolDao.getBySchoolName("School1");
+        final Optional<EducationInfo> schoolOptional = schoolDao.getBySubjectName("School1");
         Assert.assertTrue(schoolOptional.isPresent());
     }
 
@@ -60,14 +61,14 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     public void addUserToSchoolTest() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
-        final Optional<School> schoolOptional = schoolDao.getBySchoolId(3);
+        final Optional<EducationInfo> schoolOptional = schoolDao.getBySubjectId(3);
         Assert.assertTrue(schoolOptional.isPresent());
 
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
         Assert.assertTrue(testUser.isPresent());
 
-        final long inserted = schoolDao.addUserToSchool(testUser.get().getId(), schoolOptional.get());
+        final long inserted = schoolDao.addUserToSubject(testUser.get().getId(), schoolOptional.get());
         Assert.assertTrue(inserted > 0);
     }
 
@@ -75,20 +76,20 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     public void deleteUserFromSchool() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
-        final Optional<School> schoolOptional = schoolDao.getBySchoolId(1);
+        final Optional<EducationInfo> schoolOptional = schoolDao.getBySubjectId(1);
         Assert.assertTrue(schoolOptional.isPresent());
 
         final PgUserDao userDao = new PgUserDao(dataSource);
         final Optional<User> testUser = userDao.getByUsername("testUser");
         Assert.assertTrue(testUser.isPresent());
 
-        final long deleted = schoolDao.deleteUserFromSchool(testUser.get().getId(), schoolOptional.get());
+        final long deleted = schoolDao.deleteUserFromSubject(testUser.get().getId(), schoolOptional.get());
         Assert.assertEquals(deleted, 1);
 
-        final long notDeletedBecauseNoLongerExists = schoolDao.deleteUserFromSchool(testUser.get().getId(), schoolOptional.get());
+        final long notDeletedBecauseNoLongerExists = schoolDao.deleteUserFromSubject(testUser.get().getId(), schoolOptional.get());
         Assert.assertEquals(notDeletedBecauseNoLongerExists, 0);
 
-        final List<School> testUserSchoolList = schoolDao.getByUserId(testUser.get().getId());
+        final List<EducationInfo> testUserSchoolList = schoolDao.getByUserId(testUser.get().getId());
         Assert.assertEquals(testUserSchoolList.size(), 1);
     }
 
@@ -96,7 +97,7 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
     public void updateUserSchoolTest() throws Exception {
         final PgSchoolDao schoolDao = new PgSchoolDao(dataSource);
 
-        final Optional<School> schoolToUpdateOptional = schoolDao.getBySchoolId(1);
+        final Optional<EducationInfo> schoolToUpdateOptional = schoolDao.getBySubjectId(1);
         Assert.assertTrue(schoolToUpdateOptional.isPresent());
 
         final PgUserDao userDao = new PgUserDao(dataSource);
@@ -109,24 +110,24 @@ public class PgSchoolDaoTest extends H2DataSourceTest {
                 .name("UpdatedName")
                 .country("UpdatedCountry")
                 .city("UpdatedCity")
-                .yearsFrom(1987)
-                .yearsTo(1995)
+                .yearFrom(1987)
+                .yearTo(1995)
                 .build();
 
-        final long updated = schoolDao.updateSchoolByUserId(testUser.get().getId(), updatedSchool);
+        final long updated = schoolDao.updateSubjectByUserId(testUser.get().getId(), updatedSchool);
         Assert.assertEquals(updated, 1);
 
-        final Optional<School> updatedSchoolOptional = schoolDao.getBySchoolId(1);
+        final Optional<EducationInfo> updatedSchoolOptional = schoolDao.getBySubjectId(1);
         Assert.assertTrue(updatedSchoolOptional.isPresent());
-        final School school = updatedSchoolOptional.get();
+        final EducationInfo school = updatedSchoolOptional.get();
 
         Assert.assertEquals(school.getId(), 1);
         Assert.assertEquals(school.getUserId(), testUser.get().getId());
         Assert.assertEquals(school.getName(), "UpdatedName");
         Assert.assertEquals(school.getCountry(), "UpdatedCountry");
         Assert.assertEquals(school.getCity(), "UpdatedCity");
-        Assert.assertEquals(school.getYearsFrom(), 1987);
-        Assert.assertEquals(school.getYearsTo(), 1995);
+        Assert.assertEquals(school.getYearFrom(), 1987);
+        Assert.assertEquals(school.getYearTo(), 1995);
 
     }
 
