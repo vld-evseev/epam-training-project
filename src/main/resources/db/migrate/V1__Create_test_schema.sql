@@ -54,6 +54,20 @@ CREATE TABLE lawAndSocialDb.university (
   FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
 );
 
+CREATE SEQUENCE lawAndSocialDb.job_seq;
+
+CREATE TABLE lawAndSocialDb.job (
+  id           INTEGER PRIMARY KEY,
+  user_id      INTEGER NOT NULL,
+  organization VARCHAR(255),
+  position     VARCHAR(255),
+  industry     VARCHAR(255),
+  website      VARCHAR(255),
+  yearFrom     INTEGER,
+  yearTo       INTEGER,
+  FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
+);
+
 CREATE TABLE lawAndSocialDb.follow (
   user_id          INTEGER NOT NULL REFERENCES lawAndSocialDb.user (id),
   followed_user_id INTEGER NOT NULL REFERENCES lawAndSocialDb.user (id),

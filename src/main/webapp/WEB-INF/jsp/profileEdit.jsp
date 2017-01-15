@@ -55,12 +55,18 @@
         <c:if test="${activeTab.educationInfoTab}" >
         educationTabActive = true;
         </c:if>
+        var jobTabActive = false;
+        <c:if test="${activeTab.jobInfoTab}" >
+        jobTabActive = true;
+        </c:if>
 
         tabpage = "#common";
         if (contactsTabActive) {
             tabpage = "#contacts";
         } else if (educationTabActive) {
             tabpage = "#education";
+        } else if (jobTabActive) {
+            tabpage = "#job";
         }
 
         var selectedTab = $('#settingsTab a[href="' + tabpage + '"]');

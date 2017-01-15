@@ -1,10 +1,12 @@
 package com.epam.training.lawAndSocial.web.servlet.user;
 
 import com.epam.training.lawAndSocial.model.Contacts;
+import com.epam.training.lawAndSocial.model.Job;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationInfoService;
+import com.epam.training.lawAndSocial.service.model.JobInfoService;
 import com.epam.training.lawAndSocial.service.model.UserService;
 import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.SchoolInfo;
 import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.UniverInfo;
@@ -31,17 +33,21 @@ public class ProfileServlet extends HttpServlet {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProfileServlet.class);
 
-    private final ContactsService contactsService;
     private final UserService userService;
+    private final ContactsService contactsService;
     private final EducationInfoService<EducationInfo> schoolInfoService;
     private final EducationInfoService<EducationInfo> univerInfoService;
+    private final JobInfoService jobInfoService;
 
     @Inject
-    public ProfileServlet(ContactsService contactsService, UserService userService,
+    public ProfileServlet(UserService userService,
+                          ContactsService contactsService,
+                          JobInfoService jobInfoService,
                           @SchoolInfo EducationInfoService<EducationInfo> schoolInfoService,
                           @UniverInfo EducationInfoService<EducationInfo> univerInfoService) {
-        this.contactsService = contactsService;
         this.userService = userService;
+        this.contactsService = contactsService;
+        this.jobInfoService = jobInfoService;
         this.schoolInfoService = schoolInfoService;
         this.univerInfoService = univerInfoService;
     }
@@ -49,8 +55,6 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LOGGER.debug("Successfully authorised");
-        final HttpSession session = req.getSession(true);
-        final User user = (User) session.getAttribute(USER_ATTR);
 
         final String idParam = req.getParameter("id");
         if (idParam != null && !idParam.isEmpty() && CheckUtils.isNumeric(idParam)) {
@@ -65,6 +69,12 @@ public class ProfileServlet extends HttpServlet {
                 final List<EducationInfo> requestedUserSchools = schoolInfoService.getList(requestedUser.getId());
                 req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, requestedUserSchools);
 
+                final List<EducationInfo> requestedUserUniversities = univerInfoService.getList(requestedUser.getId());
+                req.setAttribute(REQUESTED_USER_UNIVERSITIES_ATTR, requestedUserUniversities);
+
+                final Job requestedJobInfo = getJobInfo(requestedUser.getId());
+                req.setAttribute(REQUESTED_JOB_INFO_ATTR, requestedJobInfo);
+
                 req.getRequestDispatcher(USER_PAGE)
                         .forward(req, resp);
                 return;
@@ -73,14 +83,23 @@ public class ProfileServlet extends HttpServlet {
 
         req.setAttribute(REQUESTED_USER_ATTR, User.builder().build());
         req.setAttribute(REQUESTED_USER_SCHOOLS_ATTR, Collections.emptyList());
+        req.setAttribute(REQUESTED_USER_UNIVERSITIES_ATTR, Collections.emptyList());
+        req.setAttribute(REQUESTED_JOB_INFO_ATTR, Job.builder().build());
 
-        if (user != null) {
-            final Contacts contacts = getContacts(user.getId());
-            req.setAttribute(CONTACTS_ATTR, contacts);
+        final HttpSession session = req.getSession(true);
+        final User user = (User) session.getAttribute(USER_ATTR);
 
-            final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
-            session.setAttribute(SCHOOLS_ATTR, userSchools);
-        }
+        final Contacts contacts = getContacts(user.getId());
+        req.setAttribute(CONTACTS_ATTR, contacts);
+
+        final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
+        session.setAttribute(SCHOOLS_ATTR, userSchools);
+
+        final List<EducationInfo> userUniversities = univerInfoService.getList(user.getId());
+        session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
+
+        final Job userJobInfo = getJobInfo(user.getId());
+        session.setAttribute(JOB_INFO_ATTR, userJobInfo);
 
         LOGGER.debug("user entered profile page: {}", user.toString());
 
@@ -92,6 +111,15 @@ public class ProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher(USER_PAGE)
                 .forward(req, resp);
+    }
+
+    private Job getJobInfo(long userId) {
+        final Optional<Job> jobInfo = jobInfoService.get(userId);
+        if (jobInfo.isPresent()) {
+            return jobInfo.get();
+        } else {
+            return Job.builder().build();
+        }
     }
 
     private Contacts getContacts(long userId) {

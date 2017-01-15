@@ -63,12 +63,6 @@ public class EducationInfoServlet extends HttpServlet {
         final List<EducationInfo> schoolList = parseSchoolJson(schoolJsonData, validation);
         final List<EducationInfo> universityList = parseUniversityJson(universityData, validation);
 
-        LOGGER.debug("-----------UNIVERS BEFORE UPDATE -----------------");
-        for (EducationInfo educationInfo : universityList) {
-            LOGGER.debug(educationInfo.toString());
-        }
-        LOGGER.debug("-------------------------------------------------");
-
         if (validation.isValid()) {
             updateSchoolInfo(currentUser.getId(), schoolList, validation);
             updateUniverInfo(currentUser.getId(), universityList, validation);
@@ -85,12 +79,6 @@ public class EducationInfoServlet extends HttpServlet {
 
         final List<EducationInfo> updatedSchoolList = schoolInfoService.getList(currentUser.getId());
         final List<EducationInfo> updatedUniversitiesList = univerInfoService.getList(currentUser.getId());
-
-        LOGGER.debug("-----------UNIVERS AFTER UPDATE -----------------");
-        for (EducationInfo educationInfo : updatedUniversitiesList) {
-            LOGGER.debug(educationInfo.toString());
-        }
-        LOGGER.debug("-------------------------------------------------");
 
         session.setAttribute(SCHOOLS_ATTR, updatedSchoolList);
         session.setAttribute(UNIVERSITIES_ATTR, updatedUniversitiesList);

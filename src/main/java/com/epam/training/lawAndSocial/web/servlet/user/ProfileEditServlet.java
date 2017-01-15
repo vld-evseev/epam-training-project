@@ -2,10 +2,12 @@ package com.epam.training.lawAndSocial.web.servlet.user;
 
 
 import com.epam.training.lawAndSocial.model.Contacts;
+import com.epam.training.lawAndSocial.model.Job;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.EducationInfoService;
+import com.epam.training.lawAndSocial.service.model.JobInfoService;
 import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.SchoolInfo;
 import com.epam.training.lawAndSocial.service.model.impl.educationInfo.annotations.UniverInfo;
 import org.slf4j.Logger;
@@ -33,49 +35,53 @@ public class ProfileEditServlet extends HttpServlet {
     private final ContactsService contactsService;
     private final EducationInfoService<EducationInfo> schoolInfoService;
     private final EducationInfoService<EducationInfo> univerInfoService;
+    private final JobInfoService jobInfoService;
 
     @Inject
     public ProfileEditServlet(ContactsService contactsService,
+                              JobInfoService jobInfoService,
                               @SchoolInfo EducationInfoService<EducationInfo> schoolInfoService,
                               @UniverInfo EducationInfoService<EducationInfo> univerInfoService) {
         this.contactsService = contactsService;
+        this.jobInfoService = jobInfoService;
         this.schoolInfoService = schoolInfoService;
         this.univerInfoService = univerInfoService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LOGGER.debug("showing {}", PROFILE_EDIT_JSP);
+        setActiveTabAttribute(req);
         final HttpSession session = req.getSession(true);
         final User user = (User) session.getAttribute(USER_ATTR);
-        if (user != null) {
-            final Contacts contacts = getContacts(user.getId());
-            session.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
-            session.setAttribute(SCHOOLS_ATTR, userSchools);
+        final Contacts contacts = getContacts(user.getId());
+        session.setAttribute(CONTACTS_ATTR, contacts);
 
-            final List<EducationInfo> userUniversities = univerInfoService.getList(user.getId());
+        final List<EducationInfo> userSchools = schoolInfoService.getList(user.getId());
+        session.setAttribute(SCHOOLS_ATTR, userSchools);
 
-            LOGGER.debug("----------------");
-            for (EducationInfo userUniversity : userUniversities) {
-                LOGGER.debug(userUniversity.toString());
-            }
+        final List<EducationInfo> userUniversities = univerInfoService.getList(user.getId());
+        session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
+
+        final Job jobInfo = getJobInfo(user.getId());
+        session.setAttribute(JOB_INFO_ATTR, jobInfo);
 
 
-            session.setAttribute(UNIVERSITIES_ATTR, userUniversities);
-        }
-
-        final Map<String, Boolean> activeTab = new HashMap<>();
-        activeTab.put("commonInfoTab", true);
-        req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
         req.getRequestDispatcher(PROFILE_EDIT_JSP).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
 
-        super.doPost(req, resp);
+    private Job getJobInfo(long userId) {
+        final Optional<Job> jobInfo = jobInfoService.get(userId);
+        if (jobInfo.isPresent()) {
+            return jobInfo.get();
+        } else {
+            return Job.builder().build();
+        }
     }
 
     private Contacts getContacts(long userId) {
@@ -85,5 +91,11 @@ public class ProfileEditServlet extends HttpServlet {
         } else {
             return Contacts.builder().build();
         }
+    }
+
+    private void setActiveTabAttribute(HttpServletRequest req) {
+        final Map<String, Boolean> activeTab = new HashMap<>();
+        activeTab.put("commonInfoTab", true);
+        req.setAttribute(ACTIVE_TAB_ATTR, activeTab);
     }
 }

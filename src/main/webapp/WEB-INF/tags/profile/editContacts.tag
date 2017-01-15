@@ -17,16 +17,17 @@
             <c:url var="contactsInfoEditUrl" value="/user/edit/contacts"/>
             <form role="form" action="${contactsInfoEditUrl}" method="post">
                 <fieldset>
-                    <input type="hidden" name="redirect_to" value="${currentUrl}"/>
-
                     <div
                             <tags:fieldValidation value="${validation.fields.email}"/>
                     >
                         <div class="row">
                             <div class="form-group col-xs-4">
                                 <fmt:message var="email" bundle="${userPage}" key="user.email"/>
-                                <label>${email}</label>
-                                <input class="form-control input-sm" placeholder="${email}" type="text" name="email"
+                                <label><c:out value="${email}"/></label>
+                                <input class="form-control input-sm"
+                                       placeholder="${email}"
+                                       type="text"
+                                       name="email"
                                        value="<c:out value="${contacts.email}"/>">
                             </div>
                         </div>

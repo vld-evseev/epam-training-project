@@ -8,10 +8,11 @@
 <%@attribute name="phone" rtexprvalue="true" required="false" %>
 <%@attribute name="website" rtexprvalue="true" required="false" %>
 <%@attribute name="schools" rtexprvalue="true" required="false"
-             type="java.util.List<com.epam.training.lawAndSocial.model.education.impl.School>" %>
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>" %>
 <%@attribute name="universities" rtexprvalue="true" required="false"
-             type="java.util.List<com.epam.training.lawAndSocial.model.education.impl.University>" %>
-<%@attribute name="jobs" rtexprvalue="true" required="false" %>
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>" %>
+<%@attribute name="job" type="com.epam.training.lawAndSocial.model.Job"
+             rtexprvalue="true" required="false" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -53,16 +54,6 @@
                 <td>${dateMsg}</td>
                 <td>${birthdate}</td>
             </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.country"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.city"/></td>
-                <td>stub</td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -78,21 +69,21 @@
             <c:if test="${not empty email}">
                 <tr>
                     <td><fmt:message bundle="${userPage}" key="user.email"/></td>
-                    <td>${email}</td>
+                    <td><c:out value="${email}"/></td>
                 </tr>
             </c:if>
 
             <c:if test="${not empty phone}">
                 <tr>
                     <td><fmt:message bundle="${userPage}" key="user.phone"/></td>
-                    <td>${phone}</td>
+                    <td><c:out value="${phone}"/></td>
                 </tr>
             </c:if>
 
             <c:if test="${not empty website}">
                 <tr>
                     <td><fmt:message bundle="${userPage}" key="user.website"/></td>
-                    <td>${website}</td>
+                    <td><c:out value="${website}"/></td>
                 </tr>
             </c:if>
             </tbody>
@@ -128,7 +119,17 @@
                 <c:if test="${not empty universities}">
                     <tr>
                         <td><fmt:message bundle="${userPage}" key="user.education.university"/></td>
-                        <td>stub</td>
+                        <td>
+                            <c:forEach items="${universities}" var="univer" varStatus="count">
+                                <c:out value="${univer.name}"/>
+                                <c:out value="${univer.country}"/>
+                                <c:out value="${univer.city}"/>
+                                <c:out value="${univer.yearFrom}"/> - <c:out value="${univer.yearTo}"/>
+                                <c:if test="${not count.last}">
+                                    <hr>
+                                </c:if>
+                            </c:forEach>
+                        </td>
                     </tr>
                 </c:if>
 
@@ -138,44 +139,40 @@
     </div>
 </c:if>
 
+<c:if test="${not empty job.organization}">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><fmt:message bundle="${userPage}" key="user.job"/></h4>
+        </div>
+        <div class="panel-body">
+            <table class="table table-user-information">
+                <tbody>
+                <tr>
+                    <td><fmt:message bundle="${userPage}" key="user.job.organization"/></td>
+                    <td><c:out value="${job.organization}"/></td>
+                </tr>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4><fmt:message bundle="${userPage}" key="user.job"/></h4>
+                <tr>
+                    <td><fmt:message bundle="${userPage}" key="user.job.position"/></td>
+                    <td><c:out value="${job.position}"/></td>
+                </tr>
+
+                <tr>
+                    <td><fmt:message bundle="${userPage}" key="user.job.industry"/></td>
+                    <td><c:out value="${job.industry}"/></td>
+                </tr>
+
+                <tr>
+                    <td><fmt:message bundle="${userPage}" key="user.job.organization.website"/></td>
+                    <td><c:out value="${job.yearFrom}"/></td>
+                </tr>
+
+                <tr>
+                    <td><fmt:message bundle="${userPage}" key="user.job.years"/></td>
+                    <td><c:out value="${job.yearTo}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="panel-body">
-        <table class="table table-user-information">
-            <tbody>
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.organization"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.position"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.industry"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.organization.website"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.years"/></td>
-                <td>stub</td>
-            </tr>
-
-            <tr>
-                <td><fmt:message bundle="${userPage}" key="user.job.description"/></td>
-                <td>stub</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+</c:if>

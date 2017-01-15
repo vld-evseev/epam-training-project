@@ -319,6 +319,13 @@ INSERT INTO lawAndSocialDb.university (id, user_id, name, country, city, yearFro
   UNION ALL SELECT nextval('lawAndSocialDb.university_seq'), 2, 'SPBGU', 'Russia', 'St.Petersburg', 1995, 2000
   UNION ALL SELECT nextval('lawAndSocialDb.university_seq'), 1, 'Univ3', 'Ukraine', 'Kiev', 1988, 1994;
 
+INSERT INTO lawAndSocialDb.job (id, user_id, organization, position, industry, website, yearFrom, yearTo)
+  SELECT nextval('lawAndSocialDb.job_seq'), 1, 'Jason Stathem & the partners', 'Lawyer', 'Entertainment',
+    'http://awesomecompany.gov', 2011, 2016
+  UNION ALL SELECT nextval('lawAndSocialDb.job_seq'), 2, 'Private practice', 'Lawyer', '', 'http://ThePirateBay.org',
+              2014, 2017
+  UNION ALL SELECT nextval('lawAndSocialDb.job_seq'), 3, 'Conspiracy GMBH', 'Consultant', '', '', 2007, 2017;
+
 INSERT INTO lawAndSocialDb.contacts (id, user_id, email, phone, website)
   SELECT nextval('lawAndSocialDb.contacts_seq'), 1, 'testMail@gmail.com', '+7999111222', 'johndoug.com.ua'
   UNION ALL SELECT nextval('lawAndSocialDb.contacts_seq'), 2, 'test@mail.com', '+7226663331', 'tesuserwebsite.com';

@@ -6,7 +6,6 @@ public final class ServletParams {
     public final static String REDIRECT_TO_PARAM = "redirect_to";
     public static final String USERNAME_PARAM = "username";
     public static final String PASSWORD_PARAM = "password";
-    public static final String IS_AUTHORISED_ATTR = "is_authorised";
     public static final String VALIDATION_ATTR = "validation";
     public static final String CREDENTIALS_ATTR = "credentials";
     public static final String EMAIL_PARAM = "email";
@@ -28,21 +27,7 @@ public final class ServletParams {
     public static final String WEBSITE_PARAM = "website";
     public static final String ACTIVE_TAB_ATTR = "activeTab";
     public static final String SCHOOLS_ATTR = "schools";
-    public static final String SCHOOL_NAME_PARAM = "schoolName";
-    public static final String SCHOOL_COUNTRY_PARAM = "schoolCountry";
-    public static final String SCHOOL_CITY_PARAM = "schoolCity";
-    public static final String SCHOOL_YEAR_FROM_PARAM = "schoolYearFrom";
-    public static final String SCHOOL_YEAR_TO_PARAM = "schoolYearTo";
-    public static final String SCHOOL_ID_PARAM = "schoolId";
-    public static final String SCHOOL_USER_ID_PARAM = "schoolUserId";
     public static final String UNIVERSITIES_ATTR = "universities";
-    public static final String UNIVERSITY_ID_PARAM = "universityId";
-    public static final String UNIVERSITY_USER_ID_PARAM = "universityUserId";
-    public static final String UNIVERSITY_NAME_PARAM = "universityName";
-    public static final String UNIVERSITY_COUNTRY_PARAM = "universityCountry";
-    public static final String UNIVERSITY_CITY_PARAM = "universityCity";
-    public static final String UNIVERSITY_YEAR_FROM_PARAM = "universityYearFrom";
-    public static final String UNIVERSITY_YEAR_TO_PARAM = "universityYearTo";
     public static final String REQUESTED_USER_ATTR = "requestedUser";
     public static final String REQUESTED_USER_SCHOOLS_ATTR = "requestedUserSchools";
     public static final String DEFAULT_AVATAR_PATH = "/static/imgs/default_user.png";
@@ -54,7 +39,10 @@ public final class ServletParams {
     public static final String USER_ID_PARAM = "userId";
     public static final String JSON_SCHOOL_DATA_PARAM = "jsonSchoolData";
     public static final String JSON_UNIVERSITY_DATA_PARAM = "jsonUniversityData";
-
+    public static final String JOB_INFO_ATTR = "jobInfo";
+    public static final String REQUESTED_JOB_INFO_ATTR = "requestedJobInfo";
+    public static final String REQUESTED_USER_UNIVERSITIES_ATTR = "requestedUserUniversities";
+    public static final String JSON_JOB_DATA_PARAM = "jsonJobData";
 
     private ServletParams() {
     }

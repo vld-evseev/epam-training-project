@@ -8,13 +8,23 @@
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${root}" key="root.welcome"/>
+
 <jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="request"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 <jsp:useBean id="schools" type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
              scope="session"/>
+<jsp:useBean id="universities" type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
+             scope="session"/>
+<jsp:useBean id="jobInfo" type="com.epam.training.lawAndSocial.model.Job" scope="session"/>
+
 <jsp:useBean id="requestedUser" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
 <jsp:useBean id="requestedUserSchools"
              type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
+             scope="request"/>
+<jsp:useBean id="requestedUserUniversities"
+             type="java.util.List<com.epam.training.lawAndSocial.model.education.EducationInfo>"
+             scope="request"/>
+<jsp:useBean id="requestedJobInfo" type="com.epam.training.lawAndSocial.model.Job"
              scope="request"/>
 
 <c:set var="userIsRequested" value="${requestedUser.id != 0}"/>
@@ -32,6 +42,8 @@
                                    phone="${contacts.phone}"
                                    website="${contacts.website}"
                                    schools="${requestedUserSchools}"
+                                   universities="${requestedUserUniversities}"
+                                   job="${requestedJobInfo}"
                 />
             </c:when>
             <c:otherwise>
@@ -43,6 +55,8 @@
                                    phone="${contacts.phone}"
                                    website="${contacts.website}"
                                    schools="${schools}"
+                                   universities="${universities}"
+                                   job="${jobInfo}"
                 />
             </c:otherwise>
         </c:choose>
