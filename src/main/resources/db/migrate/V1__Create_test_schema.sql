@@ -83,6 +83,17 @@ CREATE TABLE lawAndSocialDb.message_history (
   FOREIGN KEY (to_user_id) REFERENCES lawAndSocialDb.user (id)
 );
 
+CREATE SEQUENCE lawAndSocialDb.news_seq;
+
+CREATE TABLE lawAndSocialDb.news (
+  id         INTEGER NOT NULL,
+  user_id    INTEGER NOT NULL,
+  date_value BIGINT  NOT NULL,
+  heading    VARCHAR(255),
+  content    TEXT    NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
+);
+
 /*CREATE TABLE lawAndSocialDb.user_school (
   user_id   INTEGER REFERENCES lawAndSocialDb.user (id) ON UPDATE CASCADE,
   school_id INTEGER REFERENCES lawAndSocialDb.school (id) ON UPDATE CASCADE ON DELETE CASCADE,

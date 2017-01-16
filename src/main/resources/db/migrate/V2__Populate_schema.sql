@@ -350,6 +350,11 @@ INSERT INTO lawAndSocialDb.message_history (from_user_id, to_user_id, date_value
   UNION ALL SELECT 2, 3, 0, 'Message from 2 to 3'
   UNION ALL SELECT 2, 6, 13, 'Test 2-6'
   UNION ALL SELECT 7, 2, 31, 'Test 7-2';
+
+INSERT INTO lawAndSocialDb.news (id, user_id, date_value, heading, content)
+  SELECT nextval('lawAndSocialDb.news_seq'), 2, 1484004853897, 'Head of test message 1', 'Test message 1'
+  UNION ALL SELECT nextval('lawAndSocialDb.news_seq'), 2, 1484574853334, 'Head of test message 2', 'Test message 2'
+  UNION ALL SELECT nextval('lawAndSocialDb.news_seq'), 1, 1484586909644, 'Head of test message 3', 'Test message 3'
 /*
 INSERT INTO lawAndSocialDb.user_school (user_id, school_id, yearFrom, yearTo)
   SELECT '4', '1', '1994', '2000'

@@ -43,6 +43,10 @@ public final class ServletParams {
     public static final String REQUESTED_JOB_INFO_ATTR = "requestedJobInfo";
     public static final String REQUESTED_USER_UNIVERSITIES_ATTR = "requestedUserUniversities";
     public static final String JSON_JOB_DATA_PARAM = "jsonJobData";
+    public static final String NEWS_JSP = "/WEB-INF/jsp/news.jsp";
+    public static final String NEWS_LIST_ATTR = "newsList";
+    public static final String NEWS_HEADING_PARAM = "newsHeading";
+    public static final String NEWS_CONTENT_PARAM = "newsContent";
 
     private ServletParams() {
     }

@@ -56,6 +56,7 @@ public class GuiceConfig extends GuiceServletContextListener {
             bind(JobInfoDao.class).to(PgJobInfoDao.class).in(Singleton.class);
             bind(MessageHistoryDao.class).to(PgMessageHistoryDao.class).in(Singleton.class);
             bind(FollowDao.class).to(PgFollowDao.class).in(Singleton.class);
+            bind(NewsDao.class).to(PgNewsDao.class).in(Singleton.class);
 
             bind(new TypeLiteral<EducationInfoDao<EducationInfo>>() {
             }).annotatedWith(SchoolInfo.class)
@@ -77,6 +78,7 @@ public class GuiceConfig extends GuiceServletContextListener {
             bind(ChatService.class).to(ChatServiceImpl.class).in(Singleton.class);
             bind(MessageHistoryService.class).to(MessageHistoryServiceImpl.class).in(Singleton.class);
             bind(JobInfoService.class).to(JobInfoServiceImpl.class).in(Singleton.class);
+            bind(NewsService.class).to(NewsServiceImpl.class).in(Singleton.class);
             bind(Gson.class).in(Singleton.class);
 
             bind(new TypeLiteral<EducationInfoService<EducationInfo>>() {
@@ -97,6 +99,7 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/login").with(LoginServlet.class);
             serve("/registration").with(RegistrationServlet.class);
             serve("/community").with(CommunityServlet.class);
+            serve("/news").with(NewsServlet.class);
             serve("/user").with(ProfileServlet.class);
             serve("/user/edit").with(ProfileEditServlet.class);
             serve("/user/edit/common").with(CommonInfoServlet.class);
@@ -109,7 +112,6 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/user/message").with(MessageServlet.class);
             serve("/signout").with(SignoutServlet.class);
             serve("/tlg").with(TestSignInServlet.class);
-
         }
     }
 

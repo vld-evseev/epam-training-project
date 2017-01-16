@@ -75,6 +75,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <c:if test="${sessionScope.user != null}">
                     <li>
+                        <c:url var="newsUrl" value="/news"/>
+                        <a href="${newsUrl}">
+                            <fmt:message bundle="${root}" key="root.news"/>
+                        </a>
+                    </li>
+
+                    <li>
                         <c:url var="communityUrl" value="/community"/>
                         <a href="${communityUrl}">
                             <fmt:message bundle="${profile}" key="profile.community"/>
