@@ -9,12 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public final class ImageUtils {
+public final class EncodingUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EncodingUtils.class);
 
     public static String encodeBase64(URL url) {
-        /*byte[] result = null;*/
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (url != null) {
             try (InputStream is = url.openStream()) {

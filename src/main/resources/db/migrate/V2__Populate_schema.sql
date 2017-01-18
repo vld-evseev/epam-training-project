@@ -322,8 +322,8 @@ INSERT INTO lawAndSocialDb.university (id, user_id, name, country, city, yearFro
 INSERT INTO lawAndSocialDb.job (id, user_id, organization, position, industry, website, yearFrom, yearTo)
   SELECT nextval('lawAndSocialDb.job_seq'), 1, 'Jason Stathem & the partners', 'Lawyer', 'Entertainment',
     'http://awesomecompany.gov', 2011, 2016
-  UNION ALL SELECT nextval('lawAndSocialDb.job_seq'), 2, 'Private practice', 'Lawyer', '', 'http://ThePirateBay.org',
-              2014, 2017
+  UNION ALL SELECT nextval('lawAndSocialDb.job_seq'), 2, 'Private practice', 'Lawyer', '', 'http://mywebsite.org', 2014,
+              2017
   UNION ALL SELECT nextval('lawAndSocialDb.job_seq'), 3, 'Conspiracy GMBH', 'Consultant', '', '', 2007, 2017;
 
 INSERT INTO lawAndSocialDb.contacts (id, user_id, email, phone, website)

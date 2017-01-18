@@ -1,6 +1,7 @@
 package com.epam.training.lawAndSocial.dao.exception;
 
 public class PersistException extends Exception {
+
     public PersistException() {
         super();
     }

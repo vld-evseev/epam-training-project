@@ -17,10 +17,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final int USERS_SHOW_LIMIT = 30;
 
     private final SecurityService securityService;
     private final UserDao userDao;
-    private static final int USERS_SHOW_LIMIT = 30;
 
     @Inject
     public UserServiceImpl(SecurityService securityService, UserDao userDao) {

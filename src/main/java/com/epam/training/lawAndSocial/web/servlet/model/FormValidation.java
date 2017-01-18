@@ -36,6 +36,6 @@ public class FormValidation {
             }
         }
 
-        return messages;
+        return Collections.unmodifiableList(messages);
     }
 }

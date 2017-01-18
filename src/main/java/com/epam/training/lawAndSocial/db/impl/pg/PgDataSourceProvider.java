@@ -7,12 +7,12 @@ import org.postgresql.ds.PGPoolingDataSource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-public class PostgresDataSourceProvider implements Provider<DataSource> {
+public class PgDataSourceProvider implements Provider<DataSource> {
 
     private final PgConfig pgConfig;
 
     @Inject
-    public PostgresDataSourceProvider(PgConfig pgConfig) {
+    public PgDataSourceProvider(PgConfig pgConfig) {
         this.pgConfig = pgConfig;
     }
 

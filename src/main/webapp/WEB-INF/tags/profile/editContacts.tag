@@ -6,7 +6,6 @@
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
-<%--<jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>--%>
 <jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="session"/>
 <jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
              scope="request"/>
@@ -15,21 +14,27 @@
     <div class="content-box-large">
         <div class="panel-body">
             <c:url var="contactsInfoEditUrl" value="/user/edit/contacts"/>
-            <form role="form" action="${contactsInfoEditUrl}" method="post">
+            <form role="form" data-toggle="validator" action="${contactsInfoEditUrl}" method="post">
                 <fieldset>
                     <div
                             <tags:fieldValidation value="${validation.fields.email}"/>
                     >
+                        <%--Email--%>
                         <div class="row">
                             <div class="form-group col-xs-4">
                                 <fmt:message var="email" bundle="${userPage}" key="user.email"/>
+                                <fmt:message var="email_incorrect" bundle="${profile}" key="profile.email.incorrect"/>
                                 <label><c:out value="${email}"/></label>
                                 <input class="form-control input-sm"
                                        placeholder="${email}"
-                                       type="text"
+                                       type="email"
                                        name="email"
-                                       value="<c:out value="${contacts.email}"/>">
+                                       value="<c:out value="${contacts.email}"/>"
+                                       data-error="${email_incorrect}"
+                                       required
+                                />
                             </div>
+                            <div class="help-block with-errors"></div>
                         </div>
                         <c:if test="${validation.fields.email.emptyField}">
                             <span class="help-block">
@@ -38,22 +43,30 @@
                         </c:if>
                     </div>
 
-
+                    <%--Pnone--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <fmt:message var="phone" bundle="${userPage}" key="user.phone"/>
                             <label>${phone}</label>
-                            <input class="form-control input-sm" placeholder="${phone}" type="text" name="phone"
-                                   value="<c:out value="${contacts.phone}" />">
+                            <input class="form-control input-sm"
+                                   placeholder="${phone}"
+                                   type="text"
+                                   name="phone"
+                                   value="<c:out value="${contacts.phone}" />"
+                            />
                         </div>
                     </div>
 
+                    <%--Website--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <fmt:message var="website" bundle="${userPage}" key="user.website"/>
                             <label>${website}</label>
-                            <input class="form-control input-sm" placeholder="${website}" type="text" name="website"
-                                   value="<c:out value="${contacts.website}"/>">
+                            <input class="form-control input-sm"
+                                   placeholder="${website}"
+                                   type="text" name="website"
+                                   value="<c:out value="${contacts.website}"/>"
+                            />
                         </div>
                     </div>
 

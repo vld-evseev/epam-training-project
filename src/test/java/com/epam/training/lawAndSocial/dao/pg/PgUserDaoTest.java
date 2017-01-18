@@ -5,7 +5,7 @@ import com.epam.training.lawAndSocial.db.H2DataSourceTest;
 import com.epam.training.lawAndSocial.model.Gender;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.SecurityService;
-import com.epam.training.lawAndSocial.utils.ImageUtils;
+import com.epam.training.lawAndSocial.utils.EncodingUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class PgUserDaoTest extends H2DataSourceTest {
 
         final URL defaultAvatar = getClass().getClassLoader().getResource("imgs/default_user.png");
 
-        final long updated = userDao.updateAvatar(testUser.get().getId(), ImageUtils.encodeBase64(defaultAvatar));
+        final long updated = userDao.updateAvatar(testUser.get().getId(), EncodingUtils.encodeBase64(defaultAvatar));
         Assert.assertTrue(updated > 0);
 
         final Optional<User> updatedTestUser = userDao.getByUsername("testUser");

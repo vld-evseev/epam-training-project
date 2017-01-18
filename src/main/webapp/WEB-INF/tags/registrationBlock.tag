@@ -3,7 +3,6 @@
 <%@ taglib prefix="plugins" tagdir="/WEB-INF/tags/plugins" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
-<fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:setBundle basename="i18n.error" var="error"/>
 <jsp:useBean id="newUser" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
@@ -12,21 +11,25 @@
 <jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
              scope="request"/>
 
-<div id="signupbox" style="/*display:none; */margin-top:50px"
+<div id="signupbox" style="margin-top:50px"
      class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="panel-title"><fmt:message bundle="${profile}" key="profile.sign.up"/></div>
             <div style="float:right; font-size: 85%; position: relative; top:-10px">
                 <c:url var="loginUrl" value="/login"/>
-                <a id="signinlink" href="${loginUrl}" <%--onclick="$('#signupbox').hide(); $('#loginbox').show()"--%>>
+                <a id="signinlink" href="${loginUrl}">
                     <fmt:message bundle="${profile}" key="profile.sign.in"/>
-                </a></div>
+                </a>
+            </div>
         </div>
         <div class="panel-body">
+
+            <%--Form--%>
             <c:url var="registrationUrl" value="/registration"/>
             <form id="signupform" data-toggle="validator" role="form" action="${registrationUrl}" method="post">
 
+                <%--Alert block--%>
                 <c:choose>
                     <c:when test="${validation.fields.email.incorrect
                             || validation.fields.username.incorrect
@@ -41,6 +44,7 @@
                     </c:when>
                 </c:choose>
 
+                <%--Email--%>
                 <div
                         <tags:fieldValidation value="${validation.fields.email}"/>
                 >
@@ -50,9 +54,14 @@
                                                                aria-hidden="true"></i></span>
                             <fmt:message var="email_address" bundle="${profile}" key="profile.email.address"/>
                             <fmt:message var="email_required" bundle="${profile}" key="profile.email.required"/>
-                            <input type="text" class="form-control" name="email" placeholder="${email_address}"
-                                   value="${contacts.email}"
-                                   data-error="${email_required}" required>
+                            <fmt:message var="email_incorrect" bundle="${profile}" key="profile.email.incorrect"/>
+                            <input type="email"
+                                   class="form-control"
+                                   name="email"
+                                   placeholder="${email_address}"
+                                   value="<c:out value="${contacts.email}"/>"
+                                   data-error="${email_incorrect}"
+                                   required>
                         </div>
                         <div class="help-block with-errors"></div>
                         <c:if test="${validation.fields.email.emptyField}">
@@ -63,7 +72,7 @@
                     </div>
                 </div>
 
-
+                <%--Username--%>
                 <div
                         <c:choose>
                             <c:when test="${not empty validation.fields.username
@@ -82,7 +91,7 @@
                             <fmt:message var="username" bundle="${profile}" key="profile.username"/>
                             <fmt:message var="username_required" bundle="${profile}" key="profile.username.required"/>
                             <input type="text" class="form-control" name="username" placeholder="${username}"
-                                   value="${newUser.userName}"
+                                   value="<c:out value="${newUser.userName}"/>"
                                    data-error="${username_required}" required>
                         </div>
                         <div class="help-block with-errors"></div>
@@ -101,6 +110,7 @@
                     </div>
                 </div>
 
+                <%--Firstname--%>
                 <div class="row">
                     <div
                             <tags:fieldValidation value="${validation.fields.firstname}"/>
@@ -113,7 +123,7 @@
                                 <fmt:message var="first_name_required" bundle="${profile}"
                                              key="profile.first.name.required"/>
                                 <input type="text" class="form-control" name="firstname" placeholder="${first_name}"
-                                       value="${newUser.firstName}"
+                                       value="<c:out value="${newUser.firstName}"/>"
                                        data-error="${first_name_required}" required>
                             </div>
                             <div class="help-block with-errors"></div>
@@ -125,6 +135,7 @@
                         </div>
                     </div>
 
+                    <%--Lastname--%>
                     <div
                             <tags:fieldValidation value="${validation.fields.lastname}"/>
                     >
@@ -136,7 +147,7 @@
                                 <fmt:message var="last_name_required" bundle="${profile}"
                                              key="profile.last.name.required"/>
                                 <input type="text" class="form-control" name="lastname" placeholder="${last_name}"
-                                       value="${newUser.lastName}"
+                                       value="<c:out value="${newUser.lastName}"/>"
                                        data-error="${last_name_required}" required/>
                             </div>
                             <div class="help-block with-errors"></div>
@@ -149,10 +160,11 @@
                     </div>
                 </div>
 
+                <%--Birth date--%>
                 <div
                         <tags:fieldValidation value="${validation.fields.date}"/>
                 >
-                    <div class="form-group has-feedback"> <!-- Date input -->
+                    <div class="form-group has-feedback">
                         <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-id-card-o fa-fw"
                                                                    aria-hidden="true"></i></span>
@@ -160,7 +172,7 @@
                             <fmt:message var="birth_date_required" bundle="${profile}"
                                          key="profile.birth.date.required"/>
                             <input class="form-control" id="date" name="date" placeholder="${birth_date}" type="text"
-                                   value="${newUser.date}"
+                                   value="<c:out value="${newUser.date}"/>"
                                    data-error="${birth_date_required}" required/>
                         </div>
                         <div class="help-block with-errors"></div>
@@ -174,6 +186,8 @@
                 </div>
 
                 <div class="row">
+
+                    <%--Password--%>
                     <div
                             <tags:fieldValidation value="${validation.fields.password}"/>
                     >
@@ -195,16 +209,10 @@
                             <div class="help-block with-errors">
                                 <fmt:message bundle="${profile}" key="profile.chars.limitation"/>
                             </div>
-
-                            <%--<c:if test="${validation.fields.password.emptyField}">
-                                <span class="help-block">
-                                    <fmt:message bundle="${profile}" key="profile.password.required"/>
-                                </span>
-                            </c:if>--%>
                         </div>
                     </div>
 
-
+                    <%--Confirm password--%>
                     <div class="form-group has-feedback col-sm-6 pull-right">
                         <div
                                 <tags:fieldValidation value="${validation.fields.confirm_password}"/>
@@ -241,30 +249,17 @@
                                     </span>
                                 </c:when>
                             </c:choose>
-
-                            <%--<c:if test="${validation.fields.confirm_password.emptyField}">
-                                <span class="help-block">
-                                    <fmt:message bundle="${profile}" key="profile.password.confirm.requlred"/>
-                                </span>
-                            </c:if>--%>
                         </div>
-
-
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <!-- Button -->
                     <button id="btn-signup" type="submit" class="btn btn-info">
                         <fmt:message bundle="${profile}" key="profile.sign.up"/>
                     </button>
-                    <%--<span style="margin-left:8px;">or</span>--%>
                 </div>
-
             </form>
         </div>
     </div>
-
 </div>
 
-<plugins:datePicker/>

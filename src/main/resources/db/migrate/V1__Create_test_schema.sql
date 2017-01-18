@@ -93,30 +93,3 @@ CREATE TABLE lawAndSocialDb.news (
   content    TEXT    NOT NULL,
   FOREIGN KEY (user_id) REFERENCES lawAndSocialDb.user (id)
 );
-
-/*CREATE TABLE lawAndSocialDb.user_school (
-  user_id   INTEGER REFERENCES lawAndSocialDb.user (id) ON UPDATE CASCADE,
-  school_id INTEGER REFERENCES lawAndSocialDb.school (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  yearFrom INTEGER,
-  yearTo   INTEGER,
-  CONSTRAINT user_school_key PRIMARY KEY (user_id, school_id)
-);*/
-
-
-/*DO
-$$
-BEGIN
-  CREATE SEQUENCE unit10db.role_seq;
-  EXCEPTION WHEN duplicate_table THEN
-  -- do nothing, it's already there
-END
-$$ LANGUAGE plpgsql;*/
-/*
-CREATE SEQUENCE lawAndSocialDb.role_seq;
-
-CREATE TABLE unit10dbtest.role (
-  id      INTEGER PRIMARY KEY,
-  name    VARCHAR(255) NOT NULL,
-  user_id INTEGER      NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES unit10dbtest.user (id)
-);*/

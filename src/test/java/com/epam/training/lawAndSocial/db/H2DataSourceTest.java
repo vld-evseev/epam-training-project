@@ -1,7 +1,7 @@
 package com.epam.training.lawAndSocial.db;
 
 import com.epam.training.lawAndSocial.db.impl.h2.H2ConfigProvider;
-import com.epam.training.lawAndSocial.db.impl.h2.H2DatasourceProvider;
+import com.epam.training.lawAndSocial.db.impl.h2.H2DataSourceProvider;
 import org.junit.BeforeClass;
 
 import javax.sql.DataSource;
@@ -16,7 +16,7 @@ public class H2DataSourceTest extends AbstractDataSourceTest {
     @BeforeClass
     public static void startup() {
         final H2Config h2Config = new H2ConfigProvider().get();
-        final H2DatasourceProvider h2DatasourceProvider = new H2DatasourceProvider(new H2Config() {
+        final H2DataSourceProvider h2DataSourceProvider = new H2DataSourceProvider(new H2Config() {
             @Override
             public String getUrl() {
                 return h2Config.getUrl();
@@ -33,7 +33,7 @@ public class H2DataSourceTest extends AbstractDataSourceTest {
             }
         });
 
-        dataSource = h2DatasourceProvider.get();
+        dataSource = h2DataSourceProvider.get();
     }
 
     @Override

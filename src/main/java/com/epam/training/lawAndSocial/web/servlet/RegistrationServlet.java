@@ -8,7 +8,7 @@ import com.epam.training.lawAndSocial.service.ValidationService;
 import com.epam.training.lawAndSocial.service.model.ContactsService;
 import com.epam.training.lawAndSocial.service.model.UserService;
 import com.epam.training.lawAndSocial.utils.DateValidator;
-import com.epam.training.lawAndSocial.utils.ImageUtils;
+import com.epam.training.lawAndSocial.utils.EncodingUtils;
 import com.epam.training.lawAndSocial.web.servlet.model.FieldValidation;
 import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,6 @@ import static com.epam.training.lawAndSocial.utils.ServletParams.*;
 public class RegistrationServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationServlet.class);
-    private static final String REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
 
     private final ValidationService validationService;
     private final SecurityService securityService;
@@ -71,22 +71,7 @@ public class RegistrationServlet extends HttpServlet {
                 .password(params.get(PASSWORD_PARAM))
                 .build();
 
-        LOGGER.debug("credentials: {}", credentials.toString());
-
-        final URL defaultAvatar = getServletContext().getResource(DEFAULT_AVATAR_PATH);
-
-        final String avatar = ImageUtils.encodeBase64(defaultAvatar);
-        System.out.println(avatar);
-
-        final User user = User.builder()
-                .uuid(UUID.randomUUID().toString())
-                .userName(params.get(USERNAME_PARAM))
-                .firstName(params.get(FIRSTNAME_PARAM))
-                .lastName(params.get(LASTNAME_PARAM))
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM), DateValidator.Pattern.DD_MM_YYYY, validation))
-                .avatar(avatar)
-                .passwordHash(securityService.encrypt(credentials.getPassword()))
-                .build();
+        final User user = createUser(params, credentials, validation);
 
         final Contacts contacts = Contacts.builder()
                 .email(params.get(EMAIL_PARAM))
@@ -115,19 +100,52 @@ public class RegistrationServlet extends HttpServlet {
             return;
         }
 
-        LOGGER.debug("Form validation succeed");
-        LOGGER.debug("user was created: {}", user.toString());
+        final Optional<User> createdUser = userService.getByCredentials(credentials);
+        if (createdUser.isPresent()) {
+            LOGGER.debug("Form validation succeed");
+            LOGGER.debug("user was created: {}", createdUser.get().toString());
 
-        final HttpSession session = req.getSession(true);
-        session.setAttribute(USER_ATTR, user);
+            final HttpSession session = req.getSession(true);
+            session.setAttribute(USER_ATTR, createdUser.get());
+        }
 
         resp.sendRedirect(req.getContextPath() + "/user");
     }
 
+    private User createUser(Map<String, String> params, Credentials credentials, FormValidation validation) {
+        final String defaultAvatar = getDefaultAvatar();
+        final String birthDate = DateValidator.parseDate(
+                params.get(BIRTH_DATE_PARAM),
+                DateValidator.Pattern.DD_MM_YYYY,
+                validation
+        );
+        final String passwordHash = securityService.encrypt(credentials.getPassword());
+
+        return User.builder()
+                .uuid(UUID.randomUUID().toString())
+                .userName(params.get(USERNAME_PARAM))
+                .firstName(params.get(FIRSTNAME_PARAM))
+                .lastName(params.get(LASTNAME_PARAM))
+                .date(birthDate)
+                .avatar(defaultAvatar)
+                .passwordHash(passwordHash)
+                .build();
+    }
+
+    private String getDefaultAvatar() {
+        try {
+            final URL defaultAvatar = getServletContext().getResource(DEFAULT_AVATAR_PATH);
+            return EncodingUtils.encodeBase64(defaultAvatar);
+        } catch (MalformedURLException e) {
+            LOGGER.debug("Failed to load default avatar image. Check if resource exists");
+            return null;
+        }
+    }
+
     static boolean passwordConfirmed(Map<String, String> params, FormValidation validation) {
-        final String pwd = params.get(PASSWORD_PARAM);
-        final String confirmedPwd = params.get(CONFIRM_PASSWORD_PARAM);
-        final boolean isConfirmed = pwd.equals(confirmedPwd);
+        final String password = params.get(PASSWORD_PARAM);
+        final String confirmedPassword = params.get(CONFIRM_PASSWORD_PARAM);
+        final boolean isConfirmed = password.equals(confirmedPassword);
 
         if (!isConfirmed) {
             LOGGER.debug("password doesn't match");
@@ -161,7 +179,6 @@ public class RegistrationServlet extends HttpServlet {
                     true
             );
         }
-
         return id;
     }
 

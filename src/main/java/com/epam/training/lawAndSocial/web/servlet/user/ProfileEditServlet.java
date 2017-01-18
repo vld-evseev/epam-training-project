@@ -66,7 +66,6 @@ public class ProfileEditServlet extends HttpServlet {
         final Job jobInfo = getJobInfo(user.getId());
         session.setAttribute(JOB_INFO_ATTR, jobInfo);
 
-
         req.getRequestDispatcher(PROFILE_EDIT_JSP).forward(req, resp);
     }
 
@@ -79,18 +78,18 @@ public class ProfileEditServlet extends HttpServlet {
         final Optional<Job> jobInfo = jobInfoService.get(userId);
         if (jobInfo.isPresent()) {
             return jobInfo.get();
-        } else {
-            return Job.builder().build();
         }
+
+        return Job.builder().build();
     }
 
     private Contacts getContacts(long userId) {
         final Optional<Contacts> contacts = contactsService.getByUserId(userId);
         if (contacts.isPresent()) {
             return contacts.get();
-        } else {
-            return Contacts.builder().build();
         }
+
+        return Contacts.builder().build();
     }
 
     private void setActiveTabAttribute(HttpServletRequest req) {

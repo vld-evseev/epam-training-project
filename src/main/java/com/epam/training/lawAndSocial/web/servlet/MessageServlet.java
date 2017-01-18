@@ -1,5 +1,6 @@
 package com.epam.training.lawAndSocial.web.servlet;
 
+import com.epam.training.lawAndSocial.config.Config;
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.model.User;
 import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
@@ -26,11 +27,13 @@ public class MessageServlet extends HttpServlet {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageServlet.class);
 
+    private final Config config;
     private final UserService userService;
     private final MessageHistoryService messageHistoryService;
 
     @Inject
-    public MessageServlet(UserService userService, MessageHistoryService messageHistoryService) {
+    public MessageServlet(Config config, UserService userService, MessageHistoryService messageHistoryService) {
+        this.config = config;
         this.userService = userService;
         this.messageHistoryService = messageHistoryService;
     }
@@ -60,6 +63,12 @@ public class MessageServlet extends HttpServlet {
 
         final Long sessionId = createUserPairSessionId(user.getUuid(), opponent.getUuid());
         req.setAttribute("sessionId", sessionId);
+
+        final String websocketHost = config.getWebsocketHost();
+        req.setAttribute("websocketHost", websocketHost);
+
+        final Integer websocketPort = Integer.valueOf(config.getWebsocketPort());
+        req.setAttribute("websocketPort", websocketPort);
 
         final String queryString = req.getQueryString();
         req.getRequestDispatcher(MESSAGE_JSP + "?" + queryString).forward(req, resp);

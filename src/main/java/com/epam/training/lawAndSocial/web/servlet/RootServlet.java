@@ -1,6 +1,5 @@
 package com.epam.training.lawAndSocial.web.servlet;
 
-import com.epam.training.lawAndSocial.utils.ServletParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.epam.training.lawAndSocial.utils.ServletParams.USER_ATTR;
+
 @Singleton
 public class RootServlet extends HttpServlet {
 
@@ -18,16 +19,14 @@ public class RootServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final Object user = req.getSession(true).getAttribute("user");
+        final Object user = req.getSession(true).getAttribute(USER_ATTR);
         if (user != null) {
             LOGGER.debug("redirecting to user page");
             resp.sendRedirect(req.getContextPath() + "/user");
-            /*req.getRequestDispatcher(ServletParams.USER_PAGE).forward(req, resp);*/
             return;
         }
 
-        req.getRequestDispatcher(ServletParams.INDEX_PAGE)
-                .forward(req, resp);
+        resp.sendRedirect(req.getContextPath() + "/login");
     }
 
     @Override

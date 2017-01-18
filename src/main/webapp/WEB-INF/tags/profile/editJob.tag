@@ -18,6 +18,7 @@
                     <input type="hidden" id="id" name="id" value="${jobInfo.id}"/>
                     <input type="hidden" id="userId" name="userId" value="${jobInfo.userId}"/>
 
+                    <%--Organization--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <fmt:message var="name" bundle="${userPage}" key="user.education.name"/>
@@ -32,6 +33,7 @@
                         </div>
                     </div>
 
+                    <%--Position--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <label for="position"><fmt:message bundle="${userPage}" key="user.job.position"/></label>
@@ -43,6 +45,7 @@
                         </div>
                     </div>
 
+                    <%--Industry--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <label for="industry"><fmt:message bundle="${userPage}" key="user.job.industry"/></label>
@@ -54,6 +57,7 @@
                         </div>
                     </div>
 
+                    <%--Website--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <label for="website"><fmt:message bundle="${userPage}"
@@ -67,6 +71,7 @@
                         </div>
                     </div>
 
+                    <%--Years--%>
                     <div class="row">
                         <div class="col-xs-4">
                             <fmt:message var="jobYears" bundle="${userPage}" key="user.job.years"/>
@@ -137,5 +142,4 @@
 
         $('#jsonJobData').attr('value', JSON.stringify(jsonMsg));
     }
-
 </script>

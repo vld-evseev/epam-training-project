@@ -5,18 +5,20 @@ import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
-public class H2Manager implements DbManager {
+public class H2DbManager implements DbManager {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(H2Manager.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(H2DbManager.class);
 
-    private final DataSource dataSource;
     private final Flyway flyway;
+    private final DataSource dataSource;
 
-    public H2Manager(DataSource dataSource) {
+    @Inject
+    public H2DbManager(Flyway flyway, DataSource dataSource) {
+        this.flyway = flyway;
         this.dataSource = dataSource;
-        this.flyway = new Flyway();
         this.flyway.setDataSource(dataSource);
         this.flyway.setLocations("db.migrate");
     }

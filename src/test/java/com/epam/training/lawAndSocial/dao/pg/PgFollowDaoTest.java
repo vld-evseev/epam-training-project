@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public class PgFollowDaoTest extends H2DataSourceTest {
 
-
     private DataSource dataSource;
 
     @Before

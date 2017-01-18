@@ -99,7 +99,6 @@ public class SqlGenerator extends H2DataSourceTest {
             stringBuilder.append("NULL").append(",'");
             stringBuilder.append(user.getPasswordHash()).append("'\n");
 
-            /*userService.add(user);*/
         }
 
         stringBuilder.append(";");
@@ -114,8 +113,5 @@ public class SqlGenerator extends H2DataSourceTest {
             }
             System.out.println("--------------------------");
         }*/
-
-
     }
-
 }

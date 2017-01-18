@@ -14,6 +14,7 @@
 <jsp:useBean id="path" type="java.lang.String" scope="request"/>
 <jsp:useBean id="followingIds" type="java.util.Set<java.lang.Long>" scope="request"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
+<jsp:useBean id="pagesCount" type="java.lang.Integer" scope="request"/>
 
 <tags:main title="${title}">
 
@@ -74,7 +75,9 @@
             </c:forEach>
         </div>
 
-        <community:pagination path="${path}"/>
+        <c:if test="${pagesCount > 1}">
+            <community:pagination path="${path}"/>
+        </c:if>
 
     </tags:navigationBlock>
 </tags:main>

@@ -5,8 +5,6 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
-<fmt:setBundle basename="i18n.user" var="userPage"/>
-<fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${root}" key="root.welcome"/>
 
 <jsp:useBean id="contacts" type="com.epam.training.lawAndSocial.model.Contacts" scope="request"/>

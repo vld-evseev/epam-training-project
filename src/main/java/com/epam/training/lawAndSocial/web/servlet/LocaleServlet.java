@@ -31,8 +31,6 @@ public class LocaleServlet extends HttpServlet {
 
         final String redirectParam = req.getParameter(REDIRECT_TO_PARAM);
 
-        LOGGER.debug("redirectAttr: {}", redirectParam);
-
         if (redirectParam != null && !redirectParam.isEmpty()) {
             LOGGER.debug("redirecting to: {}", redirectParam);
             resp.sendRedirect(redirectParam);

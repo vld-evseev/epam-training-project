@@ -6,7 +6,6 @@
 <fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
-<%--<fmt:setBundle basename="i18n.menu" var="menu"/>--%>
 
 <!DOCTYPE html>
 <html>
@@ -19,10 +18,11 @@
     <link rel="stylesheet" type="text/css" href="${customCss}"/>
     <c:url var="paginationCss" value="/static/css/simplePagination.css"/>
     <link rel="stylesheet" type="text/css" href="${paginationCss}"/>
-    <c:url var="bootstrapImageuploadCss" value="/static/css/bootstrap-imageupload.min.css"/>
-    <link rel="stylesheet" type="text/css" href="${bootstrapImageuploadCss}"/>
     <c:url var="fontAwesome" value="/webjars/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="${fontAwesome}"/>
+
+    <c:url var="bsDatepickerCss" value="/webjars/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${bsDatepickerCss}"/>
 
     <%--JQuery--%>
     <c:url var="jqueryJs" value="/webjars/jquery/1.12.4/jquery.min.js"/>
@@ -32,8 +32,27 @@
     <c:url var="bootstrapJs" value="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"/>
     <script src="${bootstrapJs}"></script>
 
-    <c:url var="bootstrapImageuploadJs" value="/static/js/bootstrap-imageupload.min.js"/>
-    <script src="${bootstrapImageuploadJs}"></script>
+    <%--Validator--%>
+    <c:url var="bsValidator" value="/webjars/bootstrap-validator/0.11.5/js/validator.js"/>
+    <script src="${bsValidator}"></script>
+
+    <%--Datepicker--%>
+    <c:url var="bsDatepicker" value="/webjars/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"/>
+    <script src="${bsDatepicker}"></script>
+
+    <c:url var="bsDatepickerRu" value="/webjars/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.ru.min.js"/>
+    <script src="${bsDatepickerRu}"></script>
+
+
+    <c:set var="localeCode" value="${pageContext.response.locale}"/>
+    <c:choose>
+        <c:when test="${localeCode eq 'ru_RU'}">
+            <c:set var="currentLocale" value="ru"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="currentLocale" value="en"/>
+        </c:otherwise>
+    </c:choose>
 
     <title>${title}</title>
 </head>
@@ -41,27 +60,19 @@
 <body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">
                     <fmt:message bundle="${root}" key="root.toogle.navigation"/>
                 </span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
             </button>
             <c:url var="rootUrl" value="/"/>
             <a class="navbar-brand" href="${rootUrl}"><i class="fa fa-balance-scale"></i>
                 <fmt:message bundle="${root}" key="root.site.name"/>
             </a>
-            <%--<a class="navbar-brand" href="${rootUrl}">
-                <fmt:message bundle="${root}" key="root.site.name"/>
-            </a>--%>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li>
@@ -118,7 +129,6 @@
                     </li>
                 </c:if>
 
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">
@@ -154,13 +164,48 @@
                     </ul>
                 </li>
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+        </div>
+    </div>
 </nav>
 
 <div class="container">
     <jsp:doBody/>
 </div>
+
+<script>
+    $(document).ready(function () {
+        var date_input = $('input[name="date"]');
+        var options = {
+            format: 'dd.mm.yyyy',
+            todayHighlight: true,
+            autoclose: true,
+            language: '${currentLocale}',
+            startDate: new Date(1900, 1, 1),
+            endDate: new Date()
+        };
+        date_input.datepicker(options);
+    });
+
+    $(document).ready(function () {
+        yearPicker();
+    });
+
+    function yearPicker() {
+        var date_input_year = $('.dateYear');
+        var options = {
+            format: "yyyy",
+            todayHighlight: true,
+            autoclose: true,
+            language: '${currentLocale}',
+            viewMode: "years",
+            minViewMode: "years",
+            startDate: new Date(1900, 1, 1),
+            endDate: new Date()
+        };
+        date_input_year.datepicker(options);
+    }
+
+</script>
 
 </body>
 </html>

@@ -78,6 +78,7 @@ public class EducationInfoServlet extends HttpServlet {
         }
 
         final List<EducationInfo> updatedSchoolList = schoolInfoService.getList(currentUser.getId());
+        LOGGER.debug(Arrays.toString(updatedSchoolList.toArray()));
         final List<EducationInfo> updatedUniversitiesList = univerInfoService.getList(currentUser.getId());
 
         session.setAttribute(SCHOOLS_ATTR, updatedSchoolList);
@@ -130,23 +131,29 @@ public class EducationInfoServlet extends HttpServlet {
     }
 
     private void updateSchoolInfo(long userId, List<EducationInfo> schoolList, FormValidation validation) {
+        //if (!schoolList.isEmpty()) {
         final long result = schoolInfoService.update(userId, schoolList);
+        LOGGER.debug("result after school update: {}", result);
         if (result < 0) {
             validation.getErrors().put(
                     "INTERNAL_ERROR",
                     true
             );
         }
+        //}
     }
 
     private void updateUniverInfo(long userId, List<EducationInfo> universityList, FormValidation validation) {
+        //if (!universityList.isEmpty()) {
         final long result = univerInfoService.update(userId, universityList);
+        LOGGER.debug("result after univer update: {}", result);
         if (result < 0) {
             validation.getErrors().put(
                     "INTERNAL_ERROR",
                     true
             );
         }
+        //}
     }
 
     private Map<String, String> collectParams(HttpServletRequest req) {

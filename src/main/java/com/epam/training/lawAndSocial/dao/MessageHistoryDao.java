@@ -11,7 +11,7 @@ public interface MessageHistoryDao {
 
     int add(Message message) throws PersistException;
 
-    int addAll(List<Message> messages);
+    int addAll(List<Message> messages) throws PersistException;
 
     List<Message> getByUserId(long userId, long otherUserId) throws PersistException;
 

@@ -1,5 +1,6 @@
 package com.epam.training.lawAndSocial.service.impl;
 
+import com.epam.training.lawAndSocial.config.Config;
 import com.epam.training.lawAndSocial.model.Message;
 import com.epam.training.lawAndSocial.service.ChatService;
 import com.epam.training.lawAndSocial.service.model.MessageHistoryService;
@@ -21,32 +22,30 @@ public class ChatServiceImpl extends WebSocketServer implements ChatService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ChatServiceImpl.class);
 
-    private static int TCP_PORT = 4445;
+    private final Config config;
     private final Gson gson;
     private final MessageHistoryService messageHistoryService;
 
     private final Map<String, WebSocket> conns;
 
     @Inject
-    public ChatServiceImpl(Gson gson, MessageHistoryService messageHistoryService) {
-        super(new InetSocketAddress(TCP_PORT));
+    public ChatServiceImpl(Config config, Gson gson, MessageHistoryService messageHistoryService) {
+        super(new InetSocketAddress(Integer.parseInt(config.getWebsocketPort())));
+        this.config = config;
         this.gson = gson;
         this.messageHistoryService = messageHistoryService;
         this.conns = new HashMap<>();
-        LOGGER.debug("Chat server initialized on port: {}", TCP_PORT);
+        LOGGER.debug("Chat server initialized on port: {}", Integer.parseInt(config.getWebsocketPort()));
     }
-
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        //conns.add(conn);
-        System.out.println("New connection from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+        LOGGER.debug("New connection from {}", conn.getRemoteSocketAddress());
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        //conns.remove(conn);
-        System.out.println("Closed connection to " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+        LOGGER.debug("Closed connection to {}", conn.getRemoteSocketAddress());
     }
 
     @Override
@@ -55,16 +54,16 @@ public class ChatServiceImpl extends WebSocketServer implements ChatService {
         LOGGER.debug("JSON message from client: {}", message.toString());
         switch (message.getType()) {
             case "enter": {
-                final String key = message.getSessionId() + "#" + message.getFromUserId();
-                LOGGER.debug("key onEnter: {}", key);
-                conns.put(key, conn);
+                final String sessionId = message.getSessionId() + "#" + message.getFromUserId();
+                LOGGER.debug("sessionId onEnter: {}", sessionId);
+                conns.put(sessionId, conn);
                 LOGGER.debug("user {} was added to connection set, current size: {}", message.getFromUserId(), conns.size());
                 break;
             }
             case "close": {
-                final String key = message.getSessionId() + "#" + message.getFromUserId();
-                LOGGER.debug("key onClose: {}", key);
-                conns.remove(key);
+                final String sessionId = message.getSessionId() + "#" + message.getFromUserId();
+                LOGGER.debug("sessionId onClose: {}", sessionId);
+                conns.remove(sessionId);
                 LOGGER.debug("user {} was removed from connection set, current size: {}", message.getFromUserId(), conns.size());
                 break;
             }

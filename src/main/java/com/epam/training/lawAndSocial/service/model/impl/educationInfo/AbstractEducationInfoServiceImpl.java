@@ -36,27 +36,33 @@ abstract class AbstractEducationInfoServiceImpl<T extends EducationInfo> impleme
             if (subject.getName() != null) {
                 if (!userAssociatedToSubject(userId, subject)) {
                     result = add(userId, subject);
-                    LOGGER.debug("userId {} added subject educationInfo {}", userId, subject.toString());
+                    LOGGER.debug("userId {} added subject educationInfo {}, result {}", userId, subject.toString(), result);
                 } else {
                     if (subject.getName().isEmpty()) {
                         result = delete(userId, subject);
-                        LOGGER.debug("userId {} deleted subject educationInfo {} - by name", userId, subject.toString());
+                        LOGGER.debug("userId {} deleted subject educationInfo {} - by name, result {}",
+                                userId, subject.toString(), result);
                     } else {
                         result = update(userId, subject);
-                        LOGGER.debug("userId {} updated subject educationInfo {}", userId, subject.toString());
+                        LOGGER.debug("userId {} updated subject educationInfo {}, result {}",
+                                userId, subject.toString(), result);
                     }
                 }
             }
         }
 
         final List<T> subjectsToDelete = findSubjectToDelete(userId, subjectList);
-        LOGGER.debug("Subjects to delete");
-        for (T subject : subjectsToDelete) {
-            LOGGER.debug(subject.toString());
+        if (!subjectsToDelete.isEmpty()) {
+            LOGGER.debug("Subjects to delete");
+            for (T subject : subjectsToDelete) {
+                result = delete(userId, subject);
+                LOGGER.debug("userId {} deleted subject educationInfo {} - by intersection, result {}",
+                        userId, subject.toString(), result);
+            }
         }
-        for (T subject : subjectsToDelete) {
-            result = delete(userId, subject);
-            LOGGER.debug("userId {} deleted subject educationInfo {} - by intersection", userId, subject.toString());
+
+        if (subjectsToDelete.isEmpty() && subjectList.isEmpty()) {
+            return 1;
         }
 
         return result;

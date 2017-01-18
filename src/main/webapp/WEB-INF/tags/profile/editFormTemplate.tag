@@ -28,7 +28,7 @@
             <input id="${subjToLowerCase}Name${count}" class="form-control input-sm"
                    placeholder="${name}"
                    name="${subjToLowerCase}Name"
-                   value="${nameValue}"
+                   value="<c:out value="${nameValue}"/>"
                    type="text"
                    oninput="verify${subj}Fields(${count})">
         </div>
@@ -40,7 +40,7 @@
                                                                         key="user.country"/></label>
             <input id="${subjToLowerCase}Country${count}" class="form-control input-sm"
                    name="${subjToLowerCase}Country"
-                   value="${countryValue}"
+                   value="<c:out value="${countryValue}"/>"
                    type="text">
         </div>
     </div>
@@ -52,7 +52,7 @@
                                                                      key="user.city"/></label>
             <input id="${subjToLowerCase}City${count}" class="form-control input-sm"
                    name="${subjToLowerCase}City"
-                   value="${cityValue}"
+                   value="<c:out value="${cityValue}"/>"
                    type="text">
         </div>
     </div>
@@ -69,7 +69,7 @@
                     <input class="form-control input-sm dateYear" id="${subjToLowerCase}YearFrom${count}"
                            name="${subjToLowerCase}YearFrom"
                            placeholder="${educationYearFrom}"
-                           value="${yearFromValue}"
+                           value="<c:out value="${yearFromValue}"/>"
                            type="text"/>
                 </div>
                 <div class="form-group col-xs-6">
@@ -78,7 +78,7 @@
                     <input class="form-control input-sm dateYear" id="${subjToLowerCase}YearTo${count}"
                            name="${subjToLowerCase}YearTo"
                            placeholder="${educationYearTo}"
-                           value="${yearToValue}"
+                           value="<c:out value="${yearToValue}"/>"
                            type="text"/>
                 </div>
             </div>

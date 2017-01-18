@@ -4,7 +4,6 @@ import com.epam.training.lawAndSocial.web.servlet.model.FormValidation;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
@@ -36,7 +35,7 @@ public class DateValidatorTest {
 
         final String nonValidDate = "007";
         final String result2 = DateValidator.parseDate(nonValidDate, yyyy, formValidation);
-        assertEquals(result2, Year.now().format(DateTimeFormatter.ofPattern(yyyy.toString())));
+        assertEquals(result2, "0001");
     }
 
 }

@@ -6,7 +6,6 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="i18n.root" var="root"/>
-<fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${root}" key="root.news"/>
 
@@ -14,6 +13,7 @@
 <jsp:useBean id="newsList" type="java.util.List<com.epam.training.lawAndSocial.model.News>" scope="request"/>
 <jsp:useBean id="validation" class="com.epam.training.lawAndSocial.web.servlet.model.FormValidation"
              scope="request"/>
+<jsp:useBean id="pagesCount" type="java.lang.Integer" scope="request"/>
 
 <tags:main title="${title}">
 
@@ -53,10 +53,10 @@
                     <div class="row">
                         <div class="col-xs-4" style="border-right: 2px solid #9f9f9f;">
                             <img class="img-circle avatar-img" src="data:image/jpeg;base64,${news.user.avatar}"/>
-                                <c:out value="${news.user.firstName}"/> <c:out value="${news.user.lastName}"/>
+                            <c:out value="${news.user.firstName}"/> <c:out value="${news.user.lastName}"/>
                         </div>
                         <div class="col-xs-5">
-                                <c:out value="${news.heading}"/>
+                            <c:out value="${news.heading}"/>
                         </div>
                     </div>
                 </div>
@@ -68,17 +68,16 @@
             </div>
         </c:forEach>
 
-        <community:pagination path="${path}"/>
+        <c:if test="${pagesCount > 1}">
+            <community:pagination path="${path}"/>
+        </c:if>
+
     </tags:navigationBlock>
 </tags:main>
 
 <script>
     $(document).ready(function () {
         var elements = document.getElementsByClassName('newsDateHidden');
-        console.log("Elements: " + elements);
-
-        console.log("Date1: " + formatDate(new Date(1484574853334)));
-        console.log("Date2: " + new Date().getTime());
 
         for (var i = 0, len = elements.length; i < len; i++) {
             var element = elements[i];

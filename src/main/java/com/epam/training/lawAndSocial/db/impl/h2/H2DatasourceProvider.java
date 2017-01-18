@@ -7,12 +7,12 @@ import org.h2.jdbcx.JdbcDataSource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-public class H2DatasourceProvider implements Provider<DataSource> {
+public class H2DataSourceProvider implements Provider<DataSource> {
 
     private final H2Config h2Config;
 
     @Inject
-    public H2DatasourceProvider(H2Config h2Config) {
+    public H2DataSourceProvider(H2Config h2Config) {
         this.h2Config = h2Config;
     }
 

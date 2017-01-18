@@ -33,7 +33,9 @@ public class PgUserDao implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             final String[] returnColumns = {"id"};
             final PreparedStatement query = connection.prepareStatement(
-                    "INSERT INTO lawAndSocialDb.user(id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash)" +
+                    "INSERT INTO lawAndSocialDb.user(" +
+                            " id, uuid, username, firstName, lastName, patronymic," +
+                            " gender, birthdate, avatar, passwordHash)" +
                             " VALUES (nextval('lawAndSocialDb.user_seq')," +
                             " ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                     returnColumns
@@ -68,7 +70,8 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                    "SELECT id, uuid, username, firstName, lastName, patronymic," +
+                            " gender, birthdate, avatar, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE username = ?;"
             );
             query.setString(1, username);
@@ -102,7 +105,8 @@ public class PgUserDao implements UserDao {
         Optional<User> result = Optional.empty();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
-                    "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
+                    "SELECT id, uuid, username, firstName, lastName, patronymic," +
+                            " gender, birthdate, avatar, passwordHash" +
                             " FROM lawAndSocialDb.user WHERE id = ?;"
             );
             query.setLong(1, id);
@@ -133,6 +137,7 @@ public class PgUserDao implements UserDao {
     @Override
     public long update(User user) throws PersistException {
         long result = -1;
+        LOGGER.debug("UPDATED USER: {}", user.toString());
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "UPDATE lawAndSocialDb.user" +
@@ -236,7 +241,6 @@ public class PgUserDao implements UserDao {
 
         return result;
     }
-
 
     private String getGender(String result) {
         if (result == null) {

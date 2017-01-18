@@ -50,6 +50,10 @@ public class CommonInfoServlet extends HttpServlet {
 
         final String avatar = getImageSrc(currentUser, params);
 
+        final String birthDate = DateValidator.parseDate(params.get(BIRTH_DATE_PARAM),
+                DateValidator.Pattern.DD_MM_YYYY,
+                validation);
+
         final User updatedUser = User.builder()
                 .uuid(currentUser.getUuid())
                 .id(currentUser.getId())
@@ -59,9 +63,7 @@ public class CommonInfoServlet extends HttpServlet {
                 .patronymic(params.get(PATRONYMIC_PARAM))
                 .gender(Gender.valueOf(params.get(GENDER_PARAM)))
                 .avatar(avatar)
-                .date(DateValidator.parseDate(params.get(BIRTH_DATE_PARAM),
-                        DateValidator.Pattern.DD_MM_YYYY,
-                        validation))
+                .date(birthDate)
                 .build();
 
         if (validation.isValid()) {

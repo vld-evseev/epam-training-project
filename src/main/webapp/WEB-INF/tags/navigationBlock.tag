@@ -15,10 +15,8 @@
                             width: 100px;
                             height: 100px;"
                      src="data:image/jpeg;base64,${user.avatar}"/>
-                <%--<i class='hi-icon fa fa-user-circle fa-5x'><a href="http://twitter.com"></a></i>--%>
             </div>
 
-            <!-- Left column -->
             <ul class="nav nav-stacked collapse in" id="userMenu">
                 <li class="active">
                     <c:url var="userUrl" value="/user"/>
@@ -56,7 +54,6 @@
                 </li>
 
             </ul>
-
         </div>
 
         <div class="col-sm-9">

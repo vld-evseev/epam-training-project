@@ -36,8 +36,6 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LOGGER.debug("show login page");
-        req.getSession(true);
         req.setAttribute(CREDENTIALS_ATTR, Credentials.builder().build());
         req.getRequestDispatcher(LOGIN_PAGE)
                 .forward(req, resp);
@@ -58,13 +56,11 @@ public class LoginServlet extends HttpServlet {
         if (!validation.isValid()) {
             req.setAttribute(VALIDATION_ATTR, validation);
             req.setAttribute(CREDENTIALS_ATTR, credentials);
-            /*req.getSession().setAttribute(IS_AUTHORISED_ATTR, false);*/
             req.getRequestDispatcher(LOGIN_PAGE)
                     .forward(req, resp);
             return;
         }
 
-        /*req.getSession().setAttribute(IS_AUTHORISED_ATTR, true);*/
         req.getSession().setAttribute(USER_ATTR, userOptional.get());
 
         resp.sendRedirect(req.getContextPath());
@@ -83,7 +79,6 @@ public class LoginServlet extends HttpServlet {
         }
         return userOptional;
     }
-
 
     private Map<String, String> collectParams(HttpServletRequest req) {
         final Map<String, String> params = new HashMap<>();

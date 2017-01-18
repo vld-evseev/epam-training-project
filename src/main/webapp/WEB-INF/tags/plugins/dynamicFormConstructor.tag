@@ -38,12 +38,12 @@
             $("#remove${subj}").html("${clearMsg}");
         }
 
-
         $("#add${subj}").click(function (e) {
             e.preventDefault();
             if (next < limit) {
                 next = next + 1;
-                $("#dynamic${subj}Input").append("<div id='${subjToLowerCase}Form" + next + "'><input type='hidden' name='${subjToLowerCase}Count' value=" + next + " />" +
+                $("#dynamic${subj}Input").append(
+                        "<div id='${subjToLowerCase}Form" + next + "'><input type='hidden' name='${subjToLowerCase}Count' value=" + next + " />" +
                         "<input type='hidden' id='${subjToLowerCase}Id" + next + "' name='${subjToLowerCase}Id''/>" +
                         "<input type='hidden' id='${subjToLowerCase}UserId" + next + "' name='${subjToLowerCase}UserId' value='${user.id}'/>" +
                         "<div class='row'> <div class='form-group col-md-12'>" +

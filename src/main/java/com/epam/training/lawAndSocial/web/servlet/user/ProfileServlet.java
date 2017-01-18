@@ -75,8 +75,7 @@ public class ProfileServlet extends HttpServlet {
                 final Job requestedJobInfo = getJobInfo(requestedUser.getId());
                 req.setAttribute(REQUESTED_JOB_INFO_ATTR, requestedJobInfo);
 
-                req.getRequestDispatcher(USER_PAGE)
-                        .forward(req, resp);
+                req.getRequestDispatcher(USER_PAGE).forward(req, resp);
                 return;
             }
         }
@@ -103,23 +102,21 @@ public class ProfileServlet extends HttpServlet {
 
         LOGGER.debug("user entered profile page: {}", user.toString());
 
-        req.getRequestDispatcher(USER_PAGE)
-                .forward(req, resp);
+        req.getRequestDispatcher(USER_PAGE).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(USER_PAGE)
-                .forward(req, resp);
+        req.getRequestDispatcher(USER_PAGE).forward(req, resp);
     }
 
     private Job getJobInfo(long userId) {
         final Optional<Job> jobInfo = jobInfoService.get(userId);
         if (jobInfo.isPresent()) {
             return jobInfo.get();
-        } else {
-            return Job.builder().build();
         }
+
+        return Job.builder().build();
     }
 
     private Contacts getContacts(long userId) {

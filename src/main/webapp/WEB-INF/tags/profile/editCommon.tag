@@ -22,13 +22,18 @@
 
                     <div class="form-group" id="uploadingBlock">
 
+                        <%--Avatar--%>
                         <div class="row">
                             <div class="form-group col-xs-4">
                                 <label><fmt:message bundle="${userPage}" key="user.change.photo"/> </label>
                                 <div style=" padding-top: 15px; padding-bottom: 15px; ">
                                     <img id='img-upload'/>
                                 </div>
-                                <input type="hidden" name="avatarSrc" id="avatarSrc" value=""/>
+                                <input type="hidden"
+                                       name="avatarSrc"
+                                       id="avatarSrc"
+                                       value=""
+                                />
                                 <div class="input-group">
                                     <span class="input-group-btn">
                                         <span class="btn btn-default btn-file">
@@ -36,21 +41,24 @@
                                             <input type="file" id="imgInp" onchange="validateAvatar(this);">
                                         </span>
                                     </span>
-                                    <%--<input type="text" class="form-control" readonly>--%>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
+                    <%--Firstname--%>
                     <div
                             <tags:fieldValidation value="${validation.fields.firstname}"/>
                     >
                         <div class="row">
                             <div class="form-group col-xs-4">
                                 <label for="firstName"><fmt:message bundle="${userPage}" key="user.first.name"/></label>
-                                <input id="firstName" class="form-control input-sm" type="text" name="firstname"
-                                       value="<c:out value="${user.firstName}"/>">
+                                <input id="firstName"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       name="firstname"
+                                       value="<c:out value="${user.firstName}"/>"
+                                />
                             </div>
                         </div>
                         <c:if test="${validation.fields.firstname.emptyField}">
@@ -60,14 +68,19 @@
                         </c:if>
                     </div>
 
+                    <%--Lastname--%>
                     <div
                             <tags:fieldValidation value="${validation.fields.lastname}"/>
                     >
                         <div class="row">
                             <div class="form-group col-xs-4">
                                 <label for="lastName"><fmt:message bundle="${userPage}" key="user.last.name"/></label>
-                                <input id="lastName" class="form-control input-sm" type="text" name="lastname"
-                                       value="<c:out value="${user.lastName}"/>">
+                                <input id="lastName"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       name="lastname"
+                                       value="<c:out value="${user.lastName}"/>"
+                                />
                             </div>
                         </div>
                         <c:if test="${validation.fields.lastname.emptyField}">
@@ -77,32 +90,40 @@
                         </c:if>
                     </div>
 
-
+                    <%--Patronymic--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <label for="patronymic"><fmt:message bundle="${userPage}" key="user.patronymic"/></label>
-                            <input id="patronymic" class="form-control input-sm" type="text" name="patronymic"
-                                   value="<c:out value="${user.patronymic}" />">
+                            <input id="patronymic"
+                                   class="form-control input-sm"
+                                   type="text" name="patronymic"
+                                   value="<c:out value="${user.patronymic}" />"
+                            />
                         </div>
                     </div>
 
+                    <%--Gender--%>
                     <div class="row">
                         <div class="form-group col-xs-4">
                             <label for="gender" class="control-label">
                                 <fmt:message bundle="${userPage}" key="user.gender"/>
                             </label>
                             <select id="gender" class="form-control input-sm" name="gender">
-                                <option value="UNKNOWN" <c:out
-                                        value="${user.gender eq 'UNKNOWN' ? 'selected': ''}"/>>
+                                <option value="UNKNOWN"
+                                        <c:out value="${user.gender eq 'UNKNOWN' ? 'selected': ''}"/>
+                                >
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.unknown"/>
                                 </option>
-                                <option value="MALE" <c:out value="${user.gender eq 'MALE' ? 'selected': ''}"/>>
+                                <option value="MALE"
+                                        <c:out value="${user.gender eq 'MALE' ? 'selected': ''}"/>
+                                >
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.male"/>
                                 </option>
-                                <option value="FEMALE" <c:out
-                                        value="${user.gender eq 'FEMALE' ? 'selected': ''}"/>>
+                                <option value="FEMALE"
+                                        <c:out value="${user.gender eq 'FEMALE' ? 'selected': ''}"/>
+                                >
                                     <fmt:message bundle="${userPage}"
                                                  key="user.gender.female"/>
                                 </option>
@@ -110,6 +131,7 @@
                         </div>
                     </div>
 
+                    <%--Birthdate--%>
                     <div
                             <tags:fieldValidation value="${validation.fields.date}"/>
                     >
@@ -117,9 +139,13 @@
                             <div class="form-group col-xs-4">
                                 <fmt:message var="birth_date" bundle="${userPage}" key="user.birth.date"/>
                                 <label>${birth_date}</label>
-                                <input class="form-control input-sm" id="date" name="date" placeholder="${birth_date}"
+                                <input class="form-control input-sm"
+                                       id="date"
+                                       name="date"
+                                       placeholder="${birth_date}"
                                        type="text"
-                                       value="<c:out value="${user.date}"/>"/>
+                                       value="<c:out value="${user.date}"/>"
+                                />
                             </div>
                         </div>
                         <c:if test="${validation.fields.date.emptyField
@@ -141,8 +167,6 @@
         </div>
     </div>
 </div>
-
-<plugins:datePicker/>
 
 <script>
     $(document).ready(function () {

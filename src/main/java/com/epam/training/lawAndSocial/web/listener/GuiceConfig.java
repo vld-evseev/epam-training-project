@@ -1,10 +1,17 @@
 package com.epam.training.lawAndSocial.web.listener;
 
+import com.epam.training.lawAndSocial.config.Config;
+import com.epam.training.lawAndSocial.config.impl.ConfigProvider;
 import com.epam.training.lawAndSocial.dao.*;
 import com.epam.training.lawAndSocial.dao.pg.*;
+import com.epam.training.lawAndSocial.db.DbManager;
 import com.epam.training.lawAndSocial.db.H2Config;
+import com.epam.training.lawAndSocial.db.PgConfig;
 import com.epam.training.lawAndSocial.db.impl.h2.H2ConfigProvider;
-import com.epam.training.lawAndSocial.db.impl.h2.H2DatasourceProvider;
+import com.epam.training.lawAndSocial.db.impl.h2.H2DataSourceProvider;
+import com.epam.training.lawAndSocial.db.impl.h2.H2DbManager;
+import com.epam.training.lawAndSocial.db.impl.pg.PgConfigProvider;
+import com.epam.training.lawAndSocial.db.impl.pg.PgDataSourceProvider;
 import com.epam.training.lawAndSocial.model.education.EducationInfo;
 import com.epam.training.lawAndSocial.service.ChatService;
 import com.epam.training.lawAndSocial.service.SecurityService;
@@ -27,7 +34,6 @@ import com.epam.training.lawAndSocial.web.servlet.community.FollowingServlet;
 import com.epam.training.lawAndSocial.web.servlet.community.MessageHistoryServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.ProfileEditServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.ProfileServlet;
-import com.epam.training.lawAndSocial.web.servlet.user.TestSignInServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.edit.CommonInfoServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.edit.ContactsInfoServlet;
 import com.epam.training.lawAndSocial.web.servlet.user.edit.EducationInfoServlet;
@@ -36,6 +42,7 @@ import com.google.gson.Gson;
 import com.google.inject.*;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import org.flywaydb.core.Flyway;
 
 import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
@@ -45,12 +52,19 @@ import javax.sql.DataSource;
 @WebListener
 public class GuiceConfig extends GuiceServletContextListener {
 
-    private static class H2DbModule extends AbstractModule {
+    private static class ConfigModule extends AbstractModule {
 
         @Override
         protected void configure() {
-            bind(H2Config.class).toProvider(H2ConfigProvider.class).in(Singleton.class);
-            bind(DataSource.class).toProvider(H2DatasourceProvider.class).in(Singleton.class);
+            bind(Config.class).toProvider(ConfigProvider.class).in(Singleton.class);
+            bind(Flyway.class).in(Singleton.class);
+        }
+    }
+
+    private static class DaoModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
             bind(UserDao.class).to(PgUserDao.class).in(Singleton.class);
             bind(ContactsDao.class).to(PgContactsDao.class).in(Singleton.class);
             bind(JobInfoDao.class).to(PgJobInfoDao.class).in(Singleton.class);
@@ -64,6 +78,25 @@ public class GuiceConfig extends GuiceServletContextListener {
             bind(new TypeLiteral<EducationInfoDao<EducationInfo>>() {
             }).annotatedWith(UniverInfo.class)
                     .to(PgUniversityDao.class).in(Singleton.class);
+        }
+    }
+
+    private static class PgDbModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(PgConfig.class).toProvider(PgConfigProvider.class).in(Singleton.class);
+            bind(DataSource.class).toProvider(PgDataSourceProvider.class).in(Singleton.class);
+        }
+    }
+
+    private static class H2DbModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(H2Config.class).toProvider(H2ConfigProvider.class).in(Singleton.class);
+            bind(DataSource.class).toProvider(H2DataSourceProvider.class).in(Singleton.class);
+            bind(DbManager.class).to(H2DbManager.class).in(Singleton.class);
         }
     }
 
@@ -111,7 +144,6 @@ public class GuiceConfig extends GuiceServletContextListener {
             serve("/user/messages").with(MessageHistoryServlet.class);
             serve("/user/message").with(MessageServlet.class);
             serve("/signout").with(SignoutServlet.class);
-            serve("/tlg").with(TestSignInServlet.class);
         }
     }
 
@@ -126,10 +158,13 @@ public class GuiceConfig extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         return Guice.createInjector(
-                new ServicesModule(),
-                new ServletConfigModule(),
+                new ConfigModule(),
                 new FilterConfigModule(),
-                new H2DbModule()
+                new ServletConfigModule(),
+                new ServicesModule(),
+                new DaoModule(),
+                //new H2DbModule()
+                new PgDbModule()
         );
     }
 
@@ -137,6 +172,14 @@ public class GuiceConfig extends GuiceServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         final Binding<ChatService> binding = getInjector().getBinding(ChatService.class);
         binding.getProvider().get().startup();
+
+        final Binding<Config> configBinding = getInjector().getBinding(Config.class);
+        final String databaseString = configBinding.getProvider().get().getDatabaseString();
+
+        if (databaseString.equals("h2db")) {
+            Binding<DbManager> dbManagerBinding = getInjector().getBinding(DbManager.class);
+            dbManagerBinding.getProvider().get().create();
+        }
     }
 
     @Override

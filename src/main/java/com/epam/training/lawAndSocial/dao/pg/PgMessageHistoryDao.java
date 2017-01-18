@@ -50,8 +50,8 @@ public class PgMessageHistoryDao implements MessageHistoryDao {
     }
 
     @Override
-    public int addAll(List<Message> messages) {
-        return 0;
+    public int addAll(List<Message> messages) throws PersistException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

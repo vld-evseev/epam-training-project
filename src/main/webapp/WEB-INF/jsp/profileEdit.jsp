@@ -4,9 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
-<fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
-<fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:message var="title" bundle="${userPage}" key="user.edit.profile"/>
 <jsp:useBean id="user" type="com.epam.training.lawAndSocial.model.User" scope="session"/>
 <jsp:useBean id="activeTab" type="java.util.Map" scope="request"/>
@@ -23,11 +21,7 @@
                 <a data-toggle="tab" href="#common"><fmt:message bundle="${userPage}"
                                                                  key="user.common.information"/></a>
             </li>
-            <li data-toggle="tab"
-                <%--<c:if test="${activeTab.contactsInfoTab}">
-                    class="active"
-                </c:if>--%>
-            >
+            <li data-toggle="tab">
                 <a data-toggle="tab" href="#contacts"><fmt:message bundle="${userPage}" key="user.contact.details"/></a>
             </li>
             <li><a data-toggle="tab" href="#education"><fmt:message bundle="${userPage}" key="user.education"/></a></li>
@@ -78,13 +72,11 @@
         $(this).tab('show');
     });
 
-    // store the currently selected tab in the hash value
     $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
         var id = $(e.target).attr("href").substr(1);
         window.location.hash = id;
     });
 
-    // on load of the page: switch to the currently selected tab
     var hash = window.location.hash;
     $('#settingsTab a[href="' + hash + '"]').tab('show');
 

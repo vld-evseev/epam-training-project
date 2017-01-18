@@ -155,7 +155,7 @@ public class PgSchoolDao implements EducationInfoDao<EducationInfo> {
 
     @Override
     public long deleteUserFromSubject(long userId, EducationInfo school) throws PersistException {
-        int result = -1;
+        int result;
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "DELETE FROM lawAndSocialDb.school" +

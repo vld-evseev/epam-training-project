@@ -51,8 +51,8 @@
             <tbody>
             <tr>
                 <fmt:message var="dateMsg" bundle="${userPage}" key="user.birth.date"/>
-                <td>${dateMsg}</td>
-                <td>${birthdate}</td>
+                <td class="col-xs-2">${dateMsg}</td>
+                <td class="col-sm-4">${birthdate}</td>
             </tr>
             </tbody>
         </table>
@@ -68,22 +68,22 @@
             <tbody>
             <c:if test="${not empty email}">
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.email"/></td>
-                    <td><c:out value="${email}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.email"/></td>
+                    <td class="col-sm-4"><c:out value="${email}"/></td>
                 </tr>
             </c:if>
 
             <c:if test="${not empty phone}">
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.phone"/></td>
-                    <td><c:out value="${phone}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.phone"/></td>
+                    <td class="col-sm-4"><c:out value="${phone}"/></td>
                 </tr>
             </c:if>
 
             <c:if test="${not empty website}">
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.website"/></td>
-                    <td><c:out value="${website}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.website"/></td>
+                    <td class="col-sm-4"><c:out value="${website}"/></td>
                 </tr>
             </c:if>
             </tbody>
@@ -102,8 +102,8 @@
 
                 <c:if test="${not empty schools}">
                     <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.education.school"/></td>
-                        <td>
+                        <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.education.school"/></td>
+                        <td class="col-sm-4">
                             <c:forEach items="${schools}" var="school" varStatus="count">
                                 <c:out value="${school.name}"/>
                                 <c:out value="${school.country}"/>
@@ -118,8 +118,8 @@
                 </c:if>
                 <c:if test="${not empty universities}">
                     <tr>
-                        <td><fmt:message bundle="${userPage}" key="user.education.university"/></td>
-                        <td>
+                        <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.education.university"/></td>
+                        <td class="col-sm-4">
                             <c:forEach items="${universities}" var="univer" varStatus="count">
                                 <c:out value="${univer.name}"/>
                                 <c:out value="${univer.country}"/>
@@ -148,28 +148,28 @@
             <table class="table table-user-information">
                 <tbody>
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.job.organization"/></td>
-                    <td><c:out value="${job.organization}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.job.organization"/></td>
+                    <td class="col-sm-4"><c:out value="${job.organization}"/></td>
                 </tr>
 
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.job.position"/></td>
-                    <td><c:out value="${job.position}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.job.position"/></td>
+                    <td class="col-sm-4"><c:out value="${job.position}"/></td>
                 </tr>
 
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.job.industry"/></td>
-                    <td><c:out value="${job.industry}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.job.industry"/></td>
+                    <td class="col-sm-4"><c:out value="${job.industry}"/></td>
                 </tr>
 
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.job.organization.website"/></td>
-                    <td><c:out value="${job.yearFrom}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.job.organization.website"/></td>
+                    <td class="col-sm-4"><c:out value="${job.yearFrom}"/></td>
                 </tr>
 
                 <tr>
-                    <td><fmt:message bundle="${userPage}" key="user.job.years"/></td>
-                    <td><c:out value="${job.yearTo}"/></td>
+                    <td class="col-xs-2"><fmt:message bundle="${userPage}" key="user.job.years"/></td>
+                    <td class="col-sm-4"><c:out value="${job.yearTo}"/></td>
                 </tr>
                 </tbody>
             </table>

@@ -36,12 +36,17 @@ public class DateValidator {
         if (validation == null) {
             validation = new FormValidation();
         }
+
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.toString());
 
         if (pattern == Pattern.YYYY) {
             return parseYear(date, formatter);
         }
 
+        return parseDate(date, formatter, validation);
+    }
+
+    private static String parseDate(String date, DateTimeFormatter formatter, FormValidation validation) {
         String defaultDate = LocalDate.now().format(formatter);
 
         if (date == null || date.isEmpty()) {
@@ -66,7 +71,6 @@ public class DateValidator {
             return localDate.format(formatter);
         } catch (DateTimeException e) {
             LOGGER.error("Error while parsing date: {}\n{}", date, e.getMessage());
-            e.printStackTrace();
             validation.getFields().put(
                     BIRTH_DATE_PARAM,
                     FieldValidation.builder().isIncorrect(true).build()

@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
-<fmt:setBundle basename="i18n.root" var="root"/>
 <fmt:setBundle basename="i18n.profile" var="profile"/>
 <fmt:setBundle basename="i18n.user" var="userPage"/>
 <fmt:message var="title" bundle="${profile}" key="profile.community"/>
@@ -11,6 +10,8 @@
 <jsp:useBean id="opponent" type="com.epam.training.lawAndSocial.model.User" scope="request"/>
 <jsp:useBean id="messageHistory" type="java.util.List<com.epam.training.lawAndSocial.model.Message>" scope="request"/>
 <jsp:useBean id="sessionId" type="java.lang.Long" scope="request"/>
+<jsp:useBean id="websocketHost" type="java.lang.String" scope="request"/>
+<jsp:useBean id="websocketPort" type="java.lang.Integer" scope="request"/>
 
 <tags:main title="${title}">
     <tags:navigationBlock>
@@ -37,12 +38,11 @@
                                 <img class="img-circle avatar-img" src="data:image/jpeg;base64,${avatar}"/>
                             </div>
                             <div>
-                                <div>
+                                <div class="chat-username">
                                         ${name}
                                 </div>
                                 <div class="message col-xs-8">
                                     <p>${message.text}</p>
-                                    <time datetime="2009-11-13T20:00">${name} • ${message.date}</time>
                                 </div>
                             </div>
 
@@ -70,7 +70,7 @@
 <script>
 
     $(document).ready(function () {
-        var connection = new WebSocket('ws://localhost:4445');
+        var connection = new WebSocket('ws://' + '${websocketHost}' + ':' + '${websocketPort}' + '');
 
         var currentUserAvatar = "";
         var opponentAvatar = "";
@@ -142,9 +142,9 @@
                     "<div class='col-xs-1'>" +
                     "<img class='img-circle avatar-img' src='data:image/jpeg;base64," + avatar + "'/>" +
                     "</div>" +
+                    "<div class='chat-username'>" + firstName + "</div>" +
                     "<div class='message col-xs-8'>" +
                     "<p>" + text + "</p>" +
-                    "<time datetime='2009-11-13T20:00'>" + firstName + " • " + date + "</time>" +
                     "</div>" +
                     "</div>" +
                     "</li>"

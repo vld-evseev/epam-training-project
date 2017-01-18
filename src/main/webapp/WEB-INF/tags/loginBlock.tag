@@ -41,7 +41,7 @@
                             <fmt:message var="username" bundle="${profile}" key="profile.username"/>
                             <fmt:message var="username_required" bundle="${profile}" key="profile.username.required"/>
                             <input id="login-username" type="text" class="form-control" name="username"
-                                   value="${credentials.username}"
+                                   value="<c:out value="${credentials.username}" />"
                                    placeholder="${username}"
                                    data-error="${username_required}" required>
 
@@ -57,7 +57,7 @@
                                                                aria-hidden="true"></i></span>
                         <fmt:message var="password" bundle="${profile}" key="profile.password"/>
                         <input id="login-password" type="password" class="form-control" name="password"
-                               value="${credentials.password}"
+                               value="<c:out value="${credentials.password}" />"
                                placeholder="${password}"
                                data-minlength="6"
                                required>
@@ -68,19 +68,11 @@
                 </div>
 
                 <div style="margin-top:10px" class="form-group">
-                    <!-- Button -->
 
                     <div class="col-sm-12 controls">
                         <button type="submit" class="btn btn-success">
                             <fmt:message bundle="${profile}" key="profile.log.in"/>
                         </button>
-
-                        <%--<a id="btn-login" href="#" class="btn btn-success">
-                            <fmt:message bundle="${profile}" key="profile.log.in"/>
-                        </a>--%>
-                        <%--<a id="btn-fblogin" href="#" class="btn btn-primary">
-                            Login with Facebook
-                        </a>--%>
                     </div>
                 </div>
 
@@ -89,7 +81,7 @@
                         <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%">
                             <fmt:message bundle="${profile}" key="profile.message.firsttime"/>
                             <c:url var="registrationUrl" value="/registration"/>
-                            <a href="${registrationUrl}" <%--onClick="$('#loginbox').hide(); $('#signupbox').show()"--%>>
+                            <a href="${registrationUrl}">
                                 <fmt:message bundle="${profile}" key="profile.sign.up.here"/>
                             </a>
                         </div>
@@ -107,6 +99,3 @@
         </div>
     </div>
 </div>
-
-<c:url var="bsValidator" value="/webjars/bootstrap-validator/0.11.5/js/validator.js"/>
-<script src="${bsValidator}"></script>
