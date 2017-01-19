@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class PgUniversityDao implements EducationInfoDao<EducationInfo> {
 
     @Override
     public List<EducationInfo> getByUserId(long userId) throws PersistException {
-        List<EducationInfo> result = new LinkedList<>();
+        List<EducationInfo> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "SELECT id, user_id, name, country, city, yearFrom, yearTo" +

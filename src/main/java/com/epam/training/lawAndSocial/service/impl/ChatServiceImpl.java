@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ChatServiceImpl extends WebSocketServer implements ChatService {
@@ -46,6 +47,13 @@ public class ChatServiceImpl extends WebSocketServer implements ChatService {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         LOGGER.debug("Closed connection to {}", conn.getRemoteSocketAddress());
+        final Set<Map.Entry<String, WebSocket>> entries = conns.entrySet();
+        for (Map.Entry<String, WebSocket> entry : entries) {
+            if (entry.getValue().equals(conn)) {
+                conns.remove(entry.getKey());
+                return;
+            }
+        }
     }
 
     @Override

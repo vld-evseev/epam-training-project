@@ -12,9 +12,12 @@ import java.time.format.DateTimeFormatter;
 
 import static com.epam.training.lawAndSocial.utils.ServletParams.BIRTH_DATE_PARAM;
 
-public class DateValidator {
+public final class DateValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DateValidator.class);
+
+    private DateValidator() {
+    }
 
     public enum Pattern {
         DD_MM_YYYY {

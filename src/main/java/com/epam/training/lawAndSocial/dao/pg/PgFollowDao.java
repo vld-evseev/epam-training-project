@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class PgFollowDao implements FollowDao {
 
     @Override
     public List<User> getFollowing(long userId, int limit, int offset) throws PersistException {
-        List<User> result = new LinkedList<>();
+        List<User> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "SELECT us.id AS us_id," +

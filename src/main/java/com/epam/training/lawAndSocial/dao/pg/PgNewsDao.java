@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PgNewsDao implements NewsDao {
@@ -53,7 +53,7 @@ public class PgNewsDao implements NewsDao {
 
     @Override
     public List<News> getByUserId(long userId, int limit, int offset) throws PersistException {
-        List<News> result = new LinkedList<>();
+        List<News> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "SELECT us.id AS us_id," +
@@ -101,7 +101,7 @@ public class PgNewsDao implements NewsDao {
 
     @Override
     public List<News> getAll(int limit, int offset) throws PersistException {
-        List<News> result = new LinkedList<>();
+        List<News> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "SELECT us.id AS us_id," +

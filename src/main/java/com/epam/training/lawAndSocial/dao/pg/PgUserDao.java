@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -189,7 +189,7 @@ public class PgUserDao implements UserDao {
 
     @Override
     public List<User> getUsers(int limit, int offset) throws PersistException {
-        List<User> result = new LinkedList<>();
+        List<User> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             final PreparedStatement query = connection.prepareStatement(
                     "SELECT id, uuid, username, firstName, lastName, patronymic, gender, birthdate, avatar, passwordHash" +
